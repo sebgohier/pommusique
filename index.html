@@ -2,200 +2,168 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Espace Prof – École de musique</title>
+  <title>POM Musique - Espace Prof</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+    body { font-family: Arial, sans-serif; display: flex; margin: 0; height: 100vh; }
+    #menu {
+      width: 220px; background: #2c3e50; color: #fff; padding: 20px; box-sizing: border-box;
     }
-
-    .container {
-      display: flex;
-      height: 100vh;
+    #menu h3 { margin-top: 0; font-size: 18px; text-align: center; }
+    #menu button {
+      display: block; margin-bottom: 15px; width: 100%; padding: 10px;
+      cursor: pointer; border: none; border-radius: 5px; font-size: 14px;
+      background-color: #34495e; color: #fff; transition: background 0.2s;
     }
-
-    /* MENU GAUCHE */
-    .menu {
-      width: 250px;
-      background-color: #4a86e8;
-      color: white;
-      padding: 20px;
+    #menu button:hover { background-color: #1abc9c; }
+    #content { flex: 1; padding: 30px; overflow-y: auto; background: #ecf0f1; }
+    h2 { margin-top: 0; color: #2c3e50; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input, select { padding: 6px; margin-top: 5px; width: 280px; border-radius: 3px; border: 1px solid #ccc; }
+    button.send {
+      margin-top: 20px; padding: 10px 25px; cursor: pointer;
+      background-color: #1abc9c; color: #fff; border: none; border-radius: 5px; font-size: 15px;
     }
-
-    .menu h2 {
-      margin-top: 0;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .menu button {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: white;
-      color: #4a86e8;
-      border: none;
-      cursor: pointer;
-      text-align: left;
-      font-weight: bold;
-    }
-
-    .menu button:hover {
-      background-color: #e6e6e6;
-    }
-
-    /* CONTENU */
-    .content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .panel {
-      display: none;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    input, select, button {
-      padding: 5px;
-      margin-top: 5px;
-      width: 200px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    button[type="submit"] {
-      width: 150px;
-      background-color: #4a86e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #3572b0;
-    }
-
-    #confirmation {
-      margin-top: 10px;
-      font-weight: bold;
-    }
+    button.send:hover { background-color: #16a085; }
+    #message, #message_hs, #message_abs { margin-top: 15px; font-weight: bold; }
+    .form-section { display: none; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- MENU -->
-  <div class="menu">
-    <h2>Espace Prof</h2>
-    <button onclick="showPanel('repertoire')">📒 Répertoire élèves</button>
-    <button onclick="showPanel('planning')">📅 Planning école</button>
-    <button onclick="showPanel('heures')">⏱️ Heures supplémentaires</button>
-    <button onclick="showPanel('absences')">🚫 Demande d’absence</button>
-    <button onclick="showPanel('materiel')">🎸 Emprunt matériel</button>
-    <button onclick="showPanel('contacts')">📞 Contacts</button>
+<div id="menu">
+  <h3>Menu Professeur</h3>
+  <button onclick="showSection('repertoire')">Répertoire élèves</button>
+  <button onclick="showSection('heuresSup')">Heures Supplémentaires</button>
+  <button onclick="showSection('absences')">Demande d'Absence</button>
+</div>
+
+<div id="content">
+
+  <!-- Répertoire élèves -->
+  <div id="repertoire" class="form-section">
+    <h2>Répertoire élèves Séb 2025/2026</h2>
+    <p>Affichage du répertoire ou liens vers documents si nécessaire.</p>
   </div>
 
-  <!-- CONTENU -->
-  <div class="content">
-
-    <!-- Répertoire -->
-    <div id="repertoire" class="panel active">
-      <h1>Répertoire de mes élèves</h1>
-      <p>Ici s’affichera la liste des élèves du prof.</p>
-    </div>
-
-    <!-- Planning -->
-    <div id="planning" class="panel">
-      <h1>Planning de l’école</h1>
-      <p>Vue planning (lecture seule).</p>
-    </div>
-
-    <!-- Heures supplémentaires -->
-    <div id="heures" class="panel">
-      <h1>Heures supplémentaires</h1>
-      <form id="heuresForm">
-        <label>Date : <input type="date" id="date" required></label>
-        <label>Type : 
-          <select id="type" required>
-            <option value="Concert">Concert</option>
-            <option value="Répétition">Répétition</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </label>
-        <label>Heure début : <input type="time" id="heureDebut" required></label>
-        <label>Heure fin : <input type="time" id="heureFin" required></label>
-        <label>Lieu : <input type="text" id="lieu" placeholder="Salle à remplir" required></label>
-        <button type="submit">Envoyer</button>
-      </form>
-      <p id="confirmation" style="color:green;"></p>
-    </div>
-
-    <!-- Absences -->
-    <div id="absences" class="panel">
-      <h1>Demande d’autorisation d’absence</h1>
-      <p>Formulaire à créer plus tard.</p>
-    </div>
-
-    <!-- Emprunt matériel -->
-    <div id="materiel" class="panel">
-      <h1>Emprunt de matériel</h1>
-      <p>Formulaire et historique des emprunts.</p>
-    </div>
-
-    <!-- Contacts -->
-    <div id="contacts" class="panel">
-      <h1>Contacts</h1>
-      <p>Coordonnées des profs et de la direction.</p>
-    </div>
-
+  <!-- Heures Supplémentaires -->
+  <div id="heuresSup" class="form-section">
+    <h2>Heures Supplémentaires</h2>
+    <label>Date :</label><input type="date" id="hs_date">
+    <label>Type :</label>
+    <select id="hs_type">
+      <option value="Concert">Concert</option>
+      <option value="Répétition">Répétition</option>
+      <option value="Autre">Autre</option>
+    </select>
+    <label>Heure début :</label><input type="time" id="hs_heureDebut">
+    <label>Heure fin :</label><input type="time" id="hs_heureFin">
+    <label>Lieu :</label><input type="text" id="hs_lieu" placeholder="Salle">
+    <button class="send" onclick="envoyerHeuresSup()">Envoyer la demande</button>
+    <div id="message_hs"></div>
   </div>
+
+  <!-- Demande d'Absence -->
+  <div id="absences" class="form-section">
+    <h2>Demande d'Autorisation d'Absence</h2>
+    <label>Date d'absence :</label><input type="date" id="abs_dateAbsence">
+    <label>Créneau horaire :</label><input type="text" id="abs_creneauAbsence" placeholder="09h30-11h00">
+    <label>Date de rattrapage :</label><input type="date" id="abs_dateRattrapage">
+    <label>Créneau de rattrapage :</label><input type="text" id="abs_creneauRattrapage" placeholder="14h00-15h30">
+    <label>Salle :</label><input type="text" id="abs_salle" placeholder="Salle des artistes">
+    <label>Accord élèves/responsables :</label><input type="checkbox" id="abs_accord">
+    <button class="send" onclick="envoyerAbsence()">Envoyer la demande</button>
+    <div id="message_abs"></div>
+  </div>
+
 </div>
 
 <script>
-  // Fonction pour afficher le panneau actif
-  function showPanel(id) {
-    document.querySelectorAll('.panel').forEach(panel => {
-      panel.classList.remove('active');
-    });
-    document.getElementById(id).classList.add('active');
+  const URL_HEURES_SUP = "https://script.google.com/macros/s/AKfycbw__54kkZVbFx5jRnnCx3wrffb7ljIeTvSaivT_Ed_xGVPFSiFhSQ6-zuueiGGslcSxkQ/exec"; // ← remplace par ton URL Heures Sup
+  const URL_ABSENCES = "https://script.google.com/macros/s/AKfycbw__54kkZVbFx5jRnnCx3wrffb7ljIeTvSaivT_Ed_xGVPFSiFhSQ6-zuueiGGslcSxkQ/exec";   // ← remplace par ton URL Absences
+
+  function showSection(sectionId) {
+    document.querySelectorAll('.form-section').forEach(div => div.style.display = 'none');
+    document.getElementById(sectionId).style.display = 'block';
   }
 
-  // FORMULAIRE HEURES SUP
-  document.getElementById("heuresForm").addEventListener("submit", function(e){
-    e.preventDefault();
-
-    var data = {
-      date: document.getElementById("date").value,
-      type: document.getElementById("type").value,
-      heureDebut: document.getElementById("heureDebut").value,
-      heureFin: document.getElementById("heureFin").value,
-      lieu: document.getElementById("lieu").value
+  // --- Heures Supplémentaires ---
+  function envoyerHeuresSup() {
+    const data = {
+      date: document.getElementById("hs_date").value,
+      type: document.getElementById("hs_type").value,
+      heureDebut: document.getElementById("hs_heureDebut").value,
+      heureFin: document.getElementById("hs_heureFin").value,
+      lieu: document.getElementById("hs_lieu").value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyWraNSkofdhvq-8hNSbjL4C5GrMQXVbxTi7k_S30r9ryhvmpF3UKG3DkIAPu5suU49wQ/exec", { // <--- remplace par l'URL de ton Web App Apps Script
+    fetch(URL_HEURES_SUP, {
       method: "POST",
       body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(res => {
-      if(res.status === "success") {
-        document.getElementById("confirmation").textContent = "Demande envoyée avec succès !";
-        document.getElementById("heuresForm").reset();
+    .then(res => res.json())
+    .then(json => {
+      const msg = document.getElementById("message_hs");
+      if(json.status === "success") {
+        msg.style.color = "green";
+        msg.textContent = json.message;
+        document.getElementById("hs_date").value = "";
+        document.getElementById("hs_type").value = "Concert";
+        document.getElementById("hs_heureDebut").value = "";
+        document.getElementById("hs_heureFin").value = "";
+        document.getElementById("hs_lieu").value = "";
       } else {
-        document.getElementById("confirmation").textContent = "Erreur : " + res.message;
+        msg.style.color = "red";
+        msg.textContent = "Erreur : " + json.message;
       }
     })
     .catch(err => {
-      document.getElementById("confirmation").textContent = "Erreur : " + err;
+      const msg = document.getElementById("message_hs");
+      msg.style.color = "red";
+      msg.textContent = "Erreur réseau : " + err;
     });
-  });
+  }
+
+  // --- Demande d'Absence ---
+  function envoyerAbsence() {
+    const data = {
+      dateAbsence: document.getElementById("abs_dateAbsence").value,
+      creneauAbsence: document.getElementById("abs_creneauAbsence").value,
+      dateRattrapage: document.getElementById("abs_dateRattrapage").value,
+      creneauRattrapage: document.getElementById("abs_creneauRattrapage").value,
+      salle: document.getElementById("abs_salle").value,
+      accord: document.getElementById("abs_accord").checked
+    };
+
+    fetch(URL_ABSENCES, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(json => {
+      const msg = document.getElementById("message_abs");
+      if(json.status === "success") {
+        msg.style.color = "green";
+        msg.textContent = json.message;
+        document.getElementById("abs_dateAbsence").value = "";
+        document.getElementById("abs_creneauAbsence").value = "";
+        document.getElementById("abs_dateRattrapage").value = "";
+        document.getElementById("abs_creneauRattrapage").value = "";
+        document.getElementById("abs_salle").value = "";
+        document.getElementById("abs_accord").checked = false;
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "Erreur : " + json.message;
+      }
+    })
+    .catch(err => {
+      const msg = document.getElementById("message_abs");
+      msg.style.color = "red";
+      msg.textContent = "Erreur réseau : " + err;
+    });
+  }
+
+  // Affiche par défaut la section Répertoire
+  showSection('repertoire');
 </script>
 
 </body>
