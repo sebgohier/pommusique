@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Espace Prof – École de musique</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       margin: 0;
@@ -15,6 +14,7 @@
       height: 100vh;
     }
 
+    /* MENU GAUCHE */
     .menu {
       width: 250px;
       background-color: #4a86e8;
@@ -44,6 +44,7 @@
       background-color: #e6e6e6;
     }
 
+    /* CONTENU */
     .content {
       flex: 1;
       padding: 20px;
@@ -56,6 +57,34 @@
 
     .panel.active {
       display: block;
+    }
+
+    input, select, button {
+      padding: 5px;
+      margin-top: 5px;
+      width: 200px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+      width: 150px;
+      background-color: #4a86e8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #3572b0;
+    }
+
+    #confirmation {
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -70,4 +99,104 @@
     <button onclick="showPanel('heures')">⏱️ Heures supplémentaires</button>
     <button onclick="showPanel('absences')">🚫 Demande d’absence</button>
     <button onclick="showPanel('materiel')">🎸 Emprunt matériel</button>
-    <button onclick="showPanel('contacts
+    <button onclick="showPanel('contacts')">📞 Contacts</button>
+  </div>
+
+  <!-- CONTENU -->
+  <div class="content">
+
+    <!-- Répertoire -->
+    <div id="repertoire" class="panel active">
+      <h1>Répertoire de mes élèves</h1>
+      <p>Ici s’affichera la liste des élèves du prof.</p>
+    </div>
+
+    <!-- Planning -->
+    <div id="planning" class="panel">
+      <h1>Planning de l’école</h1>
+      <p>Vue planning (lecture seule).</p>
+    </div>
+
+    <!-- Heures supplémentaires -->
+    <div id="heures" class="panel">
+      <h1>Heures supplémentaires</h1>
+      <form id="heuresForm">
+        <label>Date : <input type="date" id="date" required></label>
+        <label>Type : 
+          <select id="type" required>
+            <option value="Concert">Concert</option>
+            <option value="Répétition">Répétition</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </label>
+        <label>Heure début : <input type="time" id="heureDebut" required></label>
+        <label>Heure fin : <input type="time" id="heureFin" required></label>
+        <label>Lieu : <input type="text" id="lieu" placeholder="Salle à remplir" required></label>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p id="confirmation" style="color:green;"></p>
+    </div>
+
+    <!-- Absences -->
+    <div id="absences" class="panel">
+      <h1>Demande d’autorisation d’absence</h1>
+      <p>Formulaire à créer plus tard.</p>
+    </div>
+
+    <!-- Emprunt matériel -->
+    <div id="materiel" class="panel">
+      <h1>Emprunt de matériel</h1>
+      <p>Formulaire et historique des emprunts.</p>
+    </div>
+
+    <!-- Contacts -->
+    <div id="contacts" class="panel">
+      <h1>Contacts</h1>
+      <p>Coordonnées des profs et de la direction.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Fonction pour afficher le panneau actif
+  function showPanel(id) {
+    document.querySelectorAll('.panel').forEach(panel => {
+      panel.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+
+  // FORMULAIRE HEURES SUP
+  document.getElementById("heuresForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    var data = {
+      date: document.getElementById("date").value,
+      type: document.getElementById("type").value,
+      heureDebut: document.getElementById("heureDebut").value,
+      heureFin: document.getElementById("heureFin").value,
+      lieu: document.getElementById("lieu").value
+    };
+
+    fetch("https://script.google.com/u/0/home/projects/1-xblSbNceZQNvDAOBN1JbqRezGoPLo2wWGprCXD2AE78QfaW3jeOs5tN/edit", { // <--- remplace par l'URL de ton Web App Apps Script
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.status === "success") {
+        document.getElementById("confirmation").textContent = "Demande envoyée avec succès !";
+        document.getElementById("heuresForm").reset();
+      } else {
+        document.getElementById("confirmation").textContent = "Erreur : " + res.message;
+      }
+    })
+    .catch(err => {
+      document.getElementById("confirmation").textContent = "Erreur : " + err;
+    });
+  });
+</script>
+
+</body>
+</html>
