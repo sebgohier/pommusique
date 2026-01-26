@@ -8,12 +8,10 @@
       margin: 0;
       font-family: Arial, sans-serif;
     }
-
     .container {
       display: flex;
       height: 100vh;
     }
-
     /* MENU GAUCHE */
     .menu {
       width: 250px;
@@ -21,13 +19,11 @@
       color: white;
       padding: 20px;
     }
-
     .menu h2 {
       margin-top: 0;
       font-size: 18px;
       margin-bottom: 20px;
     }
-
     .menu button {
       width: 100%;
       margin-bottom: 10px;
@@ -39,37 +35,30 @@
       text-align: left;
       font-weight: bold;
     }
-
     .menu button:hover {
       background-color: #e6e6e6;
     }
-
     /* CONTENU */
     .content {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
     }
-
     .panel {
       display: none;
     }
-
     .panel.active {
       display: block;
     }
-
     input, select, button {
       padding: 5px;
       margin-top: 5px;
       width: 200px;
     }
-
     label {
       display: block;
       margin-bottom: 10px;
     }
-
     button[type="submit"] {
       width: 150px;
       background-color: #4a86e8;
@@ -77,12 +66,10 @@
       border: none;
       cursor: pointer;
     }
-
     button[type="submit"]:hover {
       background-color: #3572b0;
     }
-
-    #confirmation {
+    #confirmation, #confirmation_abs {
       margin-top: 10px;
       font-weight: bold;
     }
@@ -140,7 +127,21 @@
     <!-- Absences -->
     <div id="absences" class="panel">
       <h1>Demande d’autorisation d’absence</h1>
-      <p>Formulaire à créer plus tard.</p>
+      <form id="absencesForm">
+        <label>Date d'absence : <input type="date" id="abs_dateAbsence" required></label>
+        <label>Créneau horaire : <input type="text" id="abs_creneauAbsence" placeholder="09h30-11h00" required></label>
+        <label>Date de rattrapage : <input type="date" id="abs_dateRattrapage" required></label>
+        <label>Créneau de rattrapage : <input type="text" id="abs_creneauRattrapage" placeholder="14h00-15h30" required></label>
+        <label>Salle : <input type="text" id="abs_salle" placeholder="Salle à remplir" required></label>
+        <label>Accord élèves/responsables : 
+          <select id="abs_accord">
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+          </select>
+        </label>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p id="confirmation_abs" style="color:green;"></p>
     </div>
 
     <!-- Emprunt matériel -->
@@ -159,18 +160,17 @@
 </div>
 
 <script>
-  // Fonction pour afficher le panneau actif
   function showPanel(id) {
-    document.querySelectorAll('.panel').forEach(panel => {
-      panel.classList.remove('active');
-    });
+    document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
+
+  // URL Web App (même pour les deux)
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzy91QR2q1I6qkSvRC894ZyLodIsIAoydV3NleFoKVHrSdj38BlmGTAAwVpYeNDuxLmCQ/exec";
 
   // FORMULAIRE HEURES SUP
   document.getElementById("heuresForm").addEventListener("submit", function(e){
     e.preventDefault();
-
     var data = {
       date: document.getElementById("date").value,
       type: document.getElementById("type").value,
@@ -178,8 +178,7 @@
       heureFin: document.getElementById("heureFin").value,
       lieu: document.getElementById("lieu").value
     };
-
-    fetch("https://script.google.com/macros/s/AKfycbzy91QR2q1I6qkSvRC894ZyLodIsIAoydV3NleFoKVHrSdj38BlmGTAAwVpYeNDuxLmCQ/exec", { // <--- remplace par l'URL de ton Web App Apps Script
+    fetch(WEB_APP_URL, {
       method: "POST",
       body: JSON.stringify(data)
     })
@@ -194,6 +193,35 @@
     })
     .catch(err => {
       document.getElementById("confirmation").textContent = "Erreur : " + err;
+    });
+  });
+
+  // FORMULAIRE ABSENCES
+  document.getElementById("absencesForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var data = {
+      dateAbsence: document.getElementById("abs_dateAbsence").value,
+      creneauAbsence: document.getElementById("abs_creneauAbsence").value,
+      dateRattrapage: document.getElementById("abs_dateRattrapage").value,
+      creneauRattrapage: document.getElementById("abs_creneauRattrapage").value,
+      salle: document.getElementById("abs_salle").value,
+      accord: document.getElementById("abs_accord").value
+    };
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.status === "success") {
+        document.getElementById("confirmation_abs").textContent = "Demande envoyée avec succès !";
+        document.getElementById("absencesForm").reset();
+      } else {
+        document.getElementById("confirmation_abs").textContent = "Erreur : " + res.message;
+      }
+    })
+    .catch(err => {
+      document.getElementById("confirmation_abs").textContent = "Erreur : " + err;
     });
   });
 </script>
