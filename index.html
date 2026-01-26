@@ -2,160 +2,200 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>POM Musique - Espace Prof</title>
+  <title>Espace Prof – École de musique</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; margin: 0; height: 100vh; }
-    #menu {
-      width: 220px; background: #2c3e50; color: #fff; padding: 20px; box-sizing: border-box;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
     }
-    #menu h3 { margin-top: 0; font-size: 18px; text-align: center; }
-    #menu button {
-      display: block; margin-bottom: 15px; width: 100%; padding: 10px;
-      cursor: pointer; border: none; border-radius: 5px; font-size: 14px;
-      background-color: #34495e; color: #fff; transition: background 0.2s;
+
+    .container {
+      display: flex;
+      height: 100vh;
     }
-    #menu button:hover { background-color: #1abc9c; }
-    #content { flex: 1; padding: 30px; overflow-y: auto; background: #ecf0f1; }
-    h2 { margin-top: 0; color: #2c3e50; }
-    label { display: block; margin-top: 12px; font-weight: bold; }
-    input, select { padding: 6px; margin-top: 5px; width: 280px; border-radius: 3px; border: 1px solid #ccc; }
-    button.send {
-      margin-top: 20px; padding: 10px 25px; cursor: pointer;
-      background-color: #1abc9c; color: #fff; border: none; border-radius: 5px; font-size: 15px;
+
+    /* MENU GAUCHE */
+    .menu {
+      width: 250px;
+      background-color: #4a86e8;
+      color: white;
+      padding: 20px;
     }
-    button.send:hover { background-color: #16a085; }
-    #message_hs, #message_abs { margin-top: 15px; font-weight: bold; }
-    .form-section { display: none; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    .menu h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: white;
+      color: #4a86e8;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .menu button:hover {
+      background-color: #e6e6e6;
+    }
+
+    /* CONTENU */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    input, select, button {
+      padding: 5px;
+      margin-top: 5px;
+      width: 200px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+      width: 150px;
+      background-color: #4a86e8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #3572b0;
+    }
+
+    #confirmation {
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-<div id="menu">
-  <h3>Menu Professeur</h3>
-  <button onclick="showSection('repertoire')">Répertoire élèves</button>
-  <button onclick="showSection('heuresSup')">Heures Supplémentaires</button>
-  <button onclick="showSection('absences')">Demande d'Absence</button>
-</div>
-
-<div id="content">
-
-  <!-- Répertoire élèves -->
-  <div id="repertoire" class="form-section">
-    <h2>Répertoire élèves Séb 2025/2026</h2>
-    <p>Affichage du répertoire ou liens vers documents si nécessaire.</p>
+<div class="container">
+  <!-- MENU -->
+  <div class="menu">
+    <h2>Espace Prof</h2>
+    <button onclick="showPanel('repertoire')">📒 Répertoire élèves</button>
+    <button onclick="showPanel('planning')">📅 Planning école</button>
+    <button onclick="showPanel('heures')">⏱️ Heures supplémentaires</button>
+    <button onclick="showPanel('absences')">🚫 Demande d’absence</button>
+    <button onclick="showPanel('materiel')">🎸 Emprunt matériel</button>
+    <button onclick="showPanel('contacts')">📞 Contacts</button>
   </div>
 
-  <!-- Heures Supplémentaires -->
-  <div id="heuresSup" class="form-section">
-    <h2>Heures Supplémentaires</h2>
-    <label>Date :</label><input type="date" id="dateHS" name="dateHS">
-    <label>Type :</label>
-    <select id="typeHS" name="typeHS">
-      <option value="Concert">Concert</option>
-      <option value="Répétition">Répétition</option>
-      <option value="Autre">Autre</option>
-    </select>
-    <label>Heure début :</label><input type="time" id="heureDebutHS" name="heureDebutHS">
-    <label>Heure fin :</label><input type="time" id="heureFinHS" name="heureFinHS">
-    <label>Lieu :</label><input type="text" id="lieuHS" name="lieuHS" placeholder="Salle">
-    <button class="send" onclick="envoyerHeuresSup()">Envoyer la demande</button>
-    <div id="message_hs"></div>
-  </div>
+  <!-- CONTENU -->
+  <div class="content">
 
-  <!-- Demande d'Absence -->
-  <div id="absences" class="form-section">
-    <h2>Demande d'Autorisation d'Absence</h2>
-    <label>Date d'absence :</label><input type="date" id="dateAbsence" name="dateAbsence">
-    <label>Créneau horaire :</label><input type="text" id="creneauAbsence" name="creneauAbsence" placeholder="09h30-11h00">
-    <label>Date de rattrapage :</label><input type="date" id="dateRattrapage" name="dateRattrapage">
-    <label>Créneau de rattrapage :</label><input type="text" id="creneauRattrapage" name="creneauRattrapage" placeholder="14h00-15h30">
-    <label>Salle :</label><input type="text" id="salle" name="salle" placeholder="Salle des artistes">
-    <label>Accord élèves/responsables :</label><input type="checkbox" id="accord" name="accord">
-    <button class="send" onclick="envoyerAbsence()">Envoyer la demande</button>
-    <div id="message_abs"></div>
-  </div>
+    <!-- Répertoire -->
+    <div id="repertoire" class="panel active">
+      <h1>Répertoire de mes élèves</h1>
+      <p>Ici s’affichera la liste des élèves du prof.</p>
+    </div>
 
+    <!-- Planning -->
+    <div id="planning" class="panel">
+      <h1>Planning de l’école</h1>
+      <p>Vue planning (lecture seule).</p>
+    </div>
+
+    <!-- Heures supplémentaires -->
+    <div id="heures" class="panel">
+      <h1>Heures supplémentaires</h1>
+      <form id="heuresForm">
+        <label>Date : <input type="date" id="date" required></label>
+        <label>Type : 
+          <select id="type" required>
+            <option value="Concert">Concert</option>
+            <option value="Répétition">Répétition</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </label>
+        <label>Heure début : <input type="time" id="heureDebut" required></label>
+        <label>Heure fin : <input type="time" id="heureFin" required></label>
+        <label>Lieu : <input type="text" id="lieu" placeholder="Salle à remplir" required></label>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p id="confirmation" style="color:green;"></p>
+    </div>
+
+    <!-- Absences -->
+    <div id="absences" class="panel">
+      <h1>Demande d’autorisation d’absence</h1>
+      <p>Formulaire à créer plus tard.</p>
+    </div>
+
+    <!-- Emprunt matériel -->
+    <div id="materiel" class="panel">
+      <h1>Emprunt de matériel</h1>
+      <p>Formulaire et historique des emprunts.</p>
+    </div>
+
+    <!-- Contacts -->
+    <div id="contacts" class="panel">
+      <h1>Contacts</h1>
+      <p>Coordonnées des profs et de la direction.</p>
+    </div>
+
+  </div>
 </div>
 
 <script>
-  const URL_HEURES_SUP = "https://script.google.com/macros/s/AKfycbzy91QR2q1I6qkSvRC894ZyLodIsIAoydV3NleFoKVHrSdj38BlmGTAAwVpYeNDuxLmCQ/exec";
-  const URL_ABSENCES = "https://script.google.com/macros/s/AKfycbzy91QR2q1I6qkSvRC894ZyLodIsIAoydV3NleFoKVHrSdj38BlmGTAAwVpYeNDuxLmCQ/exec";
-
-  function showSection(sectionId) {
-    document.querySelectorAll('.form-section').forEach(div => div.style.display = 'none');
-    document.getElementById(sectionId).style.display = 'block';
+  // Fonction pour afficher le panneau actif
+  function showPanel(id) {
+    document.querySelectorAll('.panel').forEach(panel => {
+      panel.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
   }
 
-  function envoyerHeuresSup() {
-    const data = {
-      dateHS: document.getElementById("dateHS").value,
-      typeHS: document.getElementById("typeHS").value,
-      heureDebutHS: document.getElementById("heureDebutHS").value,
-      heureFinHS: document.getElementById("heureFinHS").value,
-      lieuHS: document.getElementById("lieuHS").value
+  // FORMULAIRE HEURES SUP
+  document.getElementById("heuresForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    var data = {
+      date: document.getElementById("date").value,
+      type: document.getElementById("type").value,
+      heureDebut: document.getElementById("heureDebut").value,
+      heureFin: document.getElementById("heureFin").value,
+      lieu: document.getElementById("lieu").value
     };
 
-    fetch(URL_HEURES_SUP, { method: "POST", body: JSON.stringify(data) })
-      .then(res => res.json())
-      .then(json => {
-        const msg = document.getElementById("message_hs");
-        if(json.status === "success") {
-          msg.style.color = "green";
-          msg.textContent = json.message;
-          document.getElementById("dateHS").value = "";
-          document.getElementById("typeHS").value = "Concert";
-          document.getElementById("heureDebutHS").value = "";
-          document.getElementById("heureFinHS").value = "";
-          document.getElementById("lieuHS").value = "";
-        } else {
-          msg.style.color = "red";
-          msg.textContent = "Erreur : " + json.message;
-        }
-      })
-      .catch(err => {
-        const msg = document.getElementById("message_hs");
-        msg.style.color = "red";
-        msg.textContent = "Erreur réseau : " + err;
-      });
-  }
-
-  function envoyerAbsence() {
-    const data = {
-      dateAbsence: document.getElementById("dateAbsence").value,
-      creneauAbsence: document.getElementById("creneauAbsence").value,
-      dateRattrapage: document.getElementById("dateRattrapage").value,
-      creneauRattrapage: document.getElementById("creneauRattrapage").value,
-      salle: document.getElementById("salle").value,
-      accord: document.getElementById("accord").checked
-    };
-
-    fetch(URL_ABSENCES, { method: "POST", body: JSON.stringify(data) })
-      .then(res => res.json())
-      .then(json => {
-        const msg = document.getElementById("message_abs");
-        if(json.status === "success") {
-          msg.style.color = "green";
-          msg.textContent = json.message;
-          document.getElementById("dateAbsence").value = "";
-          document.getElementById("creneauAbsence").value = "";
-          document.getElementById("dateRattrapage").value = "";
-          document.getElementById("creneauRattrapage").value = "";
-          document.getElementById("salle").value = "";
-          document.getElementById("accord").checked = false;
-        } else {
-          msg.style.color = "red";
-          msg.textContent = "Erreur : " + json.message;
-        }
-      })
-      .catch(err => {
-        const msg = document.getElementById("message_abs");
-        msg.style.color = "red";
-        msg.textContent = "Erreur réseau : " + err;
-      });
-  }
-
-  // Affiche par défaut la section Répertoire
-  showSection('repertoire');
+    fetch("URL_DE_TON_WEB_APP", { // <--- remplace par l'URL de ton Web App Apps Script
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.status === "success") {
+        document.getElementById("confirmation").textContent = "Demande envoyée avec succès !";
+        document.getElementById("heuresForm").reset();
+      } else {
+        document.getElementById("confirmation").textContent = "Erreur : " + res.message;
+      }
+    })
+    .catch(err => {
+      document.getElementById("confirmation").textContent = "Erreur : " + err;
+    });
+  });
 </script>
 
 </body>
