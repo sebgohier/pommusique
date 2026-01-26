@@ -2,35 +2,72 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Tableau de bord - École de musique</title>
+  <title>Espace Prof – École de musique</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .menu {
+      width: 250px;
+      background-color: #4a86e8;
+      color: white;
+      padding: 20px;
+    }
+
+    .menu h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: white;
+      color: #4a86e8;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .menu button:hover {
+      background-color: #e6e6e6;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>École de musique - Tableau de bord Professeurs</h1>
-  </header>
 
-  <main>
-    <section id="planning">
-      <h2>Planning / Rattrapages</h2>
-      <table id="table-planning">
-        <thead>
-          <tr>
-            <th>Prof</th>
-            <th>Élève</th>
-            <th>Date</th>
-            <th>Heure</th>
-            <th>Salle</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Les données apparaîtront ici -->
-        </tbody>
-      </table>
-      <button id="test-btn">Test bouton</button>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<div class="container">
+  <!-- MENU -->
+  <div class="menu">
+    <h2>Espace Prof</h2>
+    <button onclick="showPanel('repertoire')">📒 Répertoire élèves</button>
+    <button onclick="showPanel('planning')">📅 Planning école</button>
+    <button onclick="showPanel('heures')">⏱️ Heures supplémentaires</button>
+    <button onclick="showPanel('absences')">🚫 Demande d’absence</button>
+    <button onclick="showPanel('materiel')">🎸 Emprunt matériel</button>
+    <button onclick="showPanel('contacts
