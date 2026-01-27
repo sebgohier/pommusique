@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Demande d'Absences - Professeur</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 10px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  th { background-color: #f0f0f0; }
+  input, select { width: 100%; box-sizing: border-box; }
+  button { padding: 6px 12px; margin-top: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>Demande d'Absences</h1>
+
+<table id="absTable">
+  <thead>
+    <tr>
+      <th>Date d'absence</th>
+      <th>Créneau absence</th>
+      <th>Date de rattrapage</th>
+      <th>Créneau rattrapage</th>
+      <th>Salle</th>
+      <th>Accord élève / responsable</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<label>Nom complet du professeur : <input type="text" id="profName" placeholder="Ex: Sébastien GOHIER"></label>
+
+<button id="addRowBtn">+ Ajouter une ligne</button>
+<button id="sendBtn">Envoyer la demande</button>
+
+<p id="confirmation" style="color:green; font-weight:bold;"></p>
+
+<script>
+function addRow(data={}) {
+  const tbody = document.querySelector("#absTable tbody");
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td><input type="date" class="date" value="${data.date || ''}"></td>
+    <td><input type="text" class="creneau" value="${data.creneau || ''}"></td>
+    <td><input type="date" class="dateRattrapage" value="${data.dateRattrapage || ''}"></td>
+    <td><input type="text" class="creneauRattrapage" value="${data.creneauRattrapage || ''}"></td>
+    <td><input type="text" class="salle" value="${data.salle || ''}"></td>
+    <td style="text-align:center;"><input type="checkbox" class="accord" ${data.accord ? 'checked' : ''}></td>
+    <td><button type="button" class="deleteBtn">X</button></td>
+  `;
+
+  tbody.appendChild(tr);
+
+  tr.querySelector(".deleteBtn").addEventListener("click", () => tr.remove());
+}
+
+// Ligne initiale
+addRow();
+
+document.getElementById("addRowBtn").addEventListener("click", ()=>addRow());
+
+document.getElementById("sendBtn").addEventListener("click", ()=>{
+  const profName = document.getElementById("profName").value.trim();
+  if(!profName) { alert("Merci d’indiquer le nom complet du professeur !"); return; }
+
+  const tbody = document.querySelector("#absTable tbody");
+  if(!tbody.querySelectorAll("tr").length){ alert("Ajoutez au moins une ligne !"); return; }
+
+  const lignes = [];
+  tbody.querySelectorAll("tr").forEach(tr => {
+    lignes.push({
+      date: tr.querySelector(".date").value,
+      creneau: tr.querySelector(".creneau").value,
+      dateRattrapage: tr.querySelector(".dateRattrapage").value,
+      creneauRattrapage: tr.querySelector(".creneauRattrapage").value,
+      salle: tr.querySelector(".salle").value,
+      accord: tr.querySelector(".accord").checked
+    });
+  });
+
+  const data = { nomProf: profName, lignes: lignes };
+
+  // --- Envoi JSON vers le Web App ---
+  fetch("https://script.google.com/macros/s/AKfycbz8JTN0HjVwwbRrFeWgjtIkbl9fe2dXWRYfMRLACpTwWAnN3Ms-OCjl375pX4i37WIjrQ/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(response => {
+    if(response.status === "success"){
+      document.getElementById("confirmation").textContent = response.message;
+      tbody.innerHTML = "";
+      addRow();
+      document.getElementById("profName").value = "";
+    } else {
+      document.getElementById("confirmation").textContent = "Erreur : " + response.message;
+    }
+  })
+  .catch(err => {
+    document.getElementById("confirmation").textContent = "Erreur : " + err;
+  });
+});
+</script>
+
+</body>
+</html>
