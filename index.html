@@ -2,7 +2,18 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+
+<!-- ✅ CSP permissive pour Google Apps Script -->
+<meta http-equiv="Content-Security-Policy"
+content="
+default-src 'self' 'unsafe-inline' 'unsafe-eval' https://script.google.com https://script.googleusercontent.com;
+connect-src https://script.google.com https://script.googleusercontent.com;
+img-src * data:;
+style-src 'self' 'unsafe-inline';
+">
+
 <title>Interface Professeur - POM Musique</title>
+
 <style>
 body { margin:0; font-family:Arial,sans-serif; display:flex; height:100vh; }
 .sidebar { width:220px; background: linear-gradient(to bottom,#ffb629,#000000); color:white;
@@ -35,54 +46,64 @@ th { background-color:#f0f0f0; }
 </div>
 
 <div class="content">
-<!-- Répertoire -->
-<div class="section" id="repertoire"><h2>Répertoire élèves</h2><p>Contenu du répertoire ici...</p></div>
-<!-- Planning -->
-<div class="section" id="planning"><h2>Planning</h2><p>Contenu du planning ici...</p></div>
-<!-- Heures Sup -->
+
+<div class="section" id="repertoire">
+<h2>Répertoire élèves</h2>
+<p>Contenu du répertoire ici...</p>
+</div>
+
+<div class="section" id="planning">
+<h2>Planning</h2>
+<p>Contenu du planning ici...</p>
+</div>
+
 <div class="section" id="heuresSup">
 <h2>Déclaration Heures Supplémentaires</h2>
-<label>Nom complet du professeur : <input type="text" id="profNameHs" placeholder="Ex: Sébastien GOHIER"></label>
+<label>Nom complet du professeur :
+<input type="text" id="profNameHs"></label>
 <table id="hsTable">
 <thead>
 <tr>
-<th>Date</th><th>Type d’événement</th><th>Heure début</th><th>Heure fin</th><th>Durée</th><th>Lieu</th><th>Action</th>
+<th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th></th>
 </tr>
 </thead>
 <tbody></tbody>
 <tfoot>
 <tr>
-<td colspan="4">Total heures</td>
+<td colspan="4">Total</td>
 <td id="totalDuration">0h00</td>
 <td colspan="2"></td>
 </tr>
 </tfoot>
 </table>
 <button id="addRowHs">+ Ajouter une ligne</button>
-<button id="sendHs">Envoyer la demande</button>
-<p id="confirmHs" style="color:green;font-weight:bold;"></p>
+<button id="sendHs">Envoyer</button>
+<p id="confirmHs" style="color:green;font-weight:bold"></p>
 </div>
-<!-- Absences -->
+
 <div class="section" id="absences">
 <h2>Demande d'Absences</h2>
-<label>Nom complet du professeur : <input type="text" id="profNameAbs" placeholder="Ex: Sébastien GOHIER"></label>
+<label>Nom complet du professeur :
+<input type="text" id="profNameAbs"></label>
 <table id="absTable">
 <thead>
 <tr>
-<th>Date d'absence</th><th>Créneau absence</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord élèves/responsables</th><th>Action</th>
+<th>Date</th><th>Créneau</th><th>Rattrapage</th><th>Créneau</th><th>Salle</th><th>Accord</th><th></th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
 <button id="addRowAbs">+ Ajouter une ligne</button>
-<button id="sendAbs">Envoyer la demande</button>
-<p id="confirmAbs" style="color:green;font-weight:bold;"></p>
+<button id="sendAbs">Envoyer</button>
+<p id="confirmAbs" style="color:green;font-weight:bold"></p>
 </div>
-<!-- Partitions -->
-<div class="section" id="partitions"><h2>Partitions</h2><p>Contenu des partitions ici...</p></div>
-<!-- Contacts -->
-<div class="section" id="contacts"><h2>Contacts</h2><p>Contenu des contacts ici...</p></div>
+
+<div class="section" id="partitions"><h2>Partitions</h2></div>
+<div class="section" id="contacts"><h2>Contacts</h2></div>
+
 </div>
+
+
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
