@@ -26,7 +26,6 @@ th { background-color:#f0f0f0; }
 
 <div class="sidebar">
 <img src="https://raw.githubusercontent.com/sebgohier/pommusique/refs/heads/main/Logo%20Pom%20Musique%20noir.png" alt="Logo POM Musique">
-
 <div class="menu-item" onclick="showSection('repertoire')">📁 <span>Répertoire élèves</span></div>
 <div class="menu-item" onclick="showSection('planning')">📅 <span>Planning</span></div>
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
@@ -36,19 +35,10 @@ th { background-color:#f0f0f0; }
 </div>
 
 <div class="content">
-
 <!-- Répertoire -->
-<div class="section" id="repertoire">
-<h2>Répertoire élèves</h2>
-<p>Contenu du répertoire ici...</p>
-</div>
-
+<div class="section" id="repertoire"><h2>Répertoire élèves</h2><p>Contenu du répertoire ici...</p></div>
 <!-- Planning -->
-<div class="section" id="planning">
-<h2>Planning</h2>
-<p>Contenu du planning ici...</p>
-</div>
-
+<div class="section" id="planning"><h2>Planning</h2><p>Contenu du planning ici...</p></div>
 <!-- Heures Sup -->
 <div class="section" id="heuresSup">
 <h2>Déclaration Heures Supplémentaires</h2>
@@ -72,7 +62,6 @@ th { background-color:#f0f0f0; }
 <button id="sendHs">Envoyer la demande</button>
 <p id="confirmHs" style="color:green;font-weight:bold;"></p>
 </div>
-
 <!-- Absences -->
 <div class="section" id="absences">
 <h2>Demande d'Absences</h2>
@@ -89,128 +78,105 @@ th { background-color:#f0f0f0; }
 <button id="sendAbs">Envoyer la demande</button>
 <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
 </div>
-
 <!-- Partitions -->
-<div class="section" id="partitions">
-<h2>Partitions</h2>
-<p>Contenu des partitions ici...</p>
-</div>
-
+<div class="section" id="partitions"><h2>Partitions</h2><p>Contenu des partitions ici...</p></div>
 <!-- Contacts -->
-<div class="section" id="contacts">
-<h2>Contacts</h2>
-<p>Contenu des contacts ici...</p>
-</div>
-
+<div class="section" id="contacts"><h2>Contacts</h2><p>Contenu des contacts ici...</p></div>
 </div>
 
 <script>
-// --- Affichage des sections ---
-function showSection(section){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(section).style.display='block';
-}
-
-// --- Heures Sup ---
-const typesEvenement = ["Concert","Répétition","Autre"];
-function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
-function calculateDuration(start,end){
-  if(!start||!end) return "0h00";
-  const [h1,m1] = start.split(":").map(Number);
-  const [h2,m2] = end.split(":").map(Number);
-  let total = (h2*60+m2)-(h1*60+m1);
-  if(total<0) total=0;
-  return formatDuration(Math.floor(total/60), total%60);
-}
-function updateDurHs(){
-  let totalMins=0;
-  document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
-    const start=tr.querySelector(".debut").value;
-    const end=tr.querySelector(".fin").value;
-    const dur=calculateDuration(start,end);
-    tr.querySelector(".duree").textContent = dur;
-    const [h,m] = dur.split("h").map(Number);
-    totalMins += h*60+m;
-  });
-  document.getElementById("totalDuration").textContent = formatDuration(Math.floor(totalMins/60), totalMins%60);
-}
-function addRowHs(data={}) {
-  const tbody=document.querySelector("#hsTable tbody");
-  const tr=document.createElement("tr");
-  tr.innerHTML = `
-    <td><input type="date" class="date" value="${data.date||''}"></td>
-    <td><select class="type">${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}</select></td>
-    <td><input type="time" class="debut" value="${data.debut||''}"></td>
-    <td><input type="time" class="fin" value="${data.fin||''}"></td>
-    <td class="duree">0h00</td>
-    <td><input type="text" class="lieu" value="${data.lieu||''}"></td>
-    <td><button type="button" class="deleteBtn">X</button></td>
-  `;
-  tbody.appendChild(tr);
-  tr.querySelector(".debut").addEventListener("input",updateDurHs);
-  tr.querySelector(".fin").addEventListener("input",updateDurHs);
-  tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove();updateDurHs();});
-  updateDurHs();
-}
-addRowHs();
-document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
-document.getElementById("sendHs").addEventListener("click", ()=>{
-  const nomProf = document.getElementById("profNameHs").value.trim();
-  if(!nomProf){ alert("Indiquez le nom complet du prof !"); return; }
-  const tbody = document.querySelector("#hsTable tbody");
-  const lignes = [];
-  tbody.querySelectorAll("tr").forEach(tr=>{
-    lignes.push({
-      date: tr.querySelector(".date").value,
-      type: tr.querySelector(".type").value,
-      debut: tr.querySelector(".debut").value,
-      fin: tr.querySelector(".fin").value,
-      duree: tr.querySelector(".duree").textContent,
-      lieu: tr.querySelector(".lieu").value
-    });
-  });
-  const total = document.getElementById("totalDuration").textContent;
-  fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec", { method:"POST", body:JSON.stringify({nomProf,lignes,total}) })
-  .then(res=>res.json()).then(res=>{ document.getElementById("confirmHs").textContent = res.message; tbody.innerHTML=""; addRowHs(); document.getElementById("profNameHs").value=""; })
-  .catch(err=>{ document.getElementById("confirmHs").textContent = "Erreur : "+err; });
-});
-
-// --- Absences ---
 document.addEventListener("DOMContentLoaded", () => {
-  const salles = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
-  // Fonction pour ajouter une ligne
+  // --- Affichage des sections ---
+  window.showSection = (section) => {
+    document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+    document.getElementById(section).style.display='block';
+  };
+
+  // --- Heures Sup ---
+  const typesEvenement = ["Concert","Répétition","Autre"];
+  function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
+  function calculateDuration(start,end){
+    if(!start||!end) return "0h00";
+    const [h1,m1]=start.split(":").map(Number);
+    const [h2,m2]=end.split(":").map(Number);
+    let total=(h2*60+m2)-(h1*60+m1); if(total<0) total=0;
+    return formatDuration(Math.floor(total/60), total%60);
+  }
+  function updateDurHs(){
+    let totalMins=0;
+    document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
+      const start=tr.querySelector(".debut").value;
+      const end=tr.querySelector(".fin").value;
+      const dur=calculateDuration(start,end);
+      tr.querySelector(".duree").textContent=dur;
+      const [h,m]=dur.split("h").map(Number);
+      totalMins+=h*60+m;
+    });
+    document.getElementById("totalDuration").textContent=formatDuration(Math.floor(totalMins/60), totalMins%60);
+  }
+  function addRowHs(data={}){ const tbody=document.querySelector("#hsTable tbody"); const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><input type="date" class="date" value="${data.date||''}"></td>
+      <td><select class="type">${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}</select></td>
+      <td><input type="time" class="debut" value="${data.debut||''}"></td>
+      <td><input type="time" class="fin" value="${data.fin||''}"></td>
+      <td class="duree">0h00</td>
+      <td><input type="text" class="lieu" value="${data.lieu||''}"></td>
+      <td><button type="button" class="deleteBtn">X</button></td>`;
+    tbody.appendChild(tr);
+    tr.querySelector(".debut").addEventListener("input",updateDurHs);
+    tr.querySelector(".fin").addEventListener("input",updateDurHs);
+    tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove();updateDurHs();});
+    updateDurHs();
+  }
+  addRowHs();
+  document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
+  document.getElementById("sendHs").addEventListener("click", ()=>{
+    const nomProfHs = document.getElementById("profNameHs").value.trim();
+    if(!nomProfHs){ alert("Indiquez le nom complet du prof !"); return; }
+    const tbody=document.querySelector("#hsTable tbody"); const lignes=[];
+    tbody.querySelectorAll("tr").forEach(tr=>{
+      lignes.push({
+        date: tr.querySelector(".date").value,
+        type: tr.querySelector(".type").value,
+        debut: tr.querySelector(".debut").value,
+        fin: tr.querySelector(".fin").value,
+        duree: tr.querySelector(".duree").textContent,
+        lieu: tr.querySelector(".lieu").value
+      });
+    });
+    const total=document.getElementById("totalDuration").textContent;
+    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
+      .then(res=>res.json()).then(res=>{
+        document.getElementById("confirmHs").textContent=res.message;
+        tbody.innerHTML=""; addRowHs(); document.getElementById("profNameHs").value="";
+      }).catch(err=>{
+        document.getElementById("confirmHs").textContent="Erreur : "+err;
+      });
+  });
+
+  // --- Absences ---
+  const salles = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
   function addRowAbs(data={}) {
-    const tbody = document.querySelector("#absTable tbody");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+    const tbody=document.querySelector("#absTable tbody"); const tr=document.createElement("tr");
+    tr.innerHTML=`
       <td><input type="date" class="dateAbs" value="${data.dateAbs||''}"></td>
       <td><input type="text" class="creneauAbs" value="${data.creneauAbs||''}"></td>
       <td><input type="date" class="dateRatt" value="${data.dateRatt||''}"></td>
       <td><input type="text" class="creneauRatt" value="${data.creneauRatt||''}"></td>
       <td><select class="salle">${salles.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}</select></td>
       <td><input type="checkbox" class="accord" ${data.accord?'checked':''}></td>
-      <td><button type="button" class="deleteBtn">X</button></td>
-    `;
+      <td><button type="button" class="deleteBtn">X</button></td>`;
     tbody.appendChild(tr);
     tr.querySelector(".deleteBtn").addEventListener("click",()=>tr.remove());
   }
-
-  addRowAbs(); // ajouter une ligne par défaut
-
-  // Ajouter une nouvelle ligne
-  document.getElementById("addRowAbs").addEventListener("click", () => addRowAbs());
-
-  // Envoyer le formulaire Absences
-  document.getElementById("sendAbs").addEventListener("click", () => {
-    const nomProfAbs = document.getElementById("profNameAbs").value.trim();
-    if(!nomProfAbs){ 
-      alert("Indiquez le nom complet du prof !"); 
-      return; 
-    }
-
-    const tbody = document.querySelector("#absTable tbody");
-    const lignes = [];
+  addRowAbs();
+  document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
+  document.getElementById("sendAbs").addEventListener("click",()=>{
+    const nomProfAbs=document.getElementById("profNameAbs").value.trim();
+    if(!nomProfAbs){alert("Indiquez le nom complet du prof !");return;}
+    const tbody=document.querySelector("#absTable tbody"); const lignes=[];
     tbody.querySelectorAll("tr").forEach(tr=>{
       lignes.push({
         dateAbs: tr.querySelector(".dateAbs").value,
@@ -221,26 +187,16 @@ document.addEventListener("DOMContentLoaded", () => {
         accord: tr.querySelector(".accord").checked
       });
     });
-
-    fetch("https://script.google.com/macros/s/AKfycbzQcwRGv-zLRaI_S6VWZzIFhvXT58VO6swa3My6Frmmru3nMpM8R6Lb9p_GmqUeNBLY7w/exec", { 
-      method:"POST", 
-      body:JSON.stringify({nomProf: nomProfAbs, lignes}) // côté serveur continue d'attendre "nomProf"
-    })
-    .then(res => res.json())
-    .then(res => {
-      document.getElementById("confirmAbs").textContent = res.message;
-      tbody.innerHTML = "";
-      addRowAbs();
-      document.getElementById("profNameAbs").value = "";
-    })
-    .catch(err => {
-      document.getElementById("confirmAbs").textContent = "Erreur : " + err;
-    });
+    fetch("https://script.google.com/macros/s/AKfycbxj7wSGsKOPbtA2eEXuyQ1XFfT-9G0ztofgDUzvBI9GN0t_dvebEfUstWLKpO-rl9n6/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfAbs,lignes})})
+      .then(res=>res.json()).then(res=>{
+        document.getElementById("confirmAbs").textContent=res.message;
+        tbody.innerHTML=""; addRowAbs(); document.getElementById("profNameAbs").value="";
+      }).catch(err=>{
+        document.getElementById("confirmAbs").textContent="Erreur : "+err;
+      });
   });
+
 });
-
-
-
 </script>
 
 </body>
