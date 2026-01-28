@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Interface Professeur - POM Musique</title>
-
-<!-- CSP pour autoriser Apps Script et tout le nécessaire -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://script.google.com https://script.googleusercontent.com; img-src https://raw.githubusercontent.com 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
-
 <style>
 body { margin:0; font-family:Arial,sans-serif; display:flex; height:100vh; }
 .sidebar { width:220px; background: linear-gradient(to bottom,#ffb629,#000000); color:white; display:flex; flex-direction:column; align-items:center; padding-top:20px; }
@@ -36,71 +33,47 @@ th { background-color:#f0f0f0; }
 </div>
 
 <div class="content">
-  <!-- Répertoire -->
-  <div class="section" id="repertoire">
-    <h2>Répertoire élèves</h2>
-    <p>Contenu du répertoire ici...</p>
-  </div>
+<!-- Sections Répertoire / Planning / Partitions / Contacts similaires -->
+<div class="section" id="repertoire"><h2>Répertoire élèves</h2><p>Contenu...</p></div>
+<div class="section" id="planning"><h2>Planning</h2><p>Contenu...</p></div>
+<div class="section" id="partitions"><h2>Partitions</h2><p>Contenu...</p></div>
+<div class="section" id="contacts"><h2>Contacts</h2><p>Contenu...</p></div>
 
-  <!-- Planning -->
-  <div class="section" id="planning">
-    <h2>Planning</h2>
-    <p>Contenu du planning ici...</p>
-  </div>
+<!-- Heures Sup -->
+<div class="section" id="heuresSup">
+<h2>Déclaration Heures Supplémentaires</h2>
+<label>Nom complet du professeur : <input type="text" id="profNameHs"></label>
+<table id="hsTable">
+<thead><tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr></thead>
+<tbody></tbody>
+<tfoot><tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr></tfoot>
+</table>
+<button id="addRowHs">+ Ajouter une ligne</button>
+<button id="sendHs">Envoyer la demande</button>
+<p id="confirmHs" style="color:green;font-weight:bold;"></p>
+</div>
 
-  <!-- Heures Sup -->
-  <div class="section" id="heuresSup">
-    <h2>Déclaration Heures Supplémentaires</h2>
-    <label>Nom complet du professeur : <input type="text" id="profNameHs" placeholder="Ex: Sébastien GOHIER"></label>
-    <table id="hsTable">
-      <thead>
-        <tr><th>Date</th><th>Type d’événement</th><th>Heure début</th><th>Heure fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr><td colspan="4">Total heures</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
-      </tfoot>
-    </table>
-    <button id="addRowHs">+ Ajouter une ligne</button>
-    <button id="sendHs">Envoyer la demande</button>
-    <p id="confirmHs" style="color:green;font-weight:bold;"></p>
-  </div>
+<!-- Absences -->
+<div class="section" id="absences">
+<h2>Demande d'Absences</h2>
+<label>Nom complet du professeur : <input type="text" id="profNameAbs"></label>
+<table id="absTable">
+<thead><tr>
+<th>Date d'absence</th><th>Créneau</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord</th><th>Action</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+<button id="addRowAbs">+ Ajouter une ligne</button>
+<button id="sendAbs">Envoyer la demande</button>
+<p id="confirmAbs" style="color:green;font-weight:bold;"></p>
+</div>
 
-  <!-- Absences -->
-  <div class="section" id="absences">
-    <h2>Demande d'Absences</h2>
-    <label>Nom complet du professeur : <input type="text" id="profNameAbs" placeholder="Ex: Sébastien GOHIER"></label>
-    <table id="absTable">
-      <thead>
-        <tr>
-          <th>Date d'absence</th><th>Créneau absence</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord élèves/responsables</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button id="addRowAbs">+ Ajouter une ligne</button>
-    <button id="sendAbs">Envoyer la demande</button>
-    <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
-  </div>
-
-  <!-- Partitions -->
-  <div class="section" id="partitions">
-    <h2>Partitions</h2>
-    <p>Contenu des partitions ici...</p>
-  </div>
-
-  <!-- Contacts -->
-  <div class="section" id="contacts">
-    <h2>Contacts</h2>
-    <p>Contenu des contacts ici...</p>
-  </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
-  // --- Affichage des sections ---
-  window.showSection = (section) => {
+  // --- Sections ---
+  window.showSection = section => {
     document.querySelectorAll('.section').forEach(s=>s.style.display='none');
     document.getElementById(section).style.display='block';
   };
@@ -147,8 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
   addRowHs();
   document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
   document.getElementById("sendHs").addEventListener("click", ()=>{
-    const nomProfHs = document.getElementById("profNameHs").value.trim();
-    if(!nomProfHs){ alert("Indiquez le nom complet du prof !"); return; }
+    const nomProf = document.getElementById("profNameHs").value.trim();
+    if(!nomProf){ alert("Indiquez le nom !"); return; }
     const tbody=document.querySelector("#hsTable tbody"); const lignes=[];
     tbody.querySelectorAll("tr").forEach(tr=>{
       lignes.push({
@@ -161,8 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
     const total=document.getElementById("totalDuration").textContent;
-    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",
-          {method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
+    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",{method:"POST",body:JSON.stringify({nomProf,lignes,total})})
       .then(res=>res.json()).then(res=>{
         document.getElementById("confirmHs").textContent=res.message;
         tbody.innerHTML=""; addRowHs(); document.getElementById("profNameHs").value="";
@@ -188,28 +160,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   addRowAbs();
   document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
+
   document.getElementById("sendAbs").addEventListener("click",()=>{
-    const nomProfAbs=document.getElementById("profNameAbs").value.trim();
-    if(!nomProfAbs){alert("Indiquez le nom complet du prof !");return;}
-    const tbody=document.querySelector("#absTable tbody"); const lignes=[];
+    const inputProf=document.getElementById("profNameAbs");
+    if(!inputProf){ alert("Champ prof introuvable !"); return; }
+    const nomProf = inputProf.value.trim();
+    if(!nomProf){ alert("Indiquez le nom complet !"); return; }
+
+    const tbody=document.querySelector("#absTable tbody"); 
+    const lignes=[];
     tbody.querySelectorAll("tr").forEach(tr=>{
       lignes.push({
-        dateAbs: tr.querySelector(".dateAbs").value,
-        creneauAbs: tr.querySelector(".creneauAbs").value,
-        dateRatt: tr.querySelector(".dateRatt").value,
-        creneauRatt: tr.querySelector(".creneauRatt").value,
-        salle: tr.querySelector(".salle").value,
-        accord: tr.querySelector(".accord").checked
+        dateAbs: tr.querySelector(".dateAbs")?.value || "",
+        creneauAbs: tr.querySelector(".creneauAbs")?.value || "",
+        dateRatt: tr.querySelector(".dateRatt")?.value || "",
+        creneauRatt: tr.querySelector(".creneauRatt")?.value || "",
+        salle: tr.querySelector(".salle")?.value || "",
+        accord: tr.querySelector(".accord")?.checked || false
       });
     });
-    fetch("https://script.google.com/macros/s/AKfycbxj7wSGsKOPbtA2eEXuyQ1XFfT-9G0ztofgDUzvBI9GN0t_dvebEfUstWLKpO-rl9n6/exec",
-          {method:"POST",body:JSON.stringify({nomProf:nomProfAbs,lignes})})
-      .then(res=>res.json()).then(res=>{
-        document.getElementById("confirmAbs").textContent=res.message;
-        tbody.innerHTML=""; addRowAbs(); document.getElementById("profNameAbs").value="";
-      }).catch(err=>{
-        document.getElementById("confirmAbs").textContent="Erreur : "+err;
-      });
+
+    fetch("https://script.google.com/macros/s/AKfycbzOP2T7FX8pXN-aJVDe7g9aWyQg5jkLosL36LfDjSnlyymCKNqxAC63DUvJMBHqYKdF/exec",{
+      method:"POST",
+      body: JSON.stringify({nomProf,lignes})
+    })
+    .then(res=>res.json())
+    .then(res=>{
+      document.getElementById("confirmAbs").textContent=res.message || "PDF envoyé avec succès";
+      tbody.innerHTML=""; addRowAbs(); inputProf.value="";
+    })
+    .catch(err=>{
+      document.getElementById("confirmAbs").textContent="Erreur : "+err;
+    });
   });
 
 });
