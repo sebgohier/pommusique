@@ -161,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
     const total=document.getElementById("totalDuration").textContent;
-    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
+    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",
+          {method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
       .then(res=>res.json()).then(res=>{
         document.getElementById("confirmHs").textContent=res.message;
         tbody.innerHTML=""; addRowHs(); document.getElementById("profNameHs").value="";
@@ -201,7 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
         accord: tr.querySelector(".accord").checked
       });
     });
-    fetch("https://script.google.com/macros/s/AKfycbxj7wSGsKOPbtA2eEXuyQ1XFfT-9G0ztofgDUzvBI9GN0t_dvebEfUstWLKpO-rl9n6/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfAbs,lignes})})
+    fetch("https://script.google.com/macros/s/AKfycbxj7wSGsKOPbtA2eEXuyQ1XFfT-9G0ztofgDUzvBI9GN0t_dvebEfUstWLKpO-rl9n6/exec",
+          {method:"POST",body:JSON.stringify({nomProf:nomProfAbs,lignes})})
       .then(res=>res.json()).then(res=>{
         document.getElementById("confirmAbs").textContent=res.message;
         tbody.innerHTML=""; addRowAbs(); document.getElementById("profNameAbs").value="";
