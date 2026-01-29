@@ -24,7 +24,7 @@ th { background-color:#f0f0f0; }
 
 <div class="sidebar">
 <img src="https://raw.githubusercontent.com/sebgohier/pommusique/refs/heads/main/Logo%20Pom%20Musique%20noir.png" alt="Logo POM Musique">
-<div class="menu-item" onclick="showSection('repertoire')">📁 <span>Répertoire élèves</span></div>
+<div class="menu-item" onclick="showSection('sectionRepertoire')">📁 <span>Répertoire élèves</span></div>
 <div class="menu-item" onclick="showSection('planning')">📅 <span>Planning</span></div>
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
@@ -33,8 +33,41 @@ th { background-color:#f0f0f0; }
 </div>
 
 <div class="content">
-<!-- Sections Répertoire / Planning / Partitions / Contacts similaires -->
-<div class="section" id="repertoire"><h2>Répertoire élèves</h2><p>Contenu...</p></div>
+
+<!-- Choix global du prof -->
+<label for="selectProfGlobal" style="font-weight:bold;">Choisissez votre nom :</label>
+<select id="selectProfGlobal" style="padding:6px; margin:8px 0; width:100%; max-width:300px; border-radius:6px; border:1px solid #ccc;">
+  <option value="">-- Choisir --</option>
+  <option value="Anthony">Anthony</option>
+  <option value="Arnaud">Arnaud</option>
+  <option value="Christian">Christian</option>
+  <option value="Christelle">Christelle</option>
+  <option value="Laurence">Laurence</option>
+  <option value="Lorène">Lorène</option>
+  <option value="Marion">Marion</option>
+  <option value="Séb">Séb</option>
+  <option value="Valérie">Valérie</option>
+  <option value="Vincent">Vincent</option>
+</select>
+
+<!-- Section Répertoire Élèves -->
+<div id="sectionRepertoire" class="section">
+  <h2>Répertoire élèves</h2>
+  <div style="overflow-x:auto; margin-top:20px;">
+    <table id="repertoireTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+      <thead style="background: #ffb629; color:#000; text-align:left;">
+        <tr>
+          <th style="padding:10px;">Nom</th>
+          <th style="padding:10px;">Téléphone</th>
+          <th style="padding:10px;">Email</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p id="repertoireMsg" style="color:red; margin-top:10px;"></p>
+</div>
+
 <div class="section" id="planning"><h2>Planning</h2><p>Contenu...</p></div>
 <div class="section" id="partitions"><h2>Partitions</h2><p>Contenu...</p></div>
 <div class="section" id="contacts"><h2>Contacts</h2><p>Contenu...</p></div>
@@ -42,7 +75,6 @@ th { background-color:#f0f0f0; }
 <!-- Heures Sup -->
 <div class="section" id="heuresSup">
 <h2>Déclaration Heures Supplémentaires</h2>
-<label>Nom complet du professeur : <input type="text" id="profNameHs"></label>
 <table id="hsTable">
 <thead><tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr></thead>
 <tbody></tbody>
@@ -56,7 +88,6 @@ th { background-color:#f0f0f0; }
 <!-- Absences -->
 <div class="section" id="absences">
 <h2>Demande d'Absences</h2>
-<label>Nom complet du professeur : <input type="text" id="profNameAbs"></label>
 <table id="absTable">
 <thead><tr>
 <th>Date d'absence</th><th>Créneau</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord</th><th>Action</th>
@@ -68,15 +99,50 @@ th { background-color:#f0f0f0; }
 <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
 </div>
 
-</div>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   // --- Sections ---
   window.showSection = section => {
     document.querySelectorAll('.section').forEach(s=>s.style.display='none');
     document.getElementById(section).style.display='block';
   };
+
+  // --- Répertoire ---
+  const repertoireTableBody = document.querySelector("#repertoireTable tbody");
+  const repertoireMsg = document.getElementById("repertoireMsg");
+
+  function formatPhone(phone){
+    phone = phone.toString().trim();
+    if(!phone.startsWith("0")) phone = "0"+phone;
+    return phone.replace(/(\d{2})(?=\d)/g,'$1 ');
+  }
+
+  function loadRepertoire(profName){
+    repertoireTableBody.innerHTML="";
+    repertoireMsg.textContent="";
+    if(!profName) return;
+
+    const url="https://script.google.com/macros/s/AKfycbwJPhDbfSOizQaWNFyib_fuR4kGZu39IDdm_mm0hSZzu8qGj5M2bwbUjiRbe_SZBiM07w/exec?profName="+encodeURIComponent(profName);
+
+    fetch(url).then(r=>r.json()).then(data=>{
+      if(data.error){ repertoireMsg.textContent=data.error; return; }
+      if(data.length===0){ repertoireMsg.textContent="Aucun élève trouvé pour "+profName; return; }
+      data.forEach((eleve,i)=>{
+        const tr=document.createElement("tr");
+        tr.style.backgroundColor=i%2===0?"#fff":"#f9f9f9";
+        tr.innerHTML=`<td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Nom}</td>
+                        <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(eleve.Téléphone)}</td>
+                        <td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Email}</td>`;
+        repertoireTableBody.appendChild(tr);
+      });
+    }).catch(err=>repertoireMsg.textContent="Erreur lors du chargement : "+err);
+  }
+
+  document.getElementById("selectProfGlobal").addEventListener("change", e=>{
+    const prof=e.target.value;
+    loadRepertoire(prof);
+  });
 
   // --- Heures Sup ---
   const typesEvenement = ["Concert","Répétition","Autre"];
@@ -114,15 +180,17 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.appendChild(tr);
     tr.querySelector(".debut").addEventListener("input",updateDurHs);
     tr.querySelector(".fin").addEventListener("input",updateDurHs);
-    tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove();updateDurHs();});
+    tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove(); updateDurHs();});
     updateDurHs();
   }
-  addRowHs();
   document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
+  addRowHs(); // première ligne
+
   document.getElementById("sendHs").addEventListener("click", ()=>{
-    const nomProf = document.getElementById("profNameHs").value.trim();
-    if(!nomProf){ alert("Indiquez le nom !"); return; }
-    const tbody=document.querySelector("#hsTable tbody"); const lignes=[];
+    const nomProfHs = document.getElementById("selectProfGlobal").value.trim();
+    if(!nomProfHs){ alert("Indiquez le nom du professeur !"); return; }
+    const tbody=document.querySelector("#hsTable tbody"); 
+    const lignes=[];
     tbody.querySelectorAll("tr").forEach(tr=>{
       lignes.push({
         date: tr.querySelector(".date").value,
@@ -134,39 +202,35 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
     const total=document.getElementById("totalDuration").textContent;
-    fetch("https://script.google.com/macros/s/AKfycbyM6rOwUI-pTFuA67NdqrpxHaOKN4-wWhABRzQvZn0oEDf8jFvperZ_sltTYJOkPYfA/exec",{method:"POST",body:JSON.stringify({nomProf,lignes,total})})
+    fetch("https://script.google.com/macros/s/AKfycbyoEkd0NtmfVYRaSujaVeM_wfiEbZCjfJgzTLuKx4a8SJgD47dh9zWGfOR8crss2fk9/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
       .then(res=>res.json()).then(res=>{
         document.getElementById("confirmHs").textContent=res.message;
-        tbody.innerHTML=""; addRowHs(); document.getElementById("profNameHs").value="";
-      }).catch(err=>{
-        document.getElementById("confirmHs").textContent="Erreur : "+err;
-      });
+        tbody.innerHTML=""; addRowHs();
+      }).catch(err=>{ document.getElementById("confirmHs").textContent="Erreur : "+err; });
   });
 
   // --- Absences ---
   const salles = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
-  function addRowAbs(data={}) {
-    const tbody=document.querySelector("#absTable tbody"); const tr=document.createElement("tr");
+  function addRowAbs(data={}){
+    const tbody=document.querySelector("#absTable tbody"); 
+    const tr=document.createElement("tr");
     tr.innerHTML=`
       <td><input type="date" class="dateAbs" value="${data.dateAbs||''}"></td>
-      <td><input type="text" class="creneauAbs" value="${data.creneauAbs||''}"></td>
+      <td><input type="text" class="creneauAbs" placeholder="Ex: 16h30-18h30" value="${data.creneauAbs||''}"></td>
       <td><input type="date" class="dateRatt" value="${data.dateRatt||''}"></td>
-      <td><input type="text" class="creneauRatt" value="${data.creneauRatt||''}"></td>
+      <td><input type="text" class="creneauRatt" placeholder="Ex: 16h30-18h30" value="${data.creneauRatt||''}"></td>
       <td><select class="salle">${salles.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}</select></td>
       <td><input type="checkbox" class="accord" ${data.accord?'checked':''}></td>
       <td><button type="button" class="deleteBtn">X</button></td>`;
     tbody.appendChild(tr);
     tr.querySelector(".deleteBtn").addEventListener("click",()=>tr.remove());
   }
-  addRowAbs();
   document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
+  addRowAbs(); // première ligne
 
-  document.getElementById("sendAbs").addEventListener("click",()=>{
-    const inputProf=document.getElementById("profNameAbs");
-    if(!inputProf){ alert("Champ prof introuvable !"); return; }
-    const nomProf = inputProf.value.trim();
-    if(!nomProf){ alert("Indiquez le nom complet !"); return; }
-
+  document.getElementById("sendAbs").addEventListener("click", ()=>{
+    const nomProfAbs = document.getElementById("selectProfGlobal").value.trim();
+    if(!nomProfAbs){ alert("Indiquez le nom du professeur !"); return; }
     const tbody=document.querySelector("#absTable tbody"); 
     const lignes=[];
     tbody.querySelectorAll("tr").forEach(tr=>{
@@ -179,17 +243,15 @@ document.addEventListener("DOMContentLoaded", () => {
         accord: tr.querySelector(".accord")?.checked || false
       });
     });
-
-    fetch("https://script.google.com/macros/s/AKfycbzOP2T7FX8pXN-aJVDe7g9aWyQg5jkLosL36LfDjSnlyymCKNqxAC63DUvJMBHqYKdF/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbxB4nTAyo-dbK89U1UNGkCp9n_vwBf5MDln9s2-dVPW6Qh4X2HNcp6fXttJFuxpOMD0/exec",{
       method:"POST",
-      body: JSON.stringify({nomProf,lignes})
+      body: JSON.stringify({nomProf:nomProfAbs,lignes})
     })
     .then(res=>res.json())
     .then(res=>{
       document.getElementById("confirmAbs").textContent=res.message || "PDF envoyé avec succès";
-      tbody.innerHTML=""; addRowAbs(); inputProf.value="";
-    })
-    .catch(err=>{
+      tbody.innerHTML=""; addRowAbs();
+    }).catch(err=>{
       document.getElementById("confirmAbs").textContent="Erreur : "+err;
     });
   });
