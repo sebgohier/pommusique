@@ -209,11 +209,17 @@ th { background-color: #f0f0f0; }
 }
 
 @media (max-width: 768px) {
+  .fichier {
+    flex-wrap: wrap;       /* autorise le retour à la ligne si besoin */
+    gap: 8px;              /* espace entre le nom et les boutons */
+  }
+
   .fichier button {
-    margin-left: 12px; /* un peu moins que 20px, assez pour respirer */
-    padding: 4px 8px;  /* garde la taille confortable */
+    flex: none;            /* le bouton garde sa taille mais ne force pas le conteneur */
+    margin-left: 0;        /* supprime l’ancien décalage */
   }
 }
+
 
 
 
