@@ -56,92 +56,118 @@ th {
 /* ===== PARTITIONS ===== */
 /* ============================= */
 
-/* Morceaux */
+/* =======================
+   Morceaux
+   ======================= */
 .morceau {
-  cursor:pointer;
+  cursor: pointer;
   padding: 10px 14px;
   margin-bottom: 6px;
-  background:#eee;
-  border-radius:6px;
-  font-weight:bold;
+  background: #eee;
+  border-radius: 6px;
+  /* on retire le font-weight ici pour gérer séparément groupe/titre */
 }
 
 .morceau:hover {
-  background:#ddd;
+  background: #ddd;
 }
 
-/* Contenu du morceau */
+/* Titre du morceau : nom du groupe en gras, titre en italique */
+.morceauTitre {
+  font-size: 16px; /* optionnel, pour lisibilité */
+}
+
+.morceauTitre .groupe {
+  font-weight: bold; /* gras pour le nom du groupe */
+}
+
+.morceauTitre .titre {
+  font-style: italic; /* italique pour le titre du morceau */
+  font-weight: normal; /* retire le gras hérité */
+}
+
+/* =======================
+   Contenu du morceau
+   ======================= */
 .morceauContent {
-  display:none;
-  margin-left: 15px;        /* petit décalage pour hiérarchie */
-  margin-top:6px;
+  display: none;
+  margin-left: 15px;  /* petit décalage pour hiérarchie */
+  margin-top: 6px;
   padding: 8px 12px;
-  background:#f9f9f9;
-  border-radius:5px;
+  background: #f9f9f9;
+  border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Onglets */
+/* =======================
+   Onglets
+   ======================= */
 .onglets {
   margin-bottom: 12px;
 }
 
 .onglets button {
-  padding:6px 12px;
-  margin-right:8px;
-  cursor:pointer;
-  border:none;
-  border-radius:4px;
-  background:#ddd;
+  padding: 6px 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background: #ddd;
 }
 
 .onglets button.active {
-  background:#f39c12;
-  color:white;
+  background: #f39c12;
+  color: white;
 }
 
-/* Fichiers (PDF / audio) */
+/* =======================
+   Fichiers (PDF / audio)
+   ======================= */
 .fichier {
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  background:#f9f9f9;
-  padding:6px 12px;
-  border-radius:5px;
-  margin-bottom:6px;
-  margin-left:20px; /* hiérarchie instruments */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f9f9f9;
+  padding: 6px 12px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  margin-left: 20px; /* hiérarchie instruments */
   transition: background 0.2s;
 }
 
 .fichier:hover {
-  background:#eee;
+  background: #eee;
 }
 
 .fichier span {
-  min-width:140px; /* espace pour nom instrument */
+  min-width: 140px; /* espace pour nom instrument */
 }
 
 .fichier button {
-  flex-shrink:0;
-  margin-left:20px;
-  padding:4px 8px;
+  flex-shrink: 0;
+  margin-left: 20px;
+  padding: 4px 8px;
 }
 
-/* Décalage supplémentaire pour onglets de partition/audio */
+/* =======================
+   Décalage supplémentaire pour onglets
+   ======================= */
 .partitionsOnglet, .audiosOnglet {
-  margin-left:10px; /* décale un peu par rapport au bloc morceau */
+  margin-left: 10px; /* décale un peu par rapport au bloc morceau */
 }
 
-
-
+/* =======================
+   Sidebar (images)
+   ======================= */
 .sidebar img {
-    cursor: pointer; /* main au survol */
-    transition: transform 0.2s; /* effet léger au survol */
+  cursor: pointer; /* main au survol */
+  transition: transform 0.2s; /* effet léger au survol */
 }
 
 .sidebar img:hover {
-    transform: scale(1.05); /* léger zoom au survol */
+  transform: scale(1.05); /* léger zoom au survol */
 }
+
 </style>
 
 
@@ -294,7 +320,10 @@ th {
     <div id="morceauxList">
 
       <div class="morceau">
-        <div class="morceauTitre" onclick="toggleMorceau(this)">Queen - The Show Must Go On</div>
+        <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Queen</span> - <span class="titre">The Show Must Go On</span>
+</div>
+
 
         <div class="morceauContent">
 
@@ -343,6 +372,416 @@ th {
       </div>
 
       <!-- Ajouter d'autres morceaux ici -->
+
+         <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Shaka Ponk vs Scala & Kolacny Brothers</span> - <span class="titre">Smells Like Teens Spirit</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/8vIF2TxJ#xVN5yq4MiuC201C0wCAOnKRh5iQndrbNXUxKIyNhwE8','_blank')">Voir / Télécharger</button>
+            </div>
+             <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/I2x0FKyC#kHl0xt9nmcF2ESra5nhz_4cOBgEgEWdqNO_laDq2P6U','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 1</span>
+              <button onclick="window.open('https://mega.nz/file/ZzImVB5T#DkvZBCKC_2BiibrZSggACMHrMy9b4LgeNNUjGOuwc_0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 2</span>
+              <button onclick="window.open('https://mega.nz/file/53JFGYZD#FjdOOxeXY-D2nmkIxjeOwCqnwJsBRrkiEXH5dy8aaRM','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/t2ACWYZb#qeNMIGcyHuW-gpR2ckQhSlyseAZUtGoDW5b6hjBM4OY','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/MzIXQTLQ#LW_sQtoBpnMyXq9mb4uUw6KH25xRCw8I0BJCY1UP9bQ','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">U2</span> - <span class="titre">I Still Haven't Found What I'm Looking For</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/drAHXDyB#jZfmfqUPSqUSCFF0Cei_NXSZk8T7mTLqzttIu_xzsNs','_blank')">Voir / Télécharger</button>
+            </div>
+            
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/xvQAxIiJ#K23AHWGBkPODIDakIa6N9F67DWWJI4OfVmP8wawjFlI','_blank')">Voir / Télécharger</button>
+            </div>
+            
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/M7AUSTpL#8w05vsgOWvzGcZd3Y8TLIH9UfwlH6GJD5OUm_-AK4_Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Drumless</span>
+              <button onclick="window.open('https://mega.nz/file/s2IlSY7Z#DmILMdz4Ug63BGY8Y-ybfOXZmXZhYw-F0tNAUAR5lfg','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/8vJCCTBL#2s_ufuaba0WuHjLeP4-HQCzO7ri8JBWE0O24_lQoPMY','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Hairn</span> - <span class="titre">Let The Sunshine In</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Conducteur</span>
+              <button onclick="window.open('https://mega.nz/file/Yixy2CCY#eXoevIypQ5cGTtrjbo8LZLmWCXWRnSeFk8vbhKlFYkc','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/Z2YyjYjI#t-N_lQ_doEtNROcZ3gf1MC5JEKKyer0TCLAL5hFc2SQ','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Soprano</span>
+              <button onclick="window.open('https://mega.nz/file/dvBCyDKI#jF97ijq0Tuwu6maIbNA59IjLFOZT4yjznEndl18hPO8','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/EqRhURaI#Y8_fuMjjgNo8YuVhf8sdszWnm2P_g3ZHnRNmGhlGT08','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Flûte</span>
+              <button onclick="window.open('https://mega.nz/file/UiQXmDaK#GJ0S62ce3Ld3TfAO2PiNED3lDuC9wMxTNGZ48iAZdHA','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Saxophone Alto</span>
+              <button onclick="window.open('https://mega.nz/file/43w2BLbb#rmNSTafzmyJmq5pSqYXJW_yHNtM2oG1UoR2nIrU0Yzc','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Trompette</span>
+              <button onclick="window.open('https://mega.nz/file/4yxWnYyY#A9XBuegDWL-pWLUlyX4bBzc3mEKavDVHmXcmLOSyIc4','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/1qgnUSpJ#0rsKWWNlMiSWGQJxkc72TsYnq4HCJDlpZksn8h_W2Po','_blank')">Voir / Télécharger</button>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Bourvil</span> - <span class="titre">La Tendresse</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Conducteur</span>
+              <button onclick="window.open('https://mega.nz/file/s24lwKBZ#FXvn1ugc7wEuW2t18RQXVFyO7m1aIEssPaUZeE_gV4s','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano+Choeur</span>
+              <button onclick="window.open('https://mega.nz/file/AuwljJiD#jcylKk6lobeFzV-1158hSRaa5wAq2k7qFpUHR50INNE','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/pmgi2CCL#dPCkZwIgJpJvniPoPbhSV63_gwmN7UVH1QxGrKHiz2Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon</span>
+              <button onclick="window.open('https://mega.nz/file/hiIw1awI#ysjVh2_cxWIiXkVHYzBghZPmzKfsMO_LmWEEezEHiRQ','_blank')">Voir / Télécharger</button>
+            </div>
+             <div class="fichier">
+              <span>Flûte 1</span>
+              <button onclick="window.open('https://mega.nz/file/ImJXzRjA#AYNdgyOLZTiDib4LRREBeoOxg_smczbje0kQDXbZXYk','_blank')">Voir / Télécharger</button>
+            </div>
+              <div class="fichier">
+              <span>Flûte 2</span>
+              <button onclick="window.open('https://mega.nz/file/hqRi2bBQ#BibZxgOznw1wOalxSmHtM7_54-2HwoXySxSsyopWp_A','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Clarinette 1</span>
+              <button onclick="window.open('https://mega.nz/file/RmZgia7C#jANcTtp8xQdra879T3F-0ecnaZaHW0EXufK9EAJgR_0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Clarinette 2</span>
+              <button onclick="window.open('https://mega.nz/file/pzIHXBTA#gRG-fMS5a0NUAWl_n5rynjyl9BPPisOFE77y7UvglnM','_blank')">Voir / Télécharger</button>
+            </div>
+             <div class="fichier">
+              <span>Alto</span>
+              <button onclick="window.open('https://mega.nz/file/V7IXhLoS#svo1gx-9KIQ-EuhYIKt5pyIr4KaRd6DTBr4RxgFHl8o','_blank')">Voir / Télécharger</button>
+            </div>
+             <div class="fichier">
+              <span>Basse</span>
+              <button onclick="window.open('https://mega.nz/file/w7hTASYZ#Wtxfzm7msrwtWHddgjj1nD5hYnnFKbMOP9XHMgy0HYc','_blank')">Voir / Télécharger</button>
+            </div>
+             <div class="fichier">
+              <span>Soprano</span>
+              <button onclick="window.open('https://mega.nz/file/U3IgyKoD#ZEdamxaLy22AKxLOBWVzrn7pSSgsa52_xJL8vU4OKto','_blank')">Voir / Télécharger</button>
+            </div> 
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/t6g2GDBb#d0yGSt4ZZhcs7jxsPQqWT9Up3r8BHpq-ZXpTgQuk9TQ','_blank')">Voir / Télécharger</button>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Annie Lennox</span> - <span class="titre">I Put a Spell On You</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/xyBiDDAR#J3pY2Cqfjpt2jye4PcL3k_SkRzZlZPO432rt60a-6mM','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Chorale</span>
+              <button onclick="window.open('https://mega.nz/file/crQhBALC#J2YHA1Mw1r7n5wJ3DUa8fi01wlZJ1T72-pGuaQotBB0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/tzpAwCRA#M6z2fMS6dPcOF2ne4iW_1Eh-UdRKrTYg7xabprV1cPg','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 1</span>
+              <button onclick="window.open('https://mega.nz/file/43gXkLCJ#O3zrcq_FZ1bBLk0VYcE6OgB3I3Fm-LMylL5svpvyEig','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/AvwklLwC#7AF1-csfmhkZ3pNS18IcIUf4RU32jWglgzIoyZRpPKQ','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Drumless</span>
+              <button onclick="window.open('https://mega.nz/file/ci5FUAaQ#U88S3XuHlEEPyHen4k98S5I9koMRQiF8pDU-lsaQt-Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/Qn5kAaoL#g-DYa8NZLUf4d48etC7NtHPQsrXkdp3o_95vneL3fRM','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">K Pop Deamons Hunters</span> - <span class="titre">Free</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/xyBiDDAR#J3pY2Cqfjpt2jye4PcL3k_SkRzZlZPO432rt60a-6mM','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Chorale</span>
+              <button onclick="window.open('https://mega.nz/file/crQhBALC#J2YHA1Mw1r7n5wJ3DUa8fi01wlZJ1T72-pGuaQotBB0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/tzpAwCRA#M6z2fMS6dPcOF2ne4iW_1Eh-UdRKrTYg7xabprV1cPg','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 1</span>
+              <button onclick="window.open('https://mega.nz/file/43gXkLCJ#O3zrcq_FZ1bBLk0VYcE6OgB3I3Fm-LMylL5svpvyEig','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/AvwklLwC#7AF1-csfmhkZ3pNS18IcIUf4RU32jWglgzIoyZRpPKQ','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Drumless</span>
+              <button onclick="window.open('https://mega.nz/file/ci5FUAaQ#U88S3XuHlEEPyHen4k98S5I9koMRQiF8pDU-lsaQt-Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/Qn5kAaoL#g-DYa8NZLUf4d48etC7NtHPQsrXkdp3o_95vneL3fRM','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+
+        <div class="morceau">
+         <div class="morceauTitre" onclick="toggleMorceau(this)">
+  <span class="groupe">Henri Salvador</span> - <span class="titre">Le Lion Est Mort ce Soir</span>
+</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/xyBiDDAR#J3pY2Cqfjpt2jye4PcL3k_SkRzZlZPO432rt60a-6mM','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Chorale</span>
+              <button onclick="window.open('https://mega.nz/file/crQhBALC#J2YHA1Mw1r7n5wJ3DUa8fi01wlZJ1T72-pGuaQotBB0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/tzpAwCRA#M6z2fMS6dPcOF2ne4iW_1Eh-UdRKrTYg7xabprV1cPg','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 1</span>
+              <button onclick="window.open('https://mega.nz/file/43gXkLCJ#O3zrcq_FZ1bBLk0VYcE6OgB3I3Fm-LMylL5svpvyEig','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/AvwklLwC#7AF1-csfmhkZ3pNS18IcIUf4RU32jWglgzIoyZRpPKQ','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Drumless</span>
+              <button onclick="window.open('https://mega.nz/file/ci5FUAaQ#U88S3XuHlEEPyHen4k98S5I9koMRQiF8pDU-lsaQt-Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/Qn5kAaoL#g-DYa8NZLUf4d48etC7NtHPQsrXkdp3o_95vneL3fRM','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+          <!-- Ajouter d'autres morceaux ici -->
+
+
+
+
+
 
     </div>
   </div>
