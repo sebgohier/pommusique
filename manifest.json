@@ -2,20 +2,23 @@
   "name": "Pom Musique",
   "short_name": "Interface Professeur",
   "description": "Interface professeur",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffb629",
-  "theme_color": "#ffb629",
+  "background_color": "#fffb629",
+  "theme_color": "#fffb629",
   "icons": [
     {
       "src": "https://raw.githubusercontent.com/sebgohier/pommusique/refs/heads/main/logo%20192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://raw.githubusercontent.com/sebgohier/pommusique/refs/heads/main/logo%20512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
+
