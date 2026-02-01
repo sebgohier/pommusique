@@ -13,107 +13,110 @@
 
 
 <style>
-body { margin:0; font-family:Arial,sans-serif; display:flex; height:100vh; }
-.sidebar { width:220px; background: linear-gradient(to bottom,#ffb629,#000000); color:white; display:flex; flex-direction:column; align-items:center; padding-top:20px; }
-.sidebar img { width:150px; margin-bottom:30px; }
-.menu-item { width:90%; padding:12px 10px; margin:5px 0; border-radius:8px; cursor:pointer; display:flex; align-items:center; transition: background 0.3s; font-size:16px; background-color:#ccc; color:#000; }
+body { 
+  margin:0; 
+  font-family:Arial,sans-serif; 
+  display:flex; 
+  height:100vh; 
+}
+.sidebar { 
+  width:220px; 
+  background: linear-gradient(to bottom,#ffb629,#000000); 
+  color:white; 
+  display:flex; 
+  flex-direction:column; 
+  align-items:center; 
+  padding-top:20px; 
+}
+.sidebar img { 
+  width:150px; 
+  margin-bottom:30px; 
+  cursor: pointer; 
+  transition: transform 0.2s; 
+}
+.sidebar img:hover { 
+  transform: scale(1.05); 
+}
+.menu-item { 
+  width:90%; 
+  padding:12px 10px; 
+  margin:5px 0; 
+  border-radius:8px; 
+  cursor:pointer; 
+  display:flex; 
+  align-items:center; 
+  transition: background 0.3s; 
+  font-size:16px; 
+  background-color:#ccc; 
+  color:#000; 
+}
 .menu-item:hover { background-color:#bbb; }
 .menu-item span { margin-left:10px; }
-.content { flex:1; padding:20px; background-color:#f9f9f9; overflow-y:auto; }
+.content, .main-content { 
+  flex:1; 
+  padding:20px; 
+  background-color:#f9f9f9; 
+  overflow-y:auto; 
+  padding-top:70px; /* Décalage pour que le contenu ne soit pas sous la barre noire */
+}
 .section { 
   display:none;
   width: 100%;         
   box-sizing: border-box;
   padding-top: 20px;  
 }
-
 input, select {
   width: 100%;
   box-sizing: border-box;
   padding: 4px;
   margin: 8px 0 4px 0;
 }
-
 /* Boutons */
 button {
   padding: 6px 12px;
   margin-top: 5px;
   cursor: pointer;
 }
-
 /* Tables */
 table {
   border-collapse: collapse;
   width: 100%;
   margin-top: 10px;
 }
-
 /* Cellules */
 th, td {
   border: 1px solid #000;
   padding: 6px;
   text-align: center;
 }
-
 /* Header table */
-th {
-  background-color: #f0f0f0;
-}
-
+th { background-color: #f0f0f0; }
 /* ============================= */
 /* ===== PARTITIONS ===== */
 /* ============================= */
-
-/* =======================
-   Morceaux
-   ======================= */
+/* Morceaux */
 .morceau {
   cursor: pointer;
   padding: 10px 14px;
   margin-bottom: 6px;
   background: #eee;
   border-radius: 6px;
-  /* on retire le font-weight ici pour gérer séparément groupe/titre */
 }
-
-.morceau:hover {
-  background: #ddd;
-}
-
-/* Titre du morceau : nom du groupe en gras, titre en italique */
-.morceauTitre {
-  font-size: 16px; /* optionnel, pour lisibilité */
-}
-
-.morceauTitre .groupe {
-  font-weight: bold; /* gras pour le nom du groupe */
-}
-
-.morceauTitre .titre {
-  font-style: italic; /* italique pour le titre du morceau */
-  font-weight: normal; /* retire le gras hérité */
-}
-
-/* =======================
-   Contenu du morceau
-   ======================= */
+.morceau:hover { background: #ddd; }
+.morceauTitre { font-size: 16px; }
+.morceauTitre .groupe { font-weight: bold; }
+.morceauTitre .titre { font-style: italic; font-weight: normal; }
 .morceauContent {
   display: none;
-  margin-left: 15px;  /* petit décalage pour hiérarchie */
+  margin-left: 15px;
   margin-top: 6px;
   padding: 8px 12px;
   background: #f9f9f9;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-
-/* =======================
-   Onglets
-   ======================= */
-.onglets {
-  margin-bottom: 12px;
-}
-
+/* Onglets */
+.onglets { margin-bottom: 12px; }
 .onglets button {
   padding: 6px 12px;
   margin-right: 8px;
@@ -122,15 +125,11 @@ th {
   border-radius: 4px;
   background: #ddd;
 }
-
 .onglets button.active {
   background: #f39c12;
   color: white;
 }
-
-/* =======================
-   Fichiers (PDF / audio)
-   ======================= */
+/* Fichiers (PDF / audio) */
 .fichier {
   display: flex;
   align-items: center;
@@ -139,50 +138,21 @@ th {
   padding: 6px 12px;
   border-radius: 5px;
   margin-bottom: 6px;
-  margin-left: 20px; /* hiérarchie instruments */
+  margin-left: 20px;
   transition: background 0.2s;
 }
-
-.fichier:hover {
-  background: #eee;
-}
-
-.fichier span {
-  min-width: 140px; /* espace pour nom instrument */
-}
-
-.fichier button {
-  flex-shrink: 0;
-  margin-left: 20px;
-  padding: 4px 8px;
-}
-
-/* =======================
-   Décalage supplémentaire pour onglets
-   ======================= */
-.partitionsOnglet, .audiosOnglet {
-  margin-left: 10px; /* décale un peu par rapport au bloc morceau */
-}
-
-/* =======================
-   Sidebar (images)
-   ======================= */
-.sidebar img {
-  cursor: pointer; /* main au survol */
-  transition: transform 0.2s; /* effet léger au survol */
-}
-
-.sidebar img:hover {
-  transform: scale(1.05); /* léger zoom au survol */
-}
-
+.fichier:hover { background: #eee; }
+.fichier span { min-width: 140px; }
+.fichier button { flex-shrink: 0; margin-left: 20px; padding: 4px 8px; }
+/* Décalage supplémentaire pour onglets */
+.partitionsOnglet, .audiosOnglet { margin-left: 10px; }
+/* Doc buttons */
 .doc-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   margin-top: 20px;
 }
-
 .btn-doc {
   background-color: #ffb629;
   color: #000;
@@ -192,13 +162,13 @@ th {
   border-radius: 8px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 .btn-doc:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-
-
+/* =======================
+   Topbar mobile
+   ======================= */
 .mobile-topbar {
   display: none;
   align-items: center;
@@ -207,7 +177,6 @@ th {
   padding: 10px;
   height: 50px;
 }
-
 #menuToggle {
   font-size: 26px;
   background: none;
@@ -216,15 +185,9 @@ th {
   cursor: pointer;
   margin-right: 15px;
 }
-
-.app-title {
-  font-weight: bold;
-  font-size: 18px;
-}
-
+.app-title { font-weight: bold; font-size: 18px; }
 /* MODE MOBILE */
 @media (max-width: 768px) {
-
   .mobile-topbar {
     display: flex;
     position: fixed;
@@ -232,7 +195,6 @@ th {
     width: 100%;
     z-index: 1001;
   }
-
   .sidebar {
     position: fixed;
     top: 50px;
@@ -242,23 +204,11 @@ th {
     transition: left 0.3s;
     z-index: 1000;
   }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  .main-content {
-    margin-left: 0;
-    padding-top: 60px;
-  }
+  .sidebar.open { left: 0; }
+  .content, .main-content { padding-top: 60px; }
 }
-
-
-
-
-
-
 </style>
+
 
 
 </head>
