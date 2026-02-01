@@ -12,13 +12,143 @@ body { margin:0; font-family:Arial,sans-serif; display:flex; height:100vh; }
 .menu-item:hover { background-color:#bbb; }
 .menu-item span { margin-left:10px; }
 .content { flex:1; padding:20px; background-color:#f9f9f9; overflow-y:auto; }
-.section { display:none; }
-input, select { width:100%; box-sizing:border-box; padding:4px; margin:2px 0; }
-button { padding:6px 12px; margin-top:5px; cursor:pointer; }
-table { border-collapse: collapse; width:100%; margin-top:10px; }
-th, td { border:1px solid #000; padding:6px; text-align:center; }
-th { background-color:#f0f0f0; }
+.section { 
+  display:none;
+  width: 100%;         
+  box-sizing: border-box;
+  padding-top: 20px;  
+}
+
+input, select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px;
+  margin: 8px 0 4px 0;
+}
+
+/* Boutons */
+button {
+  padding: 6px 12px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Cellules */
+th, td {
+  border: 1px solid #000;
+  padding: 6px;
+  text-align: center;
+}
+
+/* Header table */
+th {
+  background-color: #f0f0f0;
+}
+
+/* ============================= */
+/* ===== PARTITIONS ===== */
+/* ============================= */
+
+/* Morceaux */
+.morceau {
+  cursor:pointer;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  background:#eee;
+  border-radius:6px;
+  font-weight:bold;
+}
+
+.morceau:hover {
+  background:#ddd;
+}
+
+/* Contenu du morceau */
+.morceauContent {
+  display:none;
+  margin-left: 15px;        /* petit décalage pour hiérarchie */
+  margin-top:6px;
+  padding: 8px 12px;
+  background:#f9f9f9;
+  border-radius:5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Onglets */
+.onglets {
+  margin-bottom: 12px;
+}
+
+.onglets button {
+  padding:6px 12px;
+  margin-right:8px;
+  cursor:pointer;
+  border:none;
+  border-radius:4px;
+  background:#ddd;
+}
+
+.onglets button.active {
+  background:#f39c12;
+  color:white;
+}
+
+/* Fichiers (PDF / audio) */
+.fichier {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  background:#f9f9f9;
+  padding:6px 12px;
+  border-radius:5px;
+  margin-bottom:6px;
+  margin-left:20px; /* hiérarchie instruments */
+  transition: background 0.2s;
+}
+
+.fichier:hover {
+  background:#eee;
+}
+
+.fichier span {
+  min-width:140px; /* espace pour nom instrument */
+}
+
+.fichier button {
+  flex-shrink:0;
+  margin-left:20px;
+  padding:4px 8px;
+}
+
+/* Décalage supplémentaire pour onglets de partition/audio */
+.partitionsOnglet, .audiosOnglet {
+  margin-left:10px; /* décale un peu par rapport au bloc morceau */
+}
+
+
+
+.sidebar img {
+    cursor: pointer; /* main au survol */
+    transition: transform 0.2s; /* effet léger au survol */
+}
+
+.sidebar img:hover {
+    transform: scale(1.05); /* léger zoom au survol */
+}
 </style>
+
+
+
+
+
+
 </head>
 <body>
 
@@ -29,234 +159,826 @@ th { background-color:#f0f0f0; }
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
 <div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
-<div class="menu-item" onclick="showSection('contacts')">📞 <span>Contacts</span></div>
+ <div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
 </div>
 
 <div class="content">
 
-<!-- Choix global du prof -->
-<label for="selectProfGlobal" style="font-weight:bold;">Choisissez votre nom :</label>
-<select id="selectProfGlobal" style="padding:6px; margin:8px 0; width:100%; max-width:300px; border-radius:6px; border:1px solid #ccc;">
-  <option value="">-- Choisir --</option>
-  <option value="Anthony">Anthony</option>
-  <option value="Arnaud">Arnaud</option>
-  <option value="Christian">Christian</option>
-  <option value="Christelle">Christelle</option>
-  <option value="Laurence">Laurence</option>
-  <option value="Lorène">Lorène</option>
-  <option value="Marion">Marion</option>
-  <option value="Séb">Séb</option>
-  <option value="Valérie">Valérie</option>
-  <option value="Vincent">Vincent</option>
-</select>
+  <!-- SECTION ACCUEIL -->
+<div class="section" id="accueil" style="display:flex; flex-direction:column; align-items:center;">
+  <div id="accueilMessage" style="
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      font-size:20px;
+      color:#555;
+      padding:20px;
+  ">
+    Bienvenue sur l’interface POM Musique !<br>
+    Veuillez choisir votre nom dans la liste ci-dessous pour accéder aux sections.
+  </div>
 
-<!-- Section Répertoire Élèves -->
-<div id="sectionRepertoire" class="section">
-  <h2>Répertoire élèves</h2>
+  <!-- Wrapper pour le select du prof -->
+  <div id="profSelectorWrapper" style="margin-top:20px; text-align:center;">
+    <label for="selectProfGlobal" style="font-weight:bold;">Choisissez votre nom :</label><br>
+    <select id="selectProfGlobal" style="padding:6px; margin:8px 0; width:80%; max-width:300px; border-radius:6px; border:1px solid #ccc;">
+      <option value="">-- Choisir --</option>
+      <option>Anthony BUNEL</option>
+      <option>Arnaud GRASSIN</option>
+      <option>Christian SALMERO</option>
+      <option>Christelle SOUBOUKOU KIFOULA</option>
+      <option>Laurence DINET</option>
+      <option>Marion BRETTEVILLE</option>
+      <option>Sébastien GOHIER</option>
+      <option>Valérie LOPEZ</option>
+      <option>Vincent DESGRIPPES</option>
+    </select>
+  </div>
+</div>
+
+
+  <!-- Section Répertoire Élèves -->
+  <div class="section" id="sectionRepertoire">
+    <h2>Répertoire élèves</h2>
+    <div style="overflow-x:auto; margin-top:20px;">
+      <table id="repertoireTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+        <thead style="background: #ffb629; color:#000; text-align:left;">
+          <tr>
+            <th style="padding:10px;">Nom</th>
+            <th style="padding:10px;">Téléphone</th>
+            <th style="padding:10px;">Email</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="repertoireMsg" style="color:red; margin-top:10px;"></p>
+  </div>
+
+  <!-- Section Planning -->
+  <div class="section" id="planning">
+    <h2>Planning des salles</h2>
+
+    <label for="selectJour"><strong>Sélectionnez le jour :</strong></label>
+    <select id="selectJour" style="padding:4px; margin-bottom:10px;">
+      <option value="Lundi">Lundi</option>
+      <option value="Mardi">Mardi</option>
+      <option value="Mercredi">Mercredi</option>
+      <option value="Jeudi">Jeudi</option>
+      <option value="Vendredi">Vendredi</option>
+      <option value="Samedi">Samedi</option>
+    </select>
+
+    <!-- Indicateur de chargement -->
+    <p id="planningLoading" style="font-weight:bold; color:#f39c12; display:none;">Chargement du planning…</p>
+
+    <div id="planningWrapper" style="display:flex; border:1px solid #000; height:700px; overflow-y:auto;">
+      <div id="horaires" style="width:50px; border-right:1px solid #000; text-align:right; padding-right:4px; position:relative;"></div>
+      <div id="planningContainer" style="display:flex; flex:1; position:relative;"></div>
+    </div>
+  </div>
+
+  <!-- Section Heures Supplémentaires -->
+  <div class="section" id="heuresSup">
+    <h2>Déclaration Heures Supplémentaires</h2>
+    <p style="color:red; font-weight:bold; margin-bottom:10px;">
+      Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
+      doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
+      Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
+    </p>
+    <table id="hsTable">
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
+      </tfoot>
+    </table>
+    <button id="addRowHs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+    <button id="sendHs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
+    <p id="hsLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
+    <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+  </div>
+
+  <!-- Section Absences -->
+  <div class="section" id="absences">
+    <h2>Demande d'Absences</h2>
+    <p style="color:red; font-weight:bold; margin-bottom:10px;">
+      Toute demande d’autorisation d’absence pour convenance personnelle doit être déclarée dans ce tableau et transmise au minimum 10 JOURS CALENDAIRES avant la date de l’absence.<br>
+      Toute demande transmise hors délai ne pourra pas être autorisée, sauf cas exceptionnel dûment justifié et validé par la direction.<br>
+      Aucune absence ne sera considérée comme autorisée sans déclaration préalable et validation explicite de la direction.
+    </p>
+    <table id="absTable">
+      <thead>
+        <tr>
+          <th>Date d'absence</th><th>Créneau</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="addRowAbs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+    <button id="sendAbs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
+    <p id="absLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
+    <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
+  </div>
+
+  <!-- Section Partitions -->
+<div class="section" id="partitions">
+  <h2>Partitions concert de fin d'année 2025-2026</h2>
+
+  <div style="overflow-x:auto; margin-top:20px; padding:10px; background:#f9f9f9; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+
+    <div id="morceauxList">
+
+      <div class="morceau">
+        <div class="morceauTitre" onclick="toggleMorceau(this)">Queen - The Show Must Go On</div>
+
+        <div class="morceauContent">
+
+          <div class="onglets">
+            <button onclick="showOnglet('partitionsOnglet', this, event)">Partitions</button>
+            <button onclick="showOnglet('audiosOnglet', this, event)">Audios</button>
+          </div>
+
+          <!-- Contenu Partitions -->
+          <div id="partitionsOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Batterie</span>
+              <button onclick="window.open('https://mega.nz/file/xyBiDDAR#J3pY2Cqfjpt2jye4PcL3k_SkRzZlZPO432rt60a-6mM','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Chorale</span>
+              <button onclick="window.open('https://mega.nz/file/crQhBALC#J2YHA1Mw1r7n5wJ3DUa8fi01wlZJ1T72-pGuaQotBB0','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Piano</span>
+              <button onclick="window.open('https://mega.nz/file/tzpAwCRA#M6z2fMS6dPcOF2ne4iW_1Eh-UdRKrTYg7xabprV1cPg','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Violon 1</span>
+              <button onclick="window.open('https://mega.nz/file/43gXkLCJ#O3zrcq_FZ1bBLk0VYcE6OgB3I3Fm-LMylL5svpvyEig','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+          <!-- Contenu Audios -->
+          <div id="audiosOnglet" style="display:none;">
+            <div class="fichier">
+              <span>Version complète</span>
+              <button onclick="window.open('https://mega.nz/file/AvwklLwC#7AF1-csfmhkZ3pNS18IcIUf4RU32jWglgzIoyZRpPKQ','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Drumless</span>
+              <button onclick="window.open('https://mega.nz/file/ci5FUAaQ#U88S3XuHlEEPyHen4k98S5I9koMRQiF8pDU-lsaQt-Y','_blank')">Voir / Télécharger</button>
+            </div>
+            <div class="fichier">
+              <span>Instrumentale</span>
+              <button onclick="window.open('https://mega.nz/file/Qn5kAaoL#g-DYa8NZLUf4d48etC7NtHPQsrXkdp3o_95vneL3fRM','_blank')">Voir / Télécharger</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ajouter d'autres morceaux ici -->
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Section Contacts -->
+
+
+<div class="section" id="contacts">
+  <h2>Contacts</h2>
+
+  <!-- Message de chargement -->
+  <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
+
+  <!-- Tableau des contacts -->
   <div style="overflow-x:auto; margin-top:20px;">
-    <table id="repertoireTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+    <table id="contactsTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
       <thead style="background: #ffb629; color:#000; text-align:left;">
         <tr>
           <th style="padding:10px;">Nom</th>
           <th style="padding:10px;">Téléphone</th>
           <th style="padding:10px;">Email</th>
+          <th style="padding:10px;">Fonction</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
   </div>
-  <p id="repertoireMsg" style="color:red; margin-top:10px;"></p>
+
+  <!-- Message d'erreur -->
+  <p id="contactsMsg" style="color:red; margin-top:10px;"></p>
 </div>
 
-<div class="section" id="planning"><h2>Planning</h2><p>Contenu...</p></div>
-<div class="section" id="partitions"><h2>Partitions</h2><p>Contenu...</p></div>
-<div class="section" id="contacts"><h2>Contacts</h2><p>Contenu...</p></div>
 
-<!-- Heures Sup -->
-<div class="section" id="heuresSup">
-<h2>Déclaration Heures Supplémentaires</h2>
-<table id="hsTable">
-<thead><tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr></thead>
-<tbody></tbody>
-<tfoot><tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr></tfoot>
-</table>
-<button id="addRowHs">+ Ajouter une ligne</button>
-<button id="sendHs">Envoyer la demande</button>
-<p id="confirmHs" style="color:green;font-weight:bold;"></p>
+
 </div>
 
-<!-- Absences -->
-<div class="section" id="absences">
-<h2>Demande d'Absences</h2>
-<table id="absTable">
-<thead><tr>
-<th>Date d'absence</th><th>Créneau</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord</th><th>Action</th>
-</tr></thead>
-<tbody></tbody>
-</table>
-<button id="addRowAbs">+ Ajouter une ligne</button>
-<button id="sendAbs">Envoyer la demande</button>
-<p id="confirmAbs" style="color:green;font-weight:bold;"></p>
+
+
+
+
+
+
+  <script>
+
+  // --- Planning ---
+
+
+  // URL de ton script Google Apps Script (Répertoire 2025/2026) 
+  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
+
+const profs = {
+  "Valérie":   "#A7C7E7",  // bleu ciel pastel
+  "Christian": "#CDB4DB",  // violet pastel
+  "Christelle":"#B7E4C7",  // vert menthe
+  "Anthony":   "#AEC6CF",  // bleu-gris
+  "Vincent":   "#E2C2FF",  // lavande
+  "Arnaud":    "#E6D3A3",  // beige sable (lisible, pas jaune UI)
+  "Laurence":  "#BDE0FE",  // bleu clair
+  "Marion":    "#FFADAD",  // rose pastel (remplace le rouge agressif)
+  "Séb":       "#A8DADC"   // turquoise pastel
+};
+
+
+
+  const salles = ["FM-piano","Batterie","Guitare","Piano 2","Artistes"];
+  const startHour = 8;
+  const endHour = 22;
+  const pxMin = 2.5;
+
+ async function loadPlanning() {
+  const day = selectJour.value;
+  const loadingMsg = document.getElementById("planningLoading");
+  loadingMsg.textContent = "⏳ Chargement du planning…";
+  loadingMsg.style.display = "block";
+
+  const wrapper = document.getElementById("planningWrapper");
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    planningContainer.innerHTML = "";
+    horaires.innerHTML = "";
+
+    const totalMin = (endHour - startHour) * 60;
+    planningContainer.style.height = totalMin * pxMin + "px";
+    horaires.style.height = planningContainer.style.height;
+
+    // Colonnes
+    salles.forEach(s => {
+      const c = document.createElement("div");
+      c.className = "salle-column";
+      c.dataset.salle = s;
+      c.style.flex = "1";
+      c.style.borderLeft = "1px solid #000";
+      c.style.borderRight = "1px solid #000";
+      c.style.position = "relative";
+      c.innerHTML = `<div class="salle-header" style="position:sticky; top:0; background:#ffb629; text-align:center; border-bottom:1px solid #000; padding:4px; font-weight:bold; z-index:10;">${s}</div>`;
+      for (let i = 0; i < totalMin; i += 15) {
+        const l = document.createElement("div");
+        l.className = "ligne-interval";
+        l.style.position = "absolute";
+        l.style.left = "0";
+        l.style.right = "0";
+        l.style.height = "1px";
+        l.style.background = "#eee";
+        l.style.top = i * pxMin + "px";
+        c.appendChild(l);
+      }
+      planningContainer.appendChild(c);
+    });
+
+    // Horaires
+    for (let h = startHour; h <= endHour; h++) {
+      const d = document.createElement("div");
+      d.className = "heure";
+      d.style.position = "absolute";
+      d.style.top = (h - startHour) * 60 * pxMin + "px";
+      d.style.width = "100%";
+      d.style.fontSize = "12px";
+      d.innerText = h + ":00";
+      horaires.appendChild(d);
+    }
+
+    // Cours
+    data.forEach(c => {
+      if (c.jour !== day || !salles.includes(c.salle)) return;
+
+      const d = new Date(c.horaire);
+      const min = d.getHours() * 60 + d.getMinutes();
+      const top = (min - startHour * 60) * pxMin;
+
+      let dur = 30;
+      if (c.type === "collectif") {
+        const n = c.cours.toLowerCase();
+        if (n.includes("chorale")) dur = 120;
+        else if (n.includes("éveil") || n.includes("eveil")) dur = 45;
+        else dur = 60;
+      }
+
+      const b = document.createElement("div");
+      b.className = "cours";
+      b.style.position = "absolute";
+      b.style.left = "4px";
+      b.style.right = "4px";
+      b.style.top = top + "px";
+      b.style.height = dur * pxMin + "px";
+      b.style.borderRadius = "4px";
+      b.style.border = "1px solid #000";
+      b.style.padding = "4px";
+      b.style.fontSize = "12px";
+      b.style.display = "flex";
+      b.style.flexDirection = "column";
+      b.style.justifyContent = "center";
+      b.style.alignItems = "center";
+      b.style.textAlign = "center";
+      b.style.boxSizing = "border-box";
+
+      b.style.backgroundColor = c.prof && profs[c.prof] ? profs[c.prof] : "#ddd";
+      b.innerHTML =
+        (c.type === "collectif" ? c.cours : c.eleve) +
+        (c.prof ? `<div class="prof" style="font-style:italic; color:#444; font-size:11px;">${c.prof}</div>` : "");
+
+      document.querySelector(`[data-salle='${c.salle}']`).appendChild(b);
+    });
+
+    // Scroll automatique vers le premier cours
+    setTimeout(() => {
+      const cours = wrapper.querySelectorAll(".cours");
+      if (!cours.length) return;
+
+      let minTop = Infinity;
+      cours.forEach(c => {
+        minTop = Math.min(minTop, c.offsetTop);
+      });
+
+      wrapper.scrollTop = Math.max(0, minTop - 40);
+    }, 50);
+
+    // 🔹 Message succès
+    loadingMsg.textContent = "✅ Planning chargé avec succès";
+    setTimeout(() => (loadingMsg.style.display = "none"), 1500);
+
+  } catch (err) {
+    loadingMsg.textContent = "❌ Erreur lors du chargement : " + err;
+    console.error(err);
+    setTimeout(() => (loadingMsg.style.display = "none"), 3000);
+  }
+}
+
+
+
+
+  selectJour.onchange = loadPlanning;
+  loadPlanning();
+  </script>
 </div>
 
 <script>
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  // --- Sections ---
-  window.showSection = section => {
-    document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-    document.getElementById(section).style.display='block';
-  };
+// ================================
+// Mapping affichage ↔ GAS
+// ================================
+const profMap = {
+  "Anthony BUNEL": "Anthony",
+  "Arnaud GRASSIN": "Arnaud",
+  "Christian SALMERO": "Christian",
+  "Christelle SOUBOUKOU KIFOULA": "Christelle",
+  "Laurence DINET": "Laurence",
+  "Marion BRETTEVILLE": "Marion",
+  "Sébastien GOHIER": "Séb",
+  "Valérie LOPEZ": "Valérie",
+  "Vincent DESGRIPPES": "Vincent"
+};
 
-  // --- Répertoire ---
-  const repertoireTableBody = document.querySelector("#repertoireTable tbody");
-  const repertoireMsg = document.getElementById("repertoireMsg");
 
-  function formatPhone(phone){
-    phone = phone.toString().trim();
-    if(!phone.startsWith("0")) phone = "0"+phone;
-    return phone.replace(/(\d{2})(?=\d)/g,'$1 ');
+
+
+// --- Sections ---
+
+
+window.showSection = section => {
+  const prof = document.getElementById("selectProfGlobal").value;
+
+  // 🔹 Bloquer complètement si aucun prof n'est choisi (sauf accueil)
+  if(!prof && section !== 'accueil') {
+    alert("Veuillez choisir un professeur pour accéder à cette section !");
+    return; // ← stoppe la fonction
   }
 
-  function loadRepertoire(profName){
-    repertoireTableBody.innerHTML="";
-    repertoireMsg.textContent="";
-    if(!profName) return;
+  // Masquer toutes les sections
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
 
-    const url="https://script.google.com/macros/s/AKfycbwJPhDbfSOizQaWNFyib_fuR4kGZu39IDdm_mm0hSZzu8qGj5M2bwbUjiRbe_SZBiM07w/exec?profName="+encodeURIComponent(profName);
+  // Afficher la section demandée
+  document.getElementById(section).style.display = 'block';
 
-    fetch(url).then(r=>r.json()).then(data=>{
-      if(data.error){ repertoireMsg.textContent=data.error; return; }
-      if(data.length===0){ repertoireMsg.textContent="Aucun élève trouvé pour "+profName; return; }
-      data.forEach((eleve,i)=>{
-        const tr=document.createElement("tr");
-        tr.style.backgroundColor=i%2===0?"#fff":"#f9f9f9";
-        tr.innerHTML=`<td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Nom}</td>
-                        <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(eleve.Téléphone)}</td>
-                        <td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Email}</td>`;
+  // 🔹 Afficher ou cacher le select de prof
+  const profSelector = document.getElementById('profSelectorWrapper');
+  profSelector.style.display = (section === 'accueil') ? 'block' : 'none';
+};
+
+// --- Logo cliquable pour revenir à l'accueil ---
+const logo = document.querySelector(".sidebar img");
+logo.style.cursor = 'pointer';
+logo.addEventListener("click", () => {
+  // Affiche la page d'accueil avec le message et le select
+  showSection('accueil');
+});
+
+// --- Faire disparaître le message d’accueil automatiquement dès qu’un prof est choisi ---
+document.getElementById("selectProfGlobal").addEventListener("change", () => {
+  const prof = document.getElementById("selectProfGlobal").value;
+  if(prof) document.getElementById("accueilMessage").style.display = "flex";
+});
+
+// --- Au chargement de la page, afficher directement l'accueil ---
+document.addEventListener("DOMContentLoaded", () => {
+  showSection('accueil');
+});
+
+
+
+
+
+
+
+// --- Répertoire ---
+
+
+
+const repertoireTableBody = document.querySelector("#repertoireTable tbody");
+const repertoireMsg = document.getElementById("repertoireMsg");
+
+function formatPhone(phone){
+  phone = phone.toString().trim();
+  if(!phone.startsWith("0")) phone = "0"+phone;
+  return phone.replace(/(\d{2})(?=\d)/g,'$1 ');
+}
+
+function loadRepertoire(profName) {
+  repertoireTableBody.innerHTML = "";
+  repertoireMsg.textContent = "";
+
+  if (!profName) return;
+
+  // Affichage du message "Chargement en cours…"
+  repertoireMsg.style.color = "#f39c12";
+  repertoireMsg.textContent = "⏳ Chargement en cours…";
+
+
+
+
+  // URL de ton script Google Apps Script (Répertoire 2025/2026)
+  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" + encodeURIComponent(profName);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        repertoireMsg.style.color = "red";
+        repertoireMsg.textContent = data.error;
+        return;
+      }
+      if (data.length === 0) {
+        repertoireMsg.style.color = "red";
+        repertoireMsg.textContent = "Aucun élève trouvé pour " + profName;
+        return;
+      }
+
+      // Supprimer les doublons d'élèves (même nom et email)
+      const seen = new Set();
+      const uniqueEleves = data.filter(eleve => {
+        const key = eleve.Nom + "|" + eleve.Email;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      uniqueEleves.forEach((eleve, i) => {
+        const tr = document.createElement("tr");
+        tr.style.backgroundColor = i % 2 === 0 ? "#fff" : "#f9f9f9";
+        tr.innerHTML = `
+          <td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Nom}</td>
+          <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(eleve.Téléphone)}</td>
+          <td style="padding:8px;border-bottom:1px solid #ddd;">
+            <a href="mailto:${eleve.Email}">${eleve.Email}</a>
+          </td>`;
         repertoireTableBody.appendChild(tr);
       });
-    }).catch(err=>repertoireMsg.textContent="Erreur lors du chargement : "+err);
-  }
 
-  document.getElementById("selectProfGlobal").addEventListener("change", e=>{
-    const prof=e.target.value;
-    loadRepertoire(prof);
-  });
-
-  // --- Heures Sup ---
-  const typesEvenement = ["Concert","Répétition","Autre"];
-  function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
-  function calculateDuration(start,end){
-    if(!start||!end) return "0h00";
-    const [h1,m1]=start.split(":").map(Number);
-    const [h2,m2]=end.split(":").map(Number);
-    let total=(h2*60+m2)-(h1*60+m1); if(total<0) total=0;
-    return formatDuration(Math.floor(total/60), total%60);
-  }
-  function updateDurHs(){
-    let totalMins=0;
-    document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
-      const start=tr.querySelector(".debut").value;
-      const end=tr.querySelector(".fin").value;
-      const dur=calculateDuration(start,end);
-      tr.querySelector(".duree").textContent=dur;
-      const [h,m]=dur.split("h").map(Number);
-      totalMins+=h*60+m;
-    });
-    document.getElementById("totalDuration").textContent=formatDuration(Math.floor(totalMins/60), totalMins%60);
-  }
-  function addRowHs(data={}){ 
-    const tbody=document.querySelector("#hsTable tbody"); 
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td><input type="date" class="date" value="${data.date||''}"></td>
-      <td><select class="type">${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}</select></td>
-      <td><input type="time" class="debut" value="${data.debut||''}"></td>
-      <td><input type="time" class="fin" value="${data.fin||''}"></td>
-      <td class="duree">0h00</td>
-      <td><input type="text" class="lieu" value="${data.lieu||''}"></td>
-      <td><button type="button" class="deleteBtn">X</button></td>`;
-    tbody.appendChild(tr);
-    tr.querySelector(".debut").addEventListener("input",updateDurHs);
-    tr.querySelector(".fin").addEventListener("input",updateDurHs);
-    tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove(); updateDurHs();});
-    updateDurHs();
-  }
-  document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
-  addRowHs(); // première ligne
-
-  document.getElementById("sendHs").addEventListener("click", ()=>{
-    const nomProfHs = document.getElementById("selectProfGlobal").value.trim();
-    if(!nomProfHs){ alert("Indiquez le nom du professeur !"); return; }
-    const tbody=document.querySelector("#hsTable tbody"); 
-    const lignes=[];
-    tbody.querySelectorAll("tr").forEach(tr=>{
-      lignes.push({
-        date: tr.querySelector(".date").value,
-        type: tr.querySelector(".type").value,
-        debut: tr.querySelector(".debut").value,
-        fin: tr.querySelector(".fin").value,
-        duree: tr.querySelector(".duree").textContent,
-        lieu: tr.querySelector(".lieu").value
-      });
-    });
-    const total=document.getElementById("totalDuration").textContent;
-    fetch("https://script.google.com/macros/s/AKfycbyoEkd0NtmfVYRaSujaVeM_wfiEbZCjfJgzTLuKx4a8SJgD47dh9zWGfOR8crss2fk9/exec",{method:"POST",body:JSON.stringify({nomProf:nomProfHs,lignes,total})})
-      .then(res=>res.json()).then(res=>{
-        document.getElementById("confirmHs").textContent=res.message;
-        tbody.innerHTML=""; addRowHs();
-      }).catch(err=>{ document.getElementById("confirmHs").textContent="Erreur : "+err; });
-  });
-
-  // --- Absences ---
-  const salles = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
-  function addRowAbs(data={}){
-    const tbody=document.querySelector("#absTable tbody"); 
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td><input type="date" class="dateAbs" value="${data.dateAbs||''}"></td>
-      <td><input type="text" class="creneauAbs" placeholder="Ex: 16h30-18h30" value="${data.creneauAbs||''}"></td>
-      <td><input type="date" class="dateRatt" value="${data.dateRatt||''}"></td>
-      <td><input type="text" class="creneauRatt" placeholder="Ex: 16h30-18h30" value="${data.creneauRatt||''}"></td>
-      <td><select class="salle">${salles.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}</select></td>
-      <td><input type="checkbox" class="accord" ${data.accord?'checked':''}></td>
-      <td><button type="button" class="deleteBtn">X</button></td>`;
-    tbody.appendChild(tr);
-    tr.querySelector(".deleteBtn").addEventListener("click",()=>tr.remove());
-  }
-  document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
-  addRowAbs(); // première ligne
-
-  document.getElementById("sendAbs").addEventListener("click", ()=>{
-    const nomProfAbs = document.getElementById("selectProfGlobal").value.trim();
-    if(!nomProfAbs){ alert("Indiquez le nom du professeur !"); return; }
-    const tbody=document.querySelector("#absTable tbody"); 
-    const lignes=[];
-    tbody.querySelectorAll("tr").forEach(tr=>{
-      lignes.push({
-        dateAbs: tr.querySelector(".dateAbs")?.value || "",
-        creneauAbs: tr.querySelector(".creneauAbs")?.value || "",
-        dateRatt: tr.querySelector(".dateRatt")?.value || "",
-        creneauRatt: tr.querySelector(".creneauRatt")?.value || "",
-        salle: tr.querySelector(".salle")?.value || "",
-        accord: tr.querySelector(".accord")?.checked || false
-      });
-    });
-    fetch("https://script.google.com/macros/s/AKfycbxB4nTAyo-dbK89U1UNGkCp9n_vwBf5MDln9s2-dVPW6Qh4X2HNcp6fXttJFuxpOMD0/exec",{
-      method:"POST",
-      body: JSON.stringify({nomProf:nomProfAbs,lignes})
+      // Tout est chargé → masquer le message
+      repertoireMsg.textContent = "";
     })
-    .then(res=>res.json())
-    .then(res=>{
-      document.getElementById("confirmAbs").textContent=res.message || "PDF envoyé avec succès";
-      tbody.innerHTML=""; addRowAbs();
-    }).catch(err=>{
-      document.getElementById("confirmAbs").textContent="Erreur : "+err;
+    .catch(err => {
+      repertoireMsg.style.color = "red";
+      repertoireMsg.textContent = "Erreur lors du chargement : " + err;
+    });
+}
+
+
+
+
+document.getElementById("selectProfGlobal").addEventListener("change", e=>{
+  const profAffiche = e.target.value;
+  const prof = profMap[profAffiche];
+  loadRepertoire(prof);
+});
+
+
+
+// --- Heures Sup ---
+
+
+
+const typesEvenement = ["Concert","Répétition","Autre"];
+function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
+function calculateDuration(start,end){
+  if(!start||!end) return "0h00";
+  const [h1,m1]=start.split(":").map(Number);
+  const [h2,m2]=end.split(":").map(Number);
+  let total=(h2*60+m2)-(h1*60+m1); if(total<0) total=0;
+  return formatDuration(Math.floor(total/60), total%60);
+}
+function updateDurHs(){
+  let totalMins=0;
+  document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
+    const start=tr.querySelector(".debut").value;
+    const end=tr.querySelector(".fin").value;
+    const dur=calculateDuration(start,end);
+    tr.querySelector(".duree").textContent=dur;
+    const [h,m]=dur.split("h").map(Number);
+    totalMins+=h*60+m;
+  });
+  document.getElementById("totalDuration").textContent=formatDuration(Math.floor(totalMins/60), totalMins%60);
+}
+function addRowHs(data={}){ 
+  const tbody=document.querySelector("#hsTable tbody"); 
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+    <td><input type="date" class="date" value="${data.date||''}"></td>
+    <td><select class="type">${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}</select></td>
+    <td><input type="time" class="debut" value="${data.debut||''}"></td>
+    <td><input type="time" class="fin" value="${data.fin||''}"></td>
+    <td class="duree">0h00</td>
+    <td><input type="text" class="lieu" value="${data.lieu||''}"></td>
+    <td><button type="button" class="deleteBtn">X</button></td>`;
+  tbody.appendChild(tr);
+  tr.querySelector(".debut").addEventListener("input",updateDurHs);
+  tr.querySelector(".fin").addEventListener("input",updateDurHs);
+  tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove(); updateDurHs();});
+  updateDurHs();
+}
+document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
+addRowHs(); // première ligne
+
+// --- Envoi Heures Supplémentaires ---
+
+document.getElementById("sendHs").addEventListener("click", ()=>{
+  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+  const nomProfHs = profMap[profAffiche];
+  if(!nomProfHs){ alert("Indiquez le nom du professeur !"); return; }
+
+  const tbody = document.querySelector("#hsTable tbody");
+  const lignes = [];
+
+  tbody.querySelectorAll("tr").forEach(tr=>{
+    lignes.push({
+      date: tr.querySelector(".date")?.value || "",
+      type: tr.querySelector(".type")?.value || "",
+      debut: tr.querySelector(".debut")?.value || "",
+      fin: tr.querySelector(".fin")?.value || "",
+      duree: tr.querySelector(".duree")?.textContent || "",
+      lieu: tr.querySelector(".lieu")?.value || ""
     });
   });
 
+  const total = document.getElementById("totalDuration").textContent;
+  const loadingMsg = document.getElementById("hsLoading");
+  loadingMsg.style.display = "block";          // 🔹 afficher "envoi en cours"
+  document.getElementById("confirmHs").textContent = ""; // vider ancien message
+
+
+
+
+  // URL de ton script Google Apps Script (Heures supplémentaires) 
+  
+  fetch("https://script.google.com/macros/s/AKfycbyoEkd0NtmfVYRaSujaVeM_wfiEbZCjfJgzTLuKx4a8SJgD47dh9zWGfOR8crss2fk9/exec", {
+    method: "POST",
+    body: JSON.stringify({nomProf:nomProfHs,lignes,total})
+  })
+  .then(res => res.json())
+  .then(res => {
+    loadingMsg.style.display = "none";  // 🔹 masquer "envoi en cours"
+    document.getElementById("confirmHs").textContent = res.message || "Heures sup envoyées avec succès";
+    tbody.innerHTML = "";
+    addRowHs(); // remettre une ligne vide
+  })
+  .catch(err => {
+    loadingMsg.style.display = "none";  // 🔹 masquer même en erreur
+    document.getElementById("confirmHs").textContent = "Erreur : " + err;
+  });
 });
+
+
+
+
+// --- Absences ---
+
+
+
+const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
+
+function addRowAbs(data={}) {
+  const tbody = document.querySelector("#absTable tbody");
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td><input type="date" class="dateAbs" value="${data.dateAbs||''}"></td>
+    <td><input type="text" class="creneauAbs" placeholder="Ex: 16h30-18h30" value="${data.creneauAbs||''}"></td>
+    <td><input type="date" class="dateRatt" value="${data.dateRatt||''}"></td>
+    <td><input type="text" class="creneauRatt" placeholder="Ex: 16h30-18h30" value="${data.creneauRatt||''}"></td>
+    <td><select class="salle">${sallesAbs.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}</select></td>
+    <td><input type="checkbox" class="accord" ${data.accord?'checked':''}></td>
+    <td><button type="button" class="deleteBtn">X</button></td>
+  `;
+
+  tbody.appendChild(tr);
+
+  // Supprimer ligne
+  tr.querySelector(".deleteBtn").addEventListener("click",()=> tr.remove());
+}
+
+// Ajouter ligne Absence
+
+document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
+addRowAbs(); // première ligne
+
+// --- Envoi Absences ---
+
+document.getElementById("sendAbs").addEventListener("click", ()=>{
+  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+  const nomProfAbs = profMap[profAffiche];
+  if(!nomProfAbs){ alert("Indiquez le nom du professeur !"); return; }
+
+  const tbody = document.querySelector("#absTable tbody");
+  const lignes = [];
+
+  tbody.querySelectorAll("tr").forEach(tr=>{
+    lignes.push({
+      dateAbs: tr.querySelector(".dateAbs")?.value || "",
+      creneauAbs: tr.querySelector(".creneauAbs")?.value || "",
+      dateRatt: tr.querySelector(".dateRatt")?.value || "",
+      creneauRatt: tr.querySelector(".creneauRatt")?.value || "",
+      salle: tr.querySelector(".salle")?.value || "",
+      accord: tr.querySelector(".accord")?.checked || false
+    });
+  });
+
+  const loadingMsg = document.getElementById("absLoading");
+  loadingMsg.style.display = "block";   // 🔹 afficher "envoi en cours"
+  document.getElementById("confirmAbs").textContent = ""; // vider ancien message
+
+  
+
+  // URL de ton script Google Apps Script (Demande d'autorisation d'absence) 
+
+  fetch("https://script.google.com/macros/s/AKfycbxB4nTAyo-dbK89U1UNGkCp9n_vwBf5MDln9s2-dVPW6Qh4X2HNcp6fXttJFuxpOMD0/exec", {
+    method: "POST",
+    body: JSON.stringify({nomProf:nomProfAbs,lignes})
+  })
+  .then(res => res.json())
+  .then(res => {
+    loadingMsg.style.display = "none"; // 🔹 masquer "envoi en cours"
+    document.getElementById("confirmAbs").textContent = res.message || "PDF envoyé avec succès";
+    tbody.innerHTML = "";
+    addRowAbs(); // remettre une ligne vide
+  })
+  .catch(err => {
+    loadingMsg.style.display = "none"; // 🔹 masquer "envoi en cours" même en erreur
+    document.getElementById("confirmAbs").textContent = "Erreur : " + err;
+  });
+});
+
+
+
+// --- Partitions / Onglets morceaux ---
+
+
+window.toggleMorceau = function(el) {
+  const content = el.nextElementSibling;
+  if (!content) return;
+
+  document.querySelectorAll('.morceauContent').forEach(c=>{
+    if(c!==content) c.style.display='none';
+  });
+
+  content.style.display = content.style.display==='block' ? 'none' : 'block';
+
+  if(content.style.display==='block') {
+    content.querySelectorAll('.onglets button').forEach(b=>b.classList.remove('active'));
+    content.querySelectorAll('#partitionsOnglet, #audiosOnglet').forEach(d=>d.style.display='none');
+  }
+};
+
+window.showOnglet = function(id, btn, event) {
+  event.stopPropagation();
+  const parent = btn.closest('.morceauContent');
+  parent.querySelectorAll('#partitionsOnglet, #audiosOnglet').forEach(d=>d.style.display='none');
+  parent.querySelector('#'+id).style.display='block';
+  parent.querySelectorAll('.onglets button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
+
+
+
+// --- Contacts ---
+function loadContacts() {
+  const contactsTableBody = document.querySelector("#contactsTable tbody");
+  const loadingMsg = document.getElementById("contactsLoading");
+  const contactsMsg = document.getElementById("contactsMsg");
+
+  contactsTableBody.innerHTML = "";
+  contactsMsg.textContent = "";
+  loadingMsg.style.display = "block";
+
+
+
+  // URL de ton script Google Apps Script (Répertoire 2025/2026)
+  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
+
+  // Fonction pour remettre le 0 devant le téléphone
+  function formatPhone(phone) {
+    phone = phone.toString().trim();
+    if (!phone.startsWith("0")) phone = "0" + phone;
+    return phone.replace(/(\d{2})(?=\d)/g, "$1 ");
+  }
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      loadingMsg.style.display = "none";
+      if (data.error) {
+        contactsMsg.textContent = data.error;
+        return;
+      }
+
+      // 🔹 Trier par NOM (dernier mot du champ "Nom")
+data.sort((a, b) => {
+  const nomA = a.Nom.trim().split(" ").pop().toLowerCase();
+  const nomB = b.Nom.trim().split(" ").pop().toLowerCase();
+  return nomA.localeCompare(nomB, 'fr', { sensitivity: 'base' });
+});
+
+
+      data.forEach(contact => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Nom}</td>
+          <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(contact.Téléphone)}</td>
+          <td style="padding:8px;border-bottom:1px solid #ddd;">
+            <a href="mailto:${contact.Email}">${contact.Email}</a>
+          </td>
+          <td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Fonction}</td>
+        `;
+        contactsTableBody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      loadingMsg.style.display = "none";
+      contactsMsg.textContent = "❌ Erreur lors du chargement : " + err;
+      console.error(err);
+    });
+}
+
+
+
+document.querySelector(".menu-item[onclick*='contacts']").addEventListener("click", () => {
+  showSection("contacts");  // affiche la section Contacts
+  loadContacts();            // charge les contacts depuis Google Sheets
+});
+
+
+
+
+
+
+}); // <-- fin DOMContentLoaded
 </script>
+
 </body>
 </html>
