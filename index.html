@@ -195,7 +195,8 @@ th { background-color: #f0f0f0; }
     width: 100%;
     z-index: 1001;
   }
-  .sidebar {
+
+    .sidebar {
     position: fixed;
     top: 50px;
     left: -260px;
@@ -206,6 +207,16 @@ th { background-color: #f0f0f0; }
   }
   .sidebar.open { left: 0; }
   .content, .main-content { padding-top: 60px; }
+
+/* === BOUTON THEME === */
+  #themeToggle {
+    margin-left: auto; /* pousse le bouton à droite */
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: #ffb629;
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 768px) {
@@ -220,6 +231,29 @@ th { background-color: #f0f0f0; }
   }
 }
 
+/* === THEME SOMBRE MOBILE === */
+body.dark-theme {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+body.dark-theme .content {
+  background-color: #222;
+  color: #f0f0f0;
+}
+
+body.dark-theme .sidebar {
+  background: linear-gradient(to bottom,#333,#000);
+}
+
+body.dark-theme .menu-item {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark-theme .menu-item:hover {
+  background-color: #555;
+}
 
 
 
@@ -237,6 +271,7 @@ th { background-color: #f0f0f0; }
 <div class="mobile-topbar">
   <button id="menuToggle">☰</button>
   <span class="app-title">Pom Musique</span>
+  <button id="themeToggle">☀️</button>
 </div>
 
 
@@ -360,10 +395,9 @@ th { background-color: #f0f0f0; }
   <div class="section" id="absences">
     <h2>Demande d'Absences</h2>
     <p style="color:red; font-weight:bold; margin-bottom:10px;">
-      Toute demande d’autorisation d’absence pour convenance personnelle doit être déclarée dans ce tableau et transmise au minimum 10 JOURS CALENDAIRES avant la date de l’absence.<br>
-      Toute demande transmise hors délai ne pourra pas être autorisée, sauf cas exceptionnel dûment justifié et validé par la direction.<br>
-      Aucune absence ne sera considérée comme autorisée sans déclaration préalable et validation explicite de la direction.
-    </p>
+      Toute absence pour convenance personnelle doit être saisie dans ce tableau au moins 10 jours à l’avance.<br>
+      Les demandes hors délai ou non validées par la direction ne seront pas acceptées.
+      </p>
     <table id="absTable">
       <thead>
         <tr>
@@ -1138,7 +1172,6 @@ topbarTitle.addEventListener("click", () => {
 });
 
 
-
 // --- Faire disparaître le message d’accueil automatiquement dès qu’un prof est choisi ---
 document.getElementById("selectProfGlobal").addEventListener("change", () => {
   const prof = document.getElementById("selectProfGlobal").value;
@@ -1157,6 +1190,17 @@ const sidebar = document.querySelector(".sidebar");
 menuToggle.addEventListener("click", () => {
   sidebar.classList.toggle("open");
 });
+
+
+// 🔹 BOUTON THEME MOBILE
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-theme"); // ajoute/enlève la classe dark-theme
+});
+
+
+
 
 
 
