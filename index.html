@@ -1130,6 +1130,15 @@ logo.addEventListener("click", () => {
   showSection('accueil');
 });
 
+// --- Texte "Pom Musique" cliquable sur mobile ---
+const topbarTitle = document.querySelector(".app-title");
+topbarTitle.style.cursor = 'pointer';
+topbarTitle.addEventListener("click", () => {
+    showSection('accueil');
+});
+
+
+
 // --- Faire disparaître le message d’accueil automatiquement dès qu’un prof est choisi ---
 document.getElementById("selectProfGlobal").addEventListener("change", () => {
   const prof = document.getElementById("selectProfGlobal").value;
