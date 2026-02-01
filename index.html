@@ -199,6 +199,61 @@ th {
 }
 
 
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  background: #000;
+  color: #ffb629;
+  padding: 10px;
+  height: 50px;
+}
+
+#menuToggle {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: #ffb629;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.app-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* MODE MOBILE */
+@media (max-width: 768px) {
+
+  .mobile-topbar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1001;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 50px;
+    left: -260px;
+    width: 260px;
+    height: calc(100% - 50px);
+    transition: left 0.3s;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+}
+
+
 
 
 
@@ -208,6 +263,18 @@ th {
 
 </head>
 <body>
+
+
+
+<div class="mobile-topbar">
+  <button id="menuToggle">☰</button>
+  <span class="app-title">Pom Musique</span>
+</div>
+
+
+
+
+
 
 <div class="sidebar">
 <img src="https://raw.githubusercontent.com/sebgohier/pommusique/refs/heads/main/Logo%20Pom%20Musique%20noir.png" alt="Logo POM Musique">
@@ -1076,6 +1143,15 @@ window.showSection = section => {
   // 🔹 Afficher ou cacher le select de prof
   const profSelector = document.getElementById('profSelectorWrapper');
   profSelector.style.display = (section === 'accueil') ? 'block' : 'none';
+
+  // 🔹 NOUVEAU : fermer le menu mobile après clic
+  if (window.innerWidth < 768) {
+    document.querySelector(".sidebar").classList.remove("open");
+  }
+
+
+
+
 };
 
 // --- Logo cliquable pour revenir à l'accueil ---
@@ -1097,7 +1173,13 @@ document.addEventListener("DOMContentLoaded", () => {
   showSection('accueil');
 });
 
+// 🔹 MENU ☰ MOBILE
+const menuToggle = document.getElementById("menuToggle");
+const sidebar = document.querySelector(".sidebar");
 
+menuToggle.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+});
 
 
 
