@@ -173,11 +173,34 @@ th {
   transform: scale(1.05); /* léger zoom au survol */
 }
 
+.doc-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn-doc {
+  background-color: #ffb629;
+  color: #000;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-doc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+
+
+
+
+
 </style>
-
-
-
-
 
 
 </head>
@@ -191,6 +214,7 @@ th {
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
 <div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
  <div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
+<div class="menu-item" onclick="showSection('documentsUtiles')">📑 <span>Documents utiles</span></div>
 </div>
 
 <div class="content">
@@ -820,6 +844,21 @@ th {
   <!-- Message d'erreur -->
   <p id="contactsMsg" style="color:red; margin-top:10px;"></p>
 </div>
+
+
+
+
+<!-- Section Documents utiles -->
+
+
+<section id="documentsUtiles" class="section" style="display:none;">
+  <h2>Documents utiles</h2>
+  <div class="doc-buttons">
+    <a class="btn-doc" href="https://mega.nz/file/RrJXBAzQ#v_YAxkEAH0OolgQs8_lo1vmkaHjv3r2rcR3lsFqIZuc" target="_blank">Règlement intérieur</a>
+    <a class="btn-doc" href="https://mega.nz/file/gvBVmb7Y#v_VScH9TxuocV1pMIOEVUK7o8NbSN3105Yig89jlqNI">Formulaire d'emprunt</a>
+    </div>
+</section>
+
 
 
 
