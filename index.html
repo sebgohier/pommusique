@@ -434,9 +434,9 @@ body.dark-theme .menu-item:hover {
 <div class="menu-item" onclick="showSection('planning')">📅 <span>Planning</span></div>
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
-<div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
 <div class="menu-item" onclick="showSection('fraisdeplacement')">⛽ <span>Frais de déplacement</span></div>
- <div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
+<div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
+<div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
 <div class="menu-item" onclick="showSection('documentsUtiles')">📑 <span>Documents utiles</span></div>
 </div>
 
@@ -481,7 +481,7 @@ body.dark-theme .menu-item:hover {
   <!-- Section Répertoire Élèves -->
 
   <div class="section" id="sectionRepertoire">
-    <h2>Répertoire élèves</h2>
+    <h2>📁 Répertoire élèves</h2>
     <div style="overflow-x:auto; margin-top:20px;">
       <table id="repertoireTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
         <thead style="background: #ffb629; color:#000; text-align:left;">
@@ -503,7 +503,7 @@ body.dark-theme .menu-item:hover {
   <!-- Section Planning -->
 
   <div class="section" id="planning">
-    <h2>Planning des salles</h2>
+    <h2>📅 Planning des salles</h2>
 
     <label for="selectJour"><strong>Sélectionnez le jour :</strong></label>
     <select id="selectJour" style="padding:4px; margin-bottom:10px;">
@@ -531,7 +531,7 @@ body.dark-theme .menu-item:hover {
   <!-- Section Heures Supplémentaires -->
 
   <div class="section" id="heuresSup">
-    <h2>Déclaration Heures Supplémentaires</h2>
+    <h2>⏰ Déclaration Heures Supplémentaires</h2>
     <p style="color:red; font-weight:bold; margin-bottom:10px;">
       Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
       doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
@@ -554,7 +554,7 @@ body.dark-theme .menu-item:hover {
 
   <!-- Section Absences -->
   <div class="section" id="absences">
-    <h2>Demande d'Absences</h2>
+    <h2>📝 Demande d'Absences</h2>
     <p style="color:red; font-weight:bold; margin-bottom:10px;">
       Toute absence pour convenance personnelle doit être saisie dans ce tableau au moins 10 jours à l’avance.<br>
       Les demandes hors délai ou non validées par la direction ne seront pas acceptées.
@@ -575,7 +575,7 @@ body.dark-theme .menu-item:hover {
 
   <!-- Section Partitions -->
 <div class="section" id="partitions">
-  <h2>Partitions concert de fin d'année 2025-2026</h2>
+  <h2>🎼 Partitions concert de fin d'année 2025-2026</h2>
 
   <div style="overflow-x:auto; margin-top:20px; padding:10px; background:#f9f9f9; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
 
@@ -1127,7 +1127,7 @@ body.dark-theme .menu-item:hover {
 
 
 <div class="section" id="contacts">
-  <h2>Contacts</h2>
+  <h2>📞 Contacts</h2>
 
   <!-- Message de chargement -->
   <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
@@ -1158,7 +1158,7 @@ body.dark-theme .menu-item:hover {
 
 
 <section id="documentsUtiles" class="section" style="display:none;">
-  <h2>Documents utiles</h2>
+  <h2>📑 Documents utiles</h2>
   <div class="doc-buttons">
     <a class="btn-doc" href="https://mega.nz/file/RrJXBAzQ#v_YAxkEAH0OolgQs8_lo1vmkaHjv3r2rcR3lsFqIZuc" target="_blank">Règlement intérieur</a>
     <a class="btn-doc" href="https://mega.nz/file/gvBVmb7Y#v_VScH9TxuocV1pMIOEVUK7o8NbSN3105Yig89jlqNI">Formulaire d'emprunt</a>
@@ -1871,18 +1871,19 @@ document.getElementById("sendFD").addEventListener("click", () => {
 
 
 
-
-
-
  
 
 
-
-
-
-
 // --- Contacts ---
+
+
+// Flag global pour éviter double chargement
+let contactsAlreadyLoaded = false;
+
 function loadContacts() {
+  if (contactsAlreadyLoaded) return; // ⚡ ne pas exécuter deux fois
+  contactsAlreadyLoaded = true;
+
   const contactsTableBody = document.querySelector("#contactsTable tbody");
   const loadingMsg = document.getElementById("contactsLoading");
   const contactsMsg = document.getElementById("contactsMsg");
@@ -1891,40 +1892,32 @@ function loadContacts() {
   contactsMsg.textContent = "";
   loadingMsg.style.display = "block";
 
-
-
-  // URL de ton script Google Apps Script (Répertoire 2025/2026)
   const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
 
-  // Fonction pour remettre le 0 devant le téléphone
   function formatPhone(phone) {
-  if (!phone) return "";
-
-  let raw = phone.toString().replace(/\D/g, ""); // enlève espaces et caractères
-  if (!raw.startsWith("0")) raw = "0" + raw;
-
-  const pretty = raw.replace(/(\d{2})(?=\d)/g, "$1 ");
-
-  return `<a href="tel:${raw}" class="phone-link">${pretty}</a>`;
-}
-
+    if (!phone) return "";
+    let raw = phone.toString().replace(/\D/g, "");
+    if (!raw.startsWith("0")) raw = "0" + raw;
+    return `<a href="tel:${raw}" class="phone-link">${raw.replace(/(\d{2})(?=\d)/g, "$1 ")}</a>`;
+  }
 
   fetch(url)
     .then(r => r.json())
     .then(data => {
       loadingMsg.style.display = "none";
+      contactsTableBody.innerHTML = "";
+      contactsMsg.textContent = "";
+
       if (data.error) {
-        contactsMsg.textContent = data.error;
+        contactsMsg.textContent = "❌ " + data.error;
         return;
       }
 
-      // 🔹 Trier par NOM (dernier mot du champ "Nom")
-data.sort((a, b) => {
-  const nomA = a.Nom.trim().split(" ").pop().toLowerCase();
-  const nomB = b.Nom.trim().split(" ").pop().toLowerCase();
-  return nomA.localeCompare(nomB, 'fr', { sensitivity: 'base' });
-});
-
+      data.sort((a, b) => {
+        const nomA = a.Nom.trim().split(" ").pop().toLowerCase();
+        const nomB = b.Nom.trim().split(" ").pop().toLowerCase();
+        return nomA.localeCompare(nomB, 'fr', { sensitivity: 'base' });
+      });
 
       data.forEach(contact => {
         const tr = document.createElement("tr");
@@ -1946,11 +1939,9 @@ data.sort((a, b) => {
     });
 }
 
-
-
 document.querySelector(".menu-item[onclick*='contacts']").addEventListener("click", () => {
-  showSection("contacts");  // affiche la section Contacts
-  loadContacts();            // charge les contacts depuis Google Sheets
+  showSection("contacts");
+  loadContacts();
 });
 
 
