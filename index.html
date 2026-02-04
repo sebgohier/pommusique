@@ -317,6 +317,15 @@ body.dark-theme .menu-item:hover {
   }
 }
 
+.phone-link {
+  color: inherit;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.phone-link:hover {
+  text-decoration: underline;
+}
 
 
 
@@ -354,6 +363,7 @@ body.dark-theme .menu-item:hover {
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
 <div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
+<div class="menu-item" onclick="showSection('fraisdeplacement')">📑 <span>Frais de deplacement</span></div>
  <div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
 <div class="menu-item" onclick="showSection('documentsUtiles')">📑 <span>Documents utiles</span></div>
 </div>
@@ -361,6 +371,7 @@ body.dark-theme .menu-item:hover {
 <div class="content">
 
   <!-- SECTION ACCUEIL -->
+
 <div class="section" id="accueil" style="display:flex; flex-direction:column; align-items:center;">
   <div id="accueilMessage" style="
       flex:1;
@@ -396,6 +407,7 @@ body.dark-theme .menu-item:hover {
 
 
   <!-- Section Répertoire Élèves -->
+
   <div class="section" id="sectionRepertoire">
     <h2>Répertoire élèves</h2>
     <div style="overflow-x:auto; margin-top:20px;">
@@ -413,7 +425,11 @@ body.dark-theme .menu-item:hover {
     <p id="repertoireMsg" style="color:red; margin-top:10px;"></p>
   </div>
 
+
+
+
   <!-- Section Planning -->
+
   <div class="section" id="planning">
     <h2>Planning des salles</h2>
 
@@ -436,7 +452,12 @@ body.dark-theme .menu-item:hover {
     </div>
   </div>
 
+
+
+
+
   <!-- Section Heures Supplémentaires -->
+
   <div class="section" id="heuresSup">
     <h2>Déclaration Heures Supplémentaires</h2>
     <p style="color:red; font-weight:bold; margin-bottom:10px;">
@@ -969,6 +990,46 @@ body.dark-theme .menu-item:hover {
 </div>
 
 
+
+  <!-- Section Frais de deplacement -->
+
+<div class="section" id="fraisdeplacement">
+  <h2>Frais de déplacement</h2>
+  <table id="hsTable">
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
+      </tfoot>
+    </table>
+    <button id="addRowHs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+    <button id="sendHs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
+    <p id="hsLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
+    <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
 <!-- Section Contacts -->
 
 
@@ -1008,7 +1069,6 @@ body.dark-theme .menu-item:hover {
   <div class="doc-buttons">
     <a class="btn-doc" href="https://mega.nz/file/RrJXBAzQ#v_YAxkEAH0OolgQs8_lo1vmkaHjv3r2rcR3lsFqIZuc" target="_blank">Règlement intérieur</a>
     <a class="btn-doc" href="https://mega.nz/file/gvBVmb7Y#v_VScH9TxuocV1pMIOEVUK7o8NbSN3105Yig89jlqNI">Formulaire d'emprunt</a>
-    <a class="btn-doc" href="https://mega.nz/file/wromBJpA#lP6VyMvf0C2DzIXAW5vfsFFrVKWaF3iWVHcstXjhVHg">Contrat Location Instrument</a>
     </div>
 </section>
 
@@ -1295,10 +1355,16 @@ const repertoireTableBody = document.querySelector("#repertoireTable tbody");
 const repertoireMsg = document.getElementById("repertoireMsg");
 
 function formatPhone(phone){
-  phone = phone.toString().trim();
-  if(!phone.startsWith("0")) phone = "0"+phone;
-  return phone.replace(/(\d{2})(?=\d)/g,'$1 ');
+  if(!phone) return "";
+
+  let raw = phone.toString().replace(/\D/g,''); // enlève espaces et caractères
+  if(!raw.startsWith("0")) raw = "0" + raw;
+
+  const pretty = raw.replace(/(\d{2})(?=\d)/g,'$1 ');
+
+  return `<a href="tel:${raw}" class="phone-link">${pretty}</a>`;
 }
+
 
 function loadRepertoire(profName) {
   repertoireTableBody.innerHTML = "";
@@ -1593,10 +1659,16 @@ function loadContacts() {
 
   // Fonction pour remettre le 0 devant le téléphone
   function formatPhone(phone) {
-    phone = phone.toString().trim();
-    if (!phone.startsWith("0")) phone = "0" + phone;
-    return phone.replace(/(\d{2})(?=\d)/g, "$1 ");
-  }
+  if (!phone) return "";
+
+  let raw = phone.toString().replace(/\D/g, ""); // enlève espaces et caractères
+  if (!raw.startsWith("0")) raw = "0" + raw;
+
+  const pretty = raw.replace(/(\d{2})(?=\d)/g, "$1 ");
+
+  return `<a href="tel:${raw}" class="phone-link">${pretty}</a>`;
+}
+
 
   fetch(url)
     .then(r => r.json())
