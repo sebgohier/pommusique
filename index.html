@@ -329,10 +329,82 @@ body.dark-theme .menu-item:hover {
 
 
 
-
-
-
 </style>
+
+
+
+  <style>
+    .btnSend {
+      background-color: #f39c12;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .btnSend:hover {
+      background-color: #e08e0b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.25);
+    }
+
+    .btnSend:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 4px rgba(0,0,0,0.2);
+    }
+
+
+ table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px;
+    }
+
+    button.deleteFD {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    button.deleteFD:hover {
+      background-color: #c0392b;
+    }
+
+
+
+
+  </style>
+
+
+<!-- Flatpickr CSS local -->
+<link rel="stylesheet" href="flatpickr.min.css">
+
+<!-- Flatpickr JS local -->
+<script src="flatpickr.min.js"></script>
+
+
+<!-- Flatpickr français -->
+<script src="fr.js"></script>
 
 
 
@@ -363,7 +435,7 @@ body.dark-theme .menu-item:hover {
 <div class="menu-item" onclick="showSection('heuresSup')">⏰ <span>Heures supplémentaires</span></div>
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
 <div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
-<div class="menu-item" onclick="showSection('fraisdeplacement')">📑 <span>Frais de deplacement</span></div>
+<div class="menu-item" onclick="showSection('fraisdeplacement')">⛽ <span>Frais de déplacement</span></div>
  <div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
 <div class="menu-item" onclick="showSection('documentsUtiles')">📑 <span>Documents utiles</span></div>
 </div>
@@ -475,7 +547,7 @@ body.dark-theme .menu-item:hover {
       </tfoot>
     </table>
     <button id="addRowHs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
-    <button id="sendHs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
+    <button id="sendHs" class="btnSend">Envoyer la demande</button>
     <p id="hsLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
     <p id="confirmHs" style="color:green;font-weight:bold;"></p>
   </div>
@@ -496,7 +568,7 @@ body.dark-theme .menu-item:hover {
       <tbody></tbody>
     </table>
     <button id="addRowAbs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
-    <button id="sendAbs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
+    <button id="sendAbs" class="btnSend">Envoyer la demande</button>
     <p id="absLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
     <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
   </div>
@@ -991,37 +1063,58 @@ body.dark-theme .menu-item:hover {
 
 
 
-  <!-- Section Frais de deplacement -->
+ <!-- Section Frais de déplacement -->
+<div id="fraisdeplacement" class="section">
 
-<div class="section" id="fraisdeplacement">
-  <h2>Frais de déplacement</h2>
-  <table id="hsTable">
-      <thead>
-        <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
-      </tfoot>
-    </table>
-    <button id="addRowHs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
-    <button id="sendHs" style="background-color:#f39c12; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">Envoyer la demande</button>
-    <p id="hsLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
-    <p id="confirmHs" style="color:green;font-weight:bold;"></p>
-  </div>
+  <h2>⛽ Frais de déplacement</h2>
 
+  <p style="color:red;font-weight:bold;">
+    Les demandes de remboursement de frais de déplacement doivent être transmises
+    au plus tard le 5 du mois en cours pour être prises en compte sur la paie correspondante.
+  </p>
 
+  <h3>Véhicule</h3>
 
+  <label>Immatriculation</label>
+  <input type="text" id="immatFD" placeholder="AA-123-BB">
 
+  <label>Puissance fiscale</label>
+  <input type="number" id="puissanceFD" placeholder="Ex : 6">
 
+  <h3>Trajets</h3>
 
+  <table id="fdTable">
+    <thead>
+      <tr>
+        <th>Date<br>
+        <span style="font-size:12px; color:#555; font-weight:normal;">
+    (plusieurs jours possibles)
+  </span> 
+        </th>
+        <th>Itinéraire</th>
+        <th>Kilomètres</th>
+        <th>Péage (€)</th>
+        <th>Total km</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les lignes seront créées via JS -->
+    </tbody>
+  </table>
 
+  <button id="addRowFD">➕ Ajouter un trajet</button>
 
+  <p style="margin-top:10px;font-weight:bold;">
+    Total kilomètres : <span id="totalKmFD">0</span> km
+  </p>
 
-
-
+  <button id="sendFD" class="btnSend">Envoyer la demande</button>
+  <p id="fdLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
+  <p id="fdConfirm" style="color:green;font-weight:bold;"></p> 
 
 </div>
+
 
 
 
@@ -1069,6 +1162,7 @@ body.dark-theme .menu-item:hover {
   <div class="doc-buttons">
     <a class="btn-doc" href="https://mega.nz/file/RrJXBAzQ#v_YAxkEAH0OolgQs8_lo1vmkaHjv3r2rcR3lsFqIZuc" target="_blank">Règlement intérieur</a>
     <a class="btn-doc" href="https://mega.nz/file/gvBVmb7Y#v_VScH9TxuocV1pMIOEVUK7o8NbSN3105Yig89jlqNI">Formulaire d'emprunt</a>
+    <a class="btn-doc" href="https://mega.nz/file/wromBJpA#lP6VyMvf0C2DzIXAW5vfsFFrVKWaF3iWVHcstXjhVHg">Contrat location instrument</a>
     </div>
 </section>
 
@@ -1513,7 +1607,7 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
 
   // URL de ton script Google Apps Script (Heures supplémentaires) 
   
-  fetch("https://script.google.com/macros/s/AKfycbyoEkd0NtmfVYRaSujaVeM_wfiEbZCjfJgzTLuKx4a8SJgD47dh9zWGfOR8crss2fk9/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzlJ0hgRiuJVWdQszMMp127I9VhGIwmnMEiSj1mekioM3WFiwxamxI1W8wAsBMj02uQ/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
@@ -1593,7 +1687,7 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
 
   // URL de ton script Google Apps Script (Demande d'autorisation d'absence) 
 
-  fetch("https://script.google.com/macros/s/AKfycbwcGsM0P-K3QFztxOMBXqb2_Wi2ulzOL3vg0ARJyA-0kQlO2ubFJ06un8xnGGVoatfO/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbx_ouP5hyCczGmnO_Gy-rlbD4r_ygnGPAlhc1zmMbeZCAIywnJlSx2V9Lv19XurAqL1/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfAbs,lignes})
   })
@@ -1639,6 +1733,151 @@ window.showOnglet = function(id, btn, event) {
   parent.querySelectorAll('.onglets button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 };
+
+
+
+
+
+
+
+// --- Frais de déplacement ---
+
+
+const fdTableBody = document.querySelector("#fdTable tbody");
+const totalKmEl = document.getElementById("totalKmFD");
+
+// Fonction pour recalculer le total général
+function updateTotalKmFD() {
+  let total = 0;
+  document.querySelectorAll(".totalLigneKm").forEach(span => {
+    total += parseFloat(span.textContent) || 0;
+  });
+  totalKmEl.textContent = total;
+}
+
+// Crée une ligne de tableau
+function createFDRow(data = {}) {
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td><input type="text" class="datesFD" placeholder="Sélectionnez les jours"></td>
+    <td><input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}"></td>
+    <td><input type="number" class="kmFD" min="0" value="${data.km || ''}"></td>
+    <td><input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}"></td>
+    <td><span class="totalLigneKm">0</span></td>
+    <td>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <button type="button" class="deleteFD"
+                style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+          X
+        </button>
+        <span style="font-size:0.7em;">Supprimer</span>
+      </div>
+    </td>
+  `;
+
+  fdTableBody.appendChild(tr);
+
+  // flatpickr pour sélection multiple
+  const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
+    mode: "multiple",
+    dateFormat: "d/m/Y",
+    locale: "fr",
+    onChange: function(selectedDates) {
+      const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+      tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
+      updateTotalKmFD();
+    }
+  });
+
+  // recalcul si km change
+  tr.querySelector(".kmFD").addEventListener("input", () => {
+    const selectedDates = fpInstance.selectedDates || [];
+    const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+    tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
+    updateTotalKmFD();
+  });
+
+  // bouton supprimer
+  tr.querySelector(".deleteFD").addEventListener("click", () => {
+    tr.remove();
+    updateTotalKmFD();
+  });
+
+ 
+
+  updateTotalKmFD();
+}
+
+// Ajouter ligne via bouton "Ajouter"
+document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
+createFDRow(); // première ligne
+
+
+
+
+
+// ---------------- Envoi vers Web App ----------------
+document.getElementById("sendFD").addEventListener("click", () => {
+  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+  const nomProfFD = profMap[profAffiche]; // assure-toi que profMap existe
+  if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
+
+  const immatFD = document.getElementById("immatFD").value.trim();
+  const puissanceFD = document.getElementById("puissanceFD").value.trim();
+
+  const tbody = fdTableBody;
+  const lignes = [];
+
+  tbody.querySelectorAll("tr").forEach(tr => {
+    const fp = tr.querySelector(".datesFD")._flatpickr;
+    const dates = fp ? fp.selectedDates.map(d => d.toISOString().slice(0,10)) : [];
+
+    lignes.push({
+      dates: dates,
+      itineraire: tr.querySelector(".itineraireFD")?.value || "",
+      km: tr.querySelector(".kmFD")?.value || "",
+      peage: tr.querySelector(".peageFD")?.value || ""
+    });
+  });
+
+  const totalKm = totalKmEl.textContent;
+
+  const loadingMsg = document.getElementById("fdLoading");
+  loadingMsg.style.display = "block";          
+  document.getElementById("fdConfirm").textContent = ""; 
+
+
+
+  // -- URL WEBAPP Frais de déplacement
+  
+  fetch("https://script.google.com/macros/s/AKfycbyjgFmOZgy88i8wiQJQeQokESNGSIcyMOs6YdfPpN9ngb1G0tuMXgfnIXntdkuOnN43ag/exec", {  
+    method: "POST",
+    body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
+  })
+  .then(res => res.json())
+  .then(res => {
+    loadingMsg.style.display = "none";  
+    document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
+    tbody.innerHTML = "";
+    createFDRow();
+  })
+  .catch(err => {
+    loadingMsg.style.display = "none";  
+    document.getElementById("fdConfirm").textContent = "Erreur : " + err;
+  });
+});
+
+
+
+
+
+
+
+ 
+
+
+
 
 
 
