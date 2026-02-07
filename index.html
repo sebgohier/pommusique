@@ -408,6 +408,145 @@ body.dark-theme .menu-item:hover {
 
 
 
+<title>Agenda Événements POM Musique</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: #111827;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: flex-start;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .event-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+    }
+
+    .event-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Événements passés */
+    .event-card.past {
+      filter: grayscale(80%);
+    }
+
+    .event-card.past::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -10%;
+      width: 120%;
+      height: 2px;
+      background: red;
+      transform: rotate(-45deg);
+      transform-origin: center;
+      pointer-events: none;
+    }
+
+    .event-header {
+      padding: 0.75rem 1rem;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .event-date {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .badge-next {
+      background: #f59e0b;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .event-body {
+      padding: 1rem;
+    }
+
+    .event-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-info {
+      font-size: 0.95rem;
+      color: #374151;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .event-profs {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-top: 0.5rem;
+    }
+
+    .icon {
+      font-size: 0.9rem;
+    }
+
+  </style>
+
+
+
+
+
 
 
 
@@ -1181,16 +1320,31 @@ body.dark-theme .menu-item:hover {
 
 
 <!-- Section Evènements -->
-
-
 <section id="evenements" class="section" style="display:none;">
-  <h2>🎤 Evènements</h2>
-  
+  <h2>🎤 Agenda Evènements Pom Musique</h2>
+
+  <!-- Barre de filtres sous le titre, alignée à gauche -->
+  <div class="filters" style="margin:10px 0 20px 0; display:flex; gap:10px; flex-wrap:wrap;">
+    <select id="type-filter" style="width:150px; padding:5px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
+      <option value="Concert" selected>Concert</option>
+      <option value="Réunion">Réunion</option>
+      <option value="Répétition">Répétition</option>
+    </select>
+
+    <select id="prof-filter" style="width:150px; padding:5px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
+      <option value="all">Tous les profs</option>
+    </select>
+  </div>
+
+  <!-- Container des événements -->
+  <div id="events-container" class="events-grid"></div>
 </section>
 
 
 
 
+
+
 </div>
 
 
@@ -1201,173 +1355,28 @@ body.dark-theme .menu-item:hover {
 
 
 
-  <script>
-
-  // --- Planning ---
-
-
-  // URL de ton script Google Apps Script (Répertoire 2025/2026) 
-  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
-
-const profs = {
-  "Valérie":   "#A7C7E7",  // bleu ciel pastel
-  "Christian": "#CDB4DB",  // violet pastel
-  "Christelle":"#B7E4C7",  // vert menthe
-  "Anthony":   "#AEC6CF",  // bleu-gris
-  "Vincent":   "#E2C2FF",  // lavande
-  "Arnaud":    "#E6D3A3",  // beige sable (lisible, pas jaune UI)
-  "Laurence":  "#BDE0FE",  // bleu clair
-  "Marion":    "#FFADAD",  // rose pastel (remplace le rouge agressif)
-  "Séb":       "#A8DADC"   // turquoise pastel
-};
-
-
-
-  const salles = ["FM-piano","Batterie","Guitare","Piano 2","Artistes"];
-  const startHour = 8;
-  const endHour = 22;
-  const pxMin = 2.5;
-
- async function loadPlanning() {
-  const day = selectJour.value;
-  const loadingMsg = document.getElementById("planningLoading");
-  loadingMsg.textContent = "⏳ Chargement du planning…";
-  loadingMsg.style.display = "block";
-
-  const wrapper = document.getElementById("planningWrapper");
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    planningContainer.innerHTML = "";
-    horaires.innerHTML = "";
-
-    const totalMin = (endHour - startHour) * 60;
-    planningContainer.style.height = totalMin * pxMin + "px";
-    horaires.style.height = planningContainer.style.height;
-
-    // Colonnes
-    salles.forEach(s => {
-      const c = document.createElement("div");
-      c.className = "salle-column";
-      c.dataset.salle = s;
-      c.style.flex = "1";
-      c.style.borderLeft = "1px solid #000";
-      c.style.borderRight = "1px solid #000";
-      c.style.position = "relative";
-      c.innerHTML = `<div class="salle-header" style="position:sticky; top:0; background:#ffb629; text-align:center; border-bottom:1px solid #000; padding:4px; font-weight:bold; z-index:10;">${s}</div>`;
-      for (let i = 0; i < totalMin; i += 15) {
-        const l = document.createElement("div");
-        l.className = "ligne-interval";
-        l.style.position = "absolute";
-        l.style.left = "0";
-        l.style.right = "0";
-        l.style.height = "1px";
-        l.style.background = "#eee";
-        l.style.top = i * pxMin + "px";
-        c.appendChild(l);
-      }
-      planningContainer.appendChild(c);
-    });
-
-    // Horaires
-    for (let h = startHour; h <= endHour; h++) {
-      const d = document.createElement("div");
-      d.className = "heure";
-      d.style.position = "absolute";
-      d.style.top = (h - startHour) * 60 * pxMin + "px";
-      d.style.width = "100%";
-      d.style.fontSize = "12px";
-      d.innerText = h + ":00";
-      horaires.appendChild(d);
-    }
-
-    // Cours
-    data.forEach(c => {
-      if (c.jour !== day || !salles.includes(c.salle)) return;
-
-      const d = new Date(c.horaire);
-      const min = d.getHours() * 60 + d.getMinutes();
-      const top = (min - startHour * 60) * pxMin;
-
-      let dur = 30;
-      if (c.type === "collectif") {
-        const n = c.cours.toLowerCase();
-        if (n.includes("chorale")) dur = 120;
-        else if (n.includes("éveil") || n.includes("eveil")) dur = 45;
-        else dur = 60;
-      }
-
-      const b = document.createElement("div");
-      b.className = "cours";
-      b.style.position = "absolute";
-      b.style.left = "4px";
-      b.style.right = "4px";
-      b.style.top = top + "px";
-      b.style.height = dur * pxMin + "px";
-      b.style.borderRadius = "4px";
-      b.style.border = "1px solid #000";
-      b.style.padding = "4px";
-      b.style.fontSize = "12px";
-      b.style.display = "flex";
-      b.style.flexDirection = "column";
-      b.style.justifyContent = "center";
-      b.style.alignItems = "center";
-      b.style.textAlign = "center";
-      b.style.boxSizing = "border-box";
-
-      b.style.backgroundColor = c.prof && profs[c.prof] ? profs[c.prof] : "#ddd";
-      b.innerHTML =
-        (c.type === "collectif" ? c.cours : c.eleve) +
-        (c.prof ? `<div class="prof" style="font-style:italic; color:#444; font-size:11px;">${c.prof}</div>` : "");
-
-      document.querySelector(`[data-salle='${c.salle}']`).appendChild(b);
-    });
-
-    // Scroll automatique vers le premier cours
-    setTimeout(() => {
-      const cours = wrapper.querySelectorAll(".cours");
-      if (!cours.length) return;
-
-      let minTop = Infinity;
-      cours.forEach(c => {
-        minTop = Math.min(minTop, c.offsetTop);
-      });
-
-      wrapper.scrollTop = Math.max(0, minTop - 40);
-    }, 50);
-
-    // 🔹 Message succès
-    loadingMsg.textContent = "✅ Planning chargé avec succès";
-    setTimeout(() => (loadingMsg.style.display = "none"), 1500);
-
-  } catch (err) {
-    loadingMsg.textContent = "❌ Erreur lors du chargement : " + err;
-    console.error(err);
-    setTimeout(() => (loadingMsg.style.display = "none"), 3000);
-  }
-}
-
-
-
-
-  selectJour.onchange = loadPlanning;
-  loadPlanning();
-  </script>
-</div>
 
 <script>
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-
 // ================================
-// Mapping affichage ↔ GAS
+// GLOBAL CONSTANTS
 // ================================
+const profs = {
+  "Valérie":   "#A7C7E7",
+  "Christian": "#CDB4DB",
+  "Christelle":"#B7E4C7",
+  "Anthony":   "#AEC6CF",
+  "Vincent":   "#E2C2FF",
+  "Arnaud":    "#E6D3A3",
+  "Laurence":  "#BDE0FE",
+  "Marion":    "#FFADAD",
+  "Séb":       "#A8DADC"
+};
+
+const salles = ["FM-piano","Batterie","Guitare","Piano 2","Artistes"];
+const startHour = 8;
+const endHour = 22;
+const pxMin = 2.5;
+
 const profMap = {
   "Anthony BUNEL": "Anthony",
   "Arnaud GRASSIN": "Arnaud",
@@ -1380,83 +1389,258 @@ const profMap = {
   "Vincent DESGRIPPES": "Vincent"
 };
 
+const typesEvenement = ["Concert","Répétition","Autre"];
+const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
-
-
-// --- Sections ---
-
-
-window.showSection = section => {
-  const prof = document.getElementById("selectProfGlobal").value;
-
-  // 🔹 Bloquer complètement si aucun prof n'est choisi (sauf accueil)
-  if(!prof && section !== 'accueil') {
-    alert("Veuillez choisir un professeur pour accéder à cette section !");
-    return; // ← stoppe la fonction
-  }
-
-  // Masquer toutes les sections
-  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-
-  // Afficher la section demandée
-  document.getElementById(section).style.display = 'block';
-
-  // 🔹 Afficher ou cacher le select de prof
-  const profSelector = document.getElementById('profSelectorWrapper');
-  profSelector.style.display = (section === 'accueil') ? 'block' : 'none';
-
-  // 🔹 NOUVEAU : fermer le menu mobile après clic
-  if (window.innerWidth < 768) {
-    document.querySelector(".sidebar").classList.remove("open");
-  }
-
-
-
-
-};
-
-// --- Logo cliquable pour revenir à l'accueil ---
-const logo = document.querySelector(".sidebar img");
-logo.style.cursor = 'pointer';
-logo.addEventListener("click", () => {
-  // Affiche la page d'accueil avec le message et le select
-  showSection('accueil');
-});
-
-// --- Texte "Pom Musique" cliquable sur mobile ---
-const topbarTitle = document.querySelector(".app-title");
-topbarTitle.style.cursor = 'pointer';
-topbarTitle.addEventListener("click", () => {
-    showSection('accueil');
-});
-
-
-// --- Faire disparaître le message d’accueil automatiquement dès qu’un prof est choisi ---
-document.getElementById("selectProfGlobal").addEventListener("change", () => {
-  const prof = document.getElementById("selectProfGlobal").value;
-  if(prof) document.getElementById("accueilMessage").style.display = "flex";
-});
-
-// --- Au chargement de la page, afficher directement l'accueil ---
+// ================================
+// DOMContentLoaded
+// ================================
 document.addEventListener("DOMContentLoaded", () => {
+
+  // =================================
+  // UTILITIES
+  // =================================
+  function formatPhone(phone){
+    if(!phone) return "";
+    let raw = phone.toString().replace(/\D/g,''); 
+    if(!raw.startsWith("0")) raw = "0" + raw;
+    return `<a href="tel:${raw}" class="phone-link">${raw.replace(/(\d{2})(?=\d)/g,'$1 ')}</a>`;
+  }
+
+  function formatDateFR(dateStr) {
+    const d = new Date(dateStr);
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
+  function calculateDuration(start,end){
+    if(!start||!end) return "0h00";
+    const [h1,m1]=start.split(":").map(Number);
+    const [h2,m2]=end.split(":").map(Number);
+    let total=(h2*60+m2)-(h1*60+m1); if(total<0) total=0;
+    return formatDuration(Math.floor(total/60), total%60);
+  }
+
+  // =================================
+  // SECTIONS
+  // =================================
+  window.showSection = section => {
+    const prof = document.getElementById("selectProfGlobal").value;
+    if(!prof && section !== 'accueil') {
+      alert("Veuillez choisir un professeur pour accéder à cette section !");
+      return;
+    }
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    document.getElementById(section).style.display = 'block';
+    document.getElementById('profSelectorWrapper').style.display = (section === 'accueil') ? 'block' : 'none';
+    if (window.innerWidth < 768) document.querySelector(".sidebar").classList.remove("open");
+  };
+
+  // Logo et titre mobile
+  document.querySelector(".sidebar img").style.cursor='pointer';
+  document.querySelector(".sidebar img").addEventListener("click", ()=>showSection('accueil'));
+  document.querySelector(".app-title").style.cursor='pointer';
+  document.querySelector(".app-title").addEventListener("click", ()=>showSection('accueil'));
+
+  // Menu toggle mobile
+  document.getElementById("menuToggle").addEventListener("click", ()=>{
+    document.querySelector(".sidebar").classList.toggle("open");
+  });
+
+  // Theme toggle
+  document.getElementById("themeToggle").addEventListener("click", ()=>{
+    document.body.classList.toggle("dark-theme");
+  });
+
+  // Affichage accueil
   showSection('accueil');
-});
 
-// 🔹 MENU ☰ MOBILE
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.querySelector(".sidebar");
+  // =================================
+  // PLANNING
+  // =================================
+  window.loadPlanning = async function() {
+    const day = selectJour.value;
+    const loadingMsg = document.getElementById("planningLoading");
+    loadingMsg.textContent = "⏳ Chargement du planning…";
+    loadingMsg.style.display = "block";
 
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
+    const wrapper = document.getElementById("planningWrapper");
+    const planningContainer = document.getElementById("planningContainer");
+    const horaires = document.getElementById("horaires");
+
+    try {
+      const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
+      const res = await fetch(url);
+      const data = await res.json();
+
+      planningContainer.innerHTML = "";
+      horaires.innerHTML = "";
+
+      const totalMin = (endHour - startHour) * 60;
+      planningContainer.style.height = totalMin * pxMin + "px";
+      horaires.style.height = planningContainer.style.height;
+
+      // Colonnes
+      salles.forEach(s => {
+        const c = document.createElement("div");
+        c.className="salle-column"; c.dataset.salle=s;
+        c.style.flex="1"; c.style.borderLeft="1px solid #000"; c.style.borderRight="1px solid #000"; c.style.position="relative";
+        c.innerHTML=`<div class="salle-header" style="position:sticky;top:0;background:#ffb629;text-align:center;border-bottom:1px solid #000;padding:4px;font-weight:bold;z-index:10;">${s}</div>`;
+        for(let i=0;i<totalMin;i+=15){
+          const l=document.createElement("div");
+          l.className="ligne-interval"; l.style.position="absolute"; l.style.left="0"; l.style.right="0"; l.style.height="1px"; l.style.background="#eee"; l.style.top=i*pxMin+"px";
+          c.appendChild(l);
+        }
+        planningContainer.appendChild(c);
+      });
+
+      // Horaires
+      for(let h=startHour; h<=endHour; h++){
+        const d = document.createElement("div");
+        d.className="heure"; d.style.position="absolute"; d.style.top=(h-startHour)*60*pxMin+"px"; d.style.width="100%"; d.style.fontSize="12px"; d.innerText=h+":00";
+        horaires.appendChild(d);
+      }
+
+      // Cours
+      data.forEach(c => {
+        if(c.jour!==day || !salles.includes(c.salle)) return;
+        const d = new Date(c.horaire);
+        const min = d.getHours()*60 + d.getMinutes();
+        const top = (min-startHour*60)*pxMin;
+        let dur = 30;
+        if(c.type==="collectif"){
+          const n=c.cours.toLowerCase();
+          if(n.includes("chorale")) dur=120;
+          else if(n.includes("éveil")||n.includes("eveil")) dur=45;
+          else dur=60;
+        }
+        const b=document.createElement("div");
+        b.className="cours"; b.style.position="absolute"; b.style.left="4px"; b.style.right="4px"; b.style.top=top+"px"; b.style.height=dur*pxMin+"px";
+        b.style.borderRadius="4px"; b.style.border="1px solid #000"; b.style.padding="4px"; b.style.fontSize="12px"; b.style.display="flex"; b.style.flexDirection="column"; b.style.justifyContent="center"; b.style.alignItems="center"; b.style.textAlign="center"; b.style.boxSizing="border-box";
+        b.style.backgroundColor=c.prof&&profs[c.prof]?profs[c.prof]:"#ddd";
+        b.innerHTML=(c.type==="collectif"?c.cours:c.eleve)+(c.prof?`<div class="prof" style="font-style:italic;color:#444;font-size:11px;">${c.prof}</div>`:"");
+        document.querySelector(`[data-salle='${c.salle}']`).appendChild(b);
+      });
+
+      // Scroll auto vers premier cours
+      setTimeout(()=>{
+        const cours = wrapper.querySelectorAll(".cours");
+        if(!cours.length) return;
+        let minTop=Infinity;
+        cours.forEach(c=>{minTop=Math.min(minTop,c.offsetTop);});
+        wrapper.scrollTop=Math.max(0,minTop-40);
+      },50);
+
+      loadingMsg.textContent = "✅ Planning chargé avec succès";
+      setTimeout(()=>loadingMsg.style.display="none",1500);
+
+    } catch(err){
+      loadingMsg.textContent="❌ Erreur lors du chargement : "+err;
+      console.error(err);
+      setTimeout(()=>loadingMsg.style.display="none",3000);
+    }
+  };
+
+  selectJour.onchange = loadPlanning;
+  loadPlanning();
+
+  // =================================
+  // EVENEMENTS
+  // =================================
+  window.initEvents = function(){
+    const API_EVENTS_URL="https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+    let allEvents=[];
+    const container=document.getElementById("events-container");
+
+    function populateProfFilter(){
+      const profSet=new Set();
+      allEvents.forEach(ev=>ev.profs.forEach(p=>profSet.add(p)));
+      const profFilter=document.getElementById("prof-filter");
+      if(!profFilter) return;
+      profFilter.innerHTML=`<option value="all">Tous les profs</option>`;
+      profSet.forEach(prof=>{const opt=document.createElement("option"); opt.value=prof; opt.textContent=prof; profFilter.appendChild(opt);});
+      profFilter.addEventListener("change",applyFilters);
+      document.getElementById("type-filter").addEventListener("change",applyFilters);
+    }
+
+    function applyFilters(){
+      const typeValue=document.getElementById("type-filter").value;
+      const profValue=document.getElementById("prof-filter").value;
+      let filtered=allEvents;
+      if(typeValue) filtered=filtered.filter(ev=>ev.type===typeValue);
+      if(profValue!=="all") filtered=filtered.filter(ev=>ev.profs.includes(profValue));
+      renderEvents(filtered);
+    }
+
+    function renderEvents(events){
+      if(!container) return;
+      const now=new Date();
+      container.innerHTML = events.map(ev=>{
+        const eventDate=new Date(ev.date+"T"+(ev.heure||"00:00"));
+        const isNext=eventDate>=now, isPast=eventDate<now;
+        let headerColor="#6366F1"; if(ev.type==="Réunion") headerColor="#F59E0B"; if(ev.type==="Répétition") headerColor="#10B981";
+        return `<div class="event-card ${isPast?'past':''}"><div class="event-header" style="background:${headerColor}"><div class="event-date">${formatDateFR(ev.date)}</div>${!isPast&&isNext?'<div class="badge-next">Prochain</div>':''}</div><div class="event-body"><div class="event-name">${ev.nom}</div><div class="event-info"><span class="icon">📍</span>${ev.lieu||'À déterminer'}, ${ev.ville||'À déterminer'}</div><div class="event-info"><span class="icon">🕒</span>${ev.heure||'À déterminer'}</div><div class="event-profs">🎼 ${ev.profs.join(", ")}</div></div></div>`;
+      }).join("");
+      container.querySelectorAll(".event-card").forEach((card,i)=>setTimeout(()=>card.classList.add("show"),i*100));
+    }
+
+    fetch(API_EVENTS_URL+"?action=events")
+      .then(r=>r.json())
+      .then(data=>{
+        allEvents=data.map(ev=>({...ev, profs:typeof ev.profs==="string"?ev.profs.split(",").map(p=>p.trim()):ev.profs}));
+        populateProfFilter();
+        applyFilters();
+      })
+      .catch(err=>{
+        if(container) container.innerHTML=`<p style="color:red">${err.message}</p>`;
+        console.error(err);
+      });
+  };
+  initEvents();
+
+  // =================================
+  // CONTACTS
+  // =================================
+  window.loadContacts = function(){
+    if(window.contactsAlreadyLoaded) return;
+    window.contactsAlreadyLoaded = true;
+
+    const contactsTableBody=document.querySelector("#contactsTable tbody");
+    const loadingMsg=document.getElementById("contactsLoading");
+    const contactsMsg=document.getElementById("contactsMsg");
+    contactsTableBody.innerHTML=""; contactsMsg.textContent=""; loadingMsg.style.display="block";
+
+    const url="https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
+
+    fetch(url).then(r=>r.json()).then(data=>{
+      loadingMsg.style.display="none"; contactsTableBody.innerHTML=""; contactsMsg.textContent="";
+      if(data.error){contactsMsg.textContent="❌ "+data.error; return;}
+      data.sort((a,b)=>a.Nom.trim().split(" ").pop().toLowerCase().localeCompare(b.Nom.trim().split(" ").pop().toLowerCase()));
+      data.forEach(contact=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Nom}</td>
+        <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(contact.Téléphone)}</td>
+        <td style="padding:8px;border-bottom:1px solid #ddd;"><a href="mailto:${contact.Email}">${contact.Email}</a></td>
+        <td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Fonction}</td>`;
+        contactsTableBody.appendChild(tr);
+      });
+    }).catch(err=>{
+      loadingMsg.style.display="none";
+      contactsMsg.textContent="❌ Erreur lors du chargement : "+err;
+      console.error(err);
+    });
+  };
+
+  document.querySelector(".menu-item[onclick*='contacts']").addEventListener("click", ()=>{
+    showSection("contacts");
+    loadContacts();
+  });
 
 
-// 🔹 BOUTON THEME MOBILE
-const themeToggle = document.getElementById("themeToggle");
 
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark-theme"); // ajoute/enlève la classe dark-theme
-});
+
+
 
 
 
@@ -1891,6 +2075,140 @@ document.getElementById("sendFD").addEventListener("click", () => {
     document.getElementById("fdConfirm").textContent = "Erreur : " + err;
   });
 });
+
+
+
+
+
+
+// --- Evènements ---
+
+
+
+// --- Evènements ---
+function initEvents() {
+  const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+  let allEvents = [];
+
+  function formatDateFR(dateStr) {
+    const d = new Date(dateStr);
+    const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`; // jour de semaine supprimé
+  }
+
+  function fetchAndRenderEvents() {
+    const container = document.getElementById("events-container");
+    if (!container) return;
+
+  fetch(API_EVENTS_URL + "?action=events")
+  .then(res => res.json())
+  .then(data => {
+    console.log("Événements reçus :", data); // <-- AJOUTE CE LOG
+
+    allEvents = data.map(ev => ({
+      ...ev,
+      profs: (typeof ev.profs === "string") ? ev.profs.split(",").map(p => p.trim()) : ev.profs
+    }));
+
+    populateProfFilter();
+    applyFilters();
+  })
+  .catch(err => {
+    container.innerHTML = `<p style="color:red">${err.message}</p>`;
+  });
+
+  }
+
+  function populateProfFilter() {
+    const profSet = new Set();
+    allEvents.forEach(ev => ev.profs.forEach(p => profSet.add(p)));
+
+    const profFilter = document.getElementById("prof-filter");
+    if (!profFilter) return;
+    profFilter.innerHTML = `<option value="all">Tous les profs</option>`; // reset
+
+    profSet.forEach(prof => {
+      const opt = document.createElement("option");
+      opt.value = prof;
+      opt.textContent = prof;
+      profFilter.appendChild(opt);
+    });
+
+    profFilter.addEventListener("change", applyFilters);
+    document.getElementById("type-filter").addEventListener("change", applyFilters);
+  }
+
+  function applyFilters() {
+    const typeValue = document.getElementById("type-filter").value;
+    const profValue = document.getElementById("prof-filter").value;
+
+    let filtered = allEvents;
+
+    if (typeValue) filtered = filtered.filter(ev => ev.type === typeValue);
+    if (profValue !== "all") filtered = filtered.filter(ev => ev.profs.includes(profValue));
+
+    renderEvents(filtered);
+  }
+
+  function renderEvents(events) {
+    const container = document.getElementById("events-container");
+    if (!container) return;
+
+    const now = new Date();
+    container.innerHTML = events.map(ev => {
+      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+      const isNext = eventDate >= now;
+      const isPast = eventDate < now;
+
+      let headerColor = "#6366F1";
+      if (ev.type === "Réunion") headerColor = "#F59E0B";
+      if (ev.type === "Répétition") headerColor = "#10B981";
+
+      return `
+      <div class="event-card ${isPast ? 'past' : ''}">
+        <div class="event-header" style="background:${headerColor}">
+          <div class="event-date">${formatDateFR(ev.date)}</div>
+          ${!isPast && isNext ? '<div class="badge-next">Prochain</div>' : ''}
+        </div>
+        <div class="event-body">
+          <div class="event-name">${ev.nom}</div>
+          <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+          <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+          <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+        </div>
+      </div>`;
+    }).join("");
+
+    // Animation cascade
+    container.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 100));
+  }
+
+  fetchAndRenderEvents();
+}
+
+// 🔹 Initialisation
+document.addEventListener("DOMContentLoaded", () => initEvents());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
