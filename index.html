@@ -409,139 +409,218 @@ body.dark-theme .menu-item:hover {
 
 
 <title>Agenda Événements POM Musique</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Roboto, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+/* ================================
+   Global
+   ================================ */
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
 
-    .container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 1rem;
-      font-size: 2rem;
-      color: #111827;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #111827;
+}
 
-    .filters {
-      display: flex;
-      justify-content: flex-start;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
+/* ================================
+   Barre de filtres
+   ================================ */
+.filters {
+  display: flex;
+  justify-content: flex-start; /* aligné à gauche */
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
 
-    select {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
-    .events-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-    }
+/* ================================
+   Conteneur événements
+   ================================ */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
 
-    .event-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow: hidden;
-      position: relative;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
-    }
+/* ================================
+   Événements futurs
+   ================================ */
+.upcoming-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
 
-    .event-card.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+/* ================================
+   Événements passés (scroll horizontal, éventail)
+   ================================ */
 
-    .event-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
+.past-events .event-card {
+  display: inline-block;
+  vertical-align: top;
+  width: 220px;
+  font-size: 0.85em;
+  margin-right: -40px; /* chevauchement éventail */
+  transform: rotate(-5deg);
+  transition: transform 0.3s, z-index 0.3s, filter 0.3s, background-color 0.3s;
+  position: relative;
 
-    /* Événements passés */
-    .event-card.past {
-      filter: grayscale(80%);
-    }
+  /* GRIS + léger transparent */
+  filter: grayscale(80%);
+  background-color: rgba(255, 255, 255, 0.85); /* légèrement transparent */
+}
 
-    .event-card.past::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -10%;
-      width: 120%;
-      height: 2px;
-      background: red;
-      transform: rotate(-45deg);
-      transform-origin: center;
-      pointer-events: none;
-    }
+/* Diagonale rouge */
+.past-events .event-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 2px;
+  background: red;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  pointer-events: none;
+}
 
-    .event-header {
-      padding: 0.75rem 1rem;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+/* Hover pour effet éventail */
+.past-events .event-card:hover {
+  transform: rotate(0deg) scale(1.1);
+  z-index: 10;
+  filter: grayscale(0%);
+  background-color: #fff; /* redevient normal au hover */
+}
 
-    .event-date {
-      font-weight: bold;
-      font-size: 1rem;
-    }
 
-    .badge-next {
-      background: #f59e0b;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
 
-    .event-body {
-      padding: 1rem;
-    }
+/* ================================
+   Cartes d'événements
+   ================================ */
+.event-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+}
 
-    .event-name {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #111827;
-      margin-bottom: 0.5rem;
-    }
+.event-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    .event-info {
-      font-size: 0.95rem;
-      color: #374151;
-      margin-bottom: 0.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
 
-    .event-profs {
-      font-size: 0.9rem;
-      color: #4b5563;
-      margin-top: 0.5rem;
-    }
+/* ================================
+   Header carte
+   ================================ */
+.event-header {
+  padding: 0.75rem 1rem;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .icon {
-      font-size: 0.9rem;
-    }
+.event-date {
+  font-weight: bold;
+  font-size: 1rem;
+}
 
-  </style>
+.badge-next {
+  background: #f59e0b;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* ================================
+   Body carte
+   ================================ */
+.event-body {
+  padding: 1rem;
+}
+
+.event-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.event-info {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.event-profs {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-top: 0.5rem;
+}
+
+.icon {
+  font-size: 0.9rem;
+}
+
+/* ================================
+   Scrollbar (passés)
+   ================================ */
+.past-events::-webkit-scrollbar {
+  height: 8px;
+}
+
+.past-events::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+@media (max-width: 768px) {
+  .events-grid, .upcoming-events {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .past-events .event-card {
+    width: 180px;
+    margin-right: -30px;
+  }
+}
+
+</style>
+
 
 
 
@@ -1321,7 +1400,7 @@ body.dark-theme .menu-item:hover {
 
 <!-- Section Evènements -->
 <section id="evenements" class="section" style="display:none;">
-  <h2>🎤 Agenda Evènements Pom Musique</h2>
+  <h2>🎤 Agenda Évènements Pom Musique</h2>
 
   <!-- Barre de filtres sous le titre, alignée à gauche -->
   <div class="filters" style="margin:10px 0 20px 0; display:flex; gap:10px; flex-wrap:wrap;">
@@ -1336,9 +1415,13 @@ body.dark-theme .menu-item:hover {
     </select>
   </div>
 
-  <!-- Container des événements -->
-  <div id="events-container" class="events-grid"></div>
+  <!-- Container des événements futurs -->
+  <div id="upcoming-events" class="upcoming-events"></div>
+
+  <!-- Container des événements passés (scroll horizontal, effet éventail) -->
+  <div id="past-events" class="past-events"></div>
 </section>
+
 
 
 
@@ -1470,6 +1553,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const horaires = document.getElementById("horaires");
 
     try {
+
+      
+      // URL de ton script Google Apps Script (Répertoire 2025/2026)
+
       const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
       const res = await fetch(url);
       const data = await res.json();
@@ -1545,59 +1632,140 @@ document.addEventListener("DOMContentLoaded", () => {
   selectJour.onchange = loadPlanning;
   loadPlanning();
 
-  // =================================
-  // EVENEMENTS
-  // =================================
-  window.initEvents = function(){
-    const API_EVENTS_URL="https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
-    let allEvents=[];
-    const container=document.getElementById("events-container");
 
-    function populateProfFilter(){
-      const profSet=new Set();
-      allEvents.forEach(ev=>ev.profs.forEach(p=>profSet.add(p)));
-      const profFilter=document.getElementById("prof-filter");
-      if(!profFilter) return;
-      profFilter.innerHTML=`<option value="all">Tous les profs</option>`;
-      profSet.forEach(prof=>{const opt=document.createElement("option"); opt.value=prof; opt.textContent=prof; profFilter.appendChild(opt);});
-      profFilter.addEventListener("change",applyFilters);
-      document.getElementById("type-filter").addEventListener("change",applyFilters);
-    }
 
-    function applyFilters(){
-      const typeValue=document.getElementById("type-filter").value;
-      const profValue=document.getElementById("prof-filter").value;
-      let filtered=allEvents;
-      if(typeValue) filtered=filtered.filter(ev=>ev.type===typeValue);
-      if(profValue!=="all") filtered=filtered.filter(ev=>ev.profs.includes(profValue));
-      renderEvents(filtered);
-    }
 
-    function renderEvents(events){
-      if(!container) return;
-      const now=new Date();
-      container.innerHTML = events.map(ev=>{
-        const eventDate=new Date(ev.date+"T"+(ev.heure||"00:00"));
-        const isNext=eventDate>=now, isPast=eventDate<now;
-        let headerColor="#6366F1"; if(ev.type==="Réunion") headerColor="#F59E0B"; if(ev.type==="Répétition") headerColor="#10B981";
-        return `<div class="event-card ${isPast?'past':''}"><div class="event-header" style="background:${headerColor}"><div class="event-date">${formatDateFR(ev.date)}</div>${!isPast&&isNext?'<div class="badge-next">Prochain</div>':''}</div><div class="event-body"><div class="event-name">${ev.nom}</div><div class="event-info"><span class="icon">📍</span>${ev.lieu||'À déterminer'}, ${ev.ville||'À déterminer'}</div><div class="event-info"><span class="icon">🕒</span>${ev.heure||'À déterminer'}</div><div class="event-profs">🎼 ${ev.profs.join(", ")}</div></div></div>`;
-      }).join("");
-      container.querySelectorAll(".event-card").forEach((card,i)=>setTimeout(()=>card.classList.add("show"),i*100));
-    }
 
-    fetch(API_EVENTS_URL+"?action=events")
-      .then(r=>r.json())
-      .then(data=>{
-        allEvents=data.map(ev=>({...ev, profs:typeof ev.profs==="string"?ev.profs.split(",").map(p=>p.trim()):ev.profs}));
-        populateProfFilter();
-        applyFilters();
-      })
-      .catch(err=>{
-        if(container) container.innerHTML=`<p style="color:red">${err.message}</p>`;
-        console.error(err);
-      });
-  };
-  initEvents();
+ // =================================
+// EVENEMENTS
+// =================================
+
+window.initEvents = function() {
+
+
+   // URL de ton script Google Apps Script (évènements de l'année)
+
+  const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+  let allEvents = [];
+
+  const upcomingContainer = document.getElementById("upcoming-events");
+  const pastContainer = document.getElementById("past-events");
+
+  function formatDateFR(dateStr) {
+    const d = new Date(dateStr);
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function populateProfFilter() {
+    const profSet = new Set();
+    allEvents.forEach(ev => ev.profs.forEach(p => profSet.add(p)));
+
+    const profFilter = document.getElementById("prof-filter");
+    if(!profFilter) return;
+    profFilter.innerHTML = `<option value="all">Tous les profs</option>`;
+
+    profSet.forEach(prof => {
+      const opt = document.createElement("option");
+      opt.value = prof;
+      opt.textContent = prof;
+      profFilter.appendChild(opt);
+    });
+
+    profFilter.addEventListener("change", applyFilters);
+    document.getElementById("type-filter").addEventListener("change", applyFilters);
+  }
+
+  function applyFilters() {
+    const typeValue = document.getElementById("type-filter").value;
+    const profValue = document.getElementById("prof-filter").value;
+
+    let filtered = allEvents;
+    if(typeValue) filtered = filtered.filter(ev => ev.type === typeValue);
+    if(profValue !== "all") filtered = filtered.filter(ev => ev.profs.includes(profValue));
+
+    renderEvents(filtered);
+  }
+
+  function renderEvents(events) {
+    if(!upcomingContainer || !pastContainer) return;
+
+    const now = new Date();
+    const upcoming = [];
+    const past = [];
+
+    events.forEach(ev => {
+      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+      if(eventDate >= now) upcoming.push(ev);
+      else past.push(ev);
+    });
+
+    // --- FUTURS ---
+    upcomingContainer.innerHTML = upcoming.map(ev => {
+      let headerColor = "#6366F1";
+      if(ev.type === "Réunion") headerColor = "#F59E0B";
+      if(ev.type === "Répétition") headerColor = "#10B981";
+      return `
+        <div class="event-card">
+          <div class="event-header" style="background:${headerColor}">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+            <div class="badge-next">Prochain</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
+
+    // --- PASSÉS ---
+    pastContainer.innerHTML = past.map((ev, i) => {
+      let headerColor = "#6366F1";
+      if(ev.type === "Réunion") headerColor = "#F59E0B";
+      if(ev.type === "Répétition") headerColor = "#10B981";
+      return `
+        <div class="event-card past" style="z-index:${past.length - i}">
+          <div class="event-header" style="background:${headerColor}">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
+
+    // Animations
+    upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 100));
+    pastContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 50));
+  }
+
+  // --- FETCH ---
+  fetch(API_EVENTS_URL + "?action=events")
+    .then(r => r.json())
+    .then(data => {
+      allEvents = data.map(ev => ({
+        ...ev,
+        profs: typeof ev.profs === "string" ? ev.profs.split(",").map(p => p.trim()) : ev.profs
+      }));
+      populateProfFilter();
+      applyFilters();
+    })
+    .catch(err => {
+      if(upcomingContainer) upcomingContainer.innerHTML = `<p style="color:red">${err.message}</p>`;
+      console.error(err);
+    });
+};
+
+// 🔹 Initialisation
+initEvents();
+
+
+
 
   // =================================
   // CONTACTS
@@ -1610,6 +1778,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadingMsg=document.getElementById("contactsLoading");
     const contactsMsg=document.getElementById("contactsMsg");
     contactsTableBody.innerHTML=""; contactsMsg.textContent=""; loadingMsg.style.display="block";
+
+ 
+   
+    // URL de ton script Google Apps Script (Répertoire 2025/2026)
+
 
     const url="https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
 
@@ -1682,6 +1855,7 @@ function loadRepertoire(profName) {
 
 
   // URL de ton script Google Apps Script (Répertoire 2025/2026)
+
   const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" + encodeURIComponent(profName);
 
   fetch(url)
@@ -2039,7 +2213,15 @@ document.getElementById("sendFD").addEventListener("click", () => {
 
   tbody.querySelectorAll("tr").forEach(tr => {
     const fp = tr.querySelector(".datesFD")._flatpickr;
-    const dates = fp ? fp.selectedDates.map(d => d.toISOString().slice(0,10)) : [];
+    const dates = fp
+  ? fp.selectedDates.map(d => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;   // YYYY-MM-DD sans UTC
+    })
+  : [];
+
 
     lignes.push({
       dates: dates,
@@ -2059,7 +2241,7 @@ document.getElementById("sendFD").addEventListener("click", () => {
 
   // -- URL WEBAPP Frais de déplacement
   
-  fetch("https://script.google.com/macros/s/AKfycbyjgFmOZgy88i8wiQJQeQokESNGSIcyMOs6YdfPpN9ngb1G0tuMXgfnIXntdkuOnN43ag/exec", {  
+  fetch("https://script.google.com/macros/s/AKfycbz0LrYQYjtP4t8mcyW-Ro54OhESsiL9vbcTAcFIieWVaYaH4suZMrCR6STjIVufDXOPQA/exec", {  
     method: "POST",
     body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
   })
@@ -2081,43 +2263,26 @@ document.getElementById("sendFD").addEventListener("click", () => {
 
 
 
-// --- Evènements ---
+// --- Événements ---
 
 
 
-// --- Evènements ---
 function initEvents() {
+
+
+  // URL WebApp Google Apps Script (évènements de l'année)
+
+
   const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
   let allEvents = [];
 
+  const upcomingContainer = document.getElementById("upcoming-events");
+  const pastContainer = document.getElementById("past-events");
+
   function formatDateFR(dateStr) {
     const d = new Date(dateStr);
-    const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
     const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`; // jour de semaine supprimé
-  }
-
-  function fetchAndRenderEvents() {
-    const container = document.getElementById("events-container");
-    if (!container) return;
-
-  fetch(API_EVENTS_URL + "?action=events")
-  .then(res => res.json())
-  .then(data => {
-    console.log("Événements reçus :", data); // <-- AJOUTE CE LOG
-
-    allEvents = data.map(ev => ({
-      ...ev,
-      profs: (typeof ev.profs === "string") ? ev.profs.split(",").map(p => p.trim()) : ev.profs
-    }));
-
-    populateProfFilter();
-    applyFilters();
-  })
-  .catch(err => {
-    container.innerHTML = `<p style="color:red">${err.message}</p>`;
-  });
-
+    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
   }
 
   function populateProfFilter() {
@@ -2126,7 +2291,7 @@ function initEvents() {
 
     const profFilter = document.getElementById("prof-filter");
     if (!profFilter) return;
-    profFilter.innerHTML = `<option value="all">Tous les profs</option>`; // reset
+    profFilter.innerHTML = `<option value="all">Tous les profs</option>`;
 
     profSet.forEach(prof => {
       const opt = document.createElement("option");
@@ -2144,7 +2309,6 @@ function initEvents() {
     const profValue = document.getElementById("prof-filter").value;
 
     let filtered = allEvents;
-
     if (typeValue) filtered = filtered.filter(ev => ev.type === typeValue);
     if (profValue !== "all") filtered = filtered.filter(ev => ev.profs.includes(profValue));
 
@@ -2152,24 +2316,29 @@ function initEvents() {
   }
 
   function renderEvents(events) {
-    const container = document.getElementById("events-container");
-    if (!container) return;
+    if (!upcomingContainer || !pastContainer) return;
 
     const now = new Date();
-    container.innerHTML = events.map(ev => {
-      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
-      const isNext = eventDate >= now;
-      const isPast = eventDate < now;
+    const upcoming = [];
+    const past = [];
 
+    events.forEach(ev => {
+      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+      if (eventDate >= now) upcoming.push(ev);
+      else past.push(ev);
+    });
+
+    // --- FUTURS ÉVÉNEMENTS ---
+    upcomingContainer.innerHTML = upcoming.map(ev => {
       let headerColor = "#6366F1";
       if (ev.type === "Réunion") headerColor = "#F59E0B";
       if (ev.type === "Répétition") headerColor = "#10B981";
 
       return `
-      <div class="event-card ${isPast ? 'past' : ''}">
+      <div class="event-card">
         <div class="event-header" style="background:${headerColor}">
           <div class="event-date">${formatDateFR(ev.date)}</div>
-          ${!isPast && isNext ? '<div class="badge-next">Prochain</div>' : ''}
+          <div class="badge-next">Prochain</div>
         </div>
         <div class="event-body">
           <div class="event-name">${ev.nom}</div>
@@ -2180,34 +2349,50 @@ function initEvents() {
       </div>`;
     }).join("");
 
-    // Animation cascade
-    container.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 100));
+    // --- PASSÉS ÉVÉNEMENTS ---
+    pastContainer.innerHTML = past.map(ev => {
+      let headerColor = "#6366F1";
+      if (ev.type === "Réunion") headerColor = "#F59E0B";
+      if (ev.type === "Répétition") headerColor = "#10B981";
+
+      return `
+      <div class="event-card past">
+        <div class="event-header" style="background:${headerColor}">
+          <div class="event-date">${formatDateFR(ev.date)}</div>
+        </div>
+        <div class="event-body">
+          <div class="event-name">${ev.nom}</div>
+          <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+          <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+          <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+        </div>
+      </div>`;
+    }).join("");
+
+    // --- Animations ---
+    upcomingContainer.querySelectorAll(".event-card").forEach((card,i) => setTimeout(() => card.classList.add("show"), i*100));
+    pastContainer.querySelectorAll(".event-card").forEach((card,i) => setTimeout(() => card.classList.add("show"), i*50));
   }
 
-  fetchAndRenderEvents();
+  // --- FETCH ---
+  fetch(API_EVENTS_URL + "?action=events")
+    .then(res => res.json())
+    .then(data => {
+      allEvents = data.map(ev => ({
+        ...ev,
+        profs: typeof ev.profs === "string" ? ev.profs.split(",").map(p => p.trim()) : ev.profs
+      }));
+      populateProfFilter();
+      applyFilters();
+    })
+    .catch(err => {
+      if (upcomingContainer) upcomingContainer.innerHTML = `<p style="color:red">${err.message}</p>`;
+      console.error(err);
+    });
 }
 
 // 🔹 Initialisation
 document.addEventListener("DOMContentLoaded", () => initEvents());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2233,6 +2418,9 @@ function loadContacts() {
   contactsTableBody.innerHTML = "";
   contactsMsg.textContent = "";
   loadingMsg.style.display = "block";
+
+
+// -- URL WEBAPP Répertoire 2025/2026
 
   const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
 
