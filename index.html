@@ -1338,19 +1338,19 @@ select {
 
   <table id="fdTable">
     <thead>
-      <tr>
-        <th>Date<br>
-        <span style="font-size:12px; color:#555; font-weight:normal;">
-    (plusieurs jours possibles)
-  </span> 
-        </th>
-        <th>Itinéraire</th>
-        <th>Kilomètres</th>
-        <th>Péage (€)</th>
-        <th>Total km</th>
-        <th></th>
-      </tr>
-    </thead>
+  <tr>
+    <th>Date<br>
+      <span style="font-size:12px; color:#555;">(plusieurs jours possibles)</span>
+    </th>
+    <th>Itinéraire</th>
+    <th>Kilomètres</th>
+    <th>Péage (€)</th>
+    <th>Total km</th>
+    <th>Motif du déplacement</th> <!-- 🧾 nouvelle colonne -->
+    <th></th> <!-- bouton supprimer -->
+  </tr>
+</thead>
+
     <tbody>
       <!-- Les lignes seront créées via JS -->
     </tbody>
@@ -2157,6 +2157,17 @@ window.showOnglet = function(id, btn, event) {
 
 const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
+const immatInput = document.getElementById("immatFD");
+
+  // ===== Immatriculation automatique AA-123-BB =====
+  immatInput.addEventListener("input", () => {
+  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // majuscules et chiffres uniquement
+  if (val.length > 2) val = val.slice(0,2) + '-' + val.slice(2);
+  if (val.length > 6) val = val.slice(0,6) + '-' + val.slice(6);
+  val = val.slice(0,9); // limite à 8 caractères : AA-123-BB
+  immatInput.value = val;
+});
+
 
 // Fonction pour recalculer le total général
 function updateTotalKmFD() {
@@ -2171,22 +2182,23 @@ function updateTotalKmFD() {
 function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
-  tr.innerHTML = `
-    <td><input type="text" class="datesFD" placeholder="Sélectionnez les jours"></td>
-    <td><input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}"></td>
-    <td><input type="number" class="kmFD" min="0" value="${data.km || ''}"></td>
-    <td><input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}"></td>
-    <td><span class="totalLigneKm">0</span></td>
-    <td>
-      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                <button type="button" class="deleteFD"
-                style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
-          X
-        </button>
-        <span style="font-size:0.7em;">Supprimer</span>
-      </div>
-    </td>
-  `;
+   tr.innerHTML = `
+      <td><input type="text" class="datesFD" placeholder="Sélectionnez les jours"></td>
+      <td><input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}"></td>
+      <td><input type="number" class="kmFD" min="0" value="${data.km || ''}"></td>
+      <td><input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}"></td>
+      <td><span class="totalLigneKm">0</span></td>
+      <td><input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}"></td>
+      <td>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <button type="button" class="deleteFD"
+            style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+            X
+          </button>
+          <span style="font-size:0.7em;">Supprimer</span>
+        </div>
+      </td>
+    `;
 
   fdTableBody.appendChild(tr);
 
@@ -2230,63 +2242,62 @@ createFDRow(); // première ligne
 
 
 // ---------------- Envoi vers Web App ----------------
-document.getElementById("sendFD").addEventListener("click", () => {
-  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
-  const nomProfFD = profMap[profAffiche]; // assure-toi que profMap existe
-  if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
 
-  const immatFD = document.getElementById("immatFD").value.trim();
-  const puissanceFD = document.getElementById("puissanceFD").value.trim();
 
-  const tbody = fdTableBody;
-  const lignes = [];
+  document.getElementById("sendFD").addEventListener("click", () => {
+    const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+    const nomProfFD = profMap[profAffiche];
+    if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
 
-  tbody.querySelectorAll("tr").forEach(tr => {
-    const fp = tr.querySelector(".datesFD")._flatpickr;
-    const dates = fp
-  ? fp.selectedDates.map(d => {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;   // YYYY-MM-DD sans UTC
+    const immatFD = document.getElementById("immatFD").value.trim();
+    const puissanceFD = document.getElementById("puissanceFD").value.trim();
+
+    const lignes = [];
+
+    fdTableBody.querySelectorAll("tr").forEach(tr => {
+      const fp = tr.querySelector(".datesFD")?._flatpickr;
+      const dates = fp
+        ? fp.selectedDates.map(d => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+          })
+        : [];
+
+      lignes.push({
+        dates: dates,
+        itineraire: tr.querySelector(".itineraireFD")?.value || "",
+        motif: tr.querySelector(".motifFD")?.value || "",
+        km: tr.querySelector(".kmFD")?.value || "",
+        peage: tr.querySelector(".peageFD")?.value || ""
+      });
+    });
+
+    const totalKm = totalKmEl.textContent;
+    const loadingMsg = document.getElementById("fdLoading");
+    loadingMsg.style.display = "block";          
+    document.getElementById("fdConfirm").textContent = ""; 
+
+
+     // URL de ton script Google Apps Script (Frais de déplacement)
+
+    fetch("https://script.google.com/macros/s/AKfycbw8wbPzZZ1IIzNquBlq1n3HiSOh8f1EhYBlISt9kWtZijQiTtipYUEVbnRudgt1vOmsKw/exec", {  
+      method: "POST",
+      body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
     })
-  : [];
-
-
-    lignes.push({
-      dates: dates,
-      itineraire: tr.querySelector(".itineraireFD")?.value || "",
-      km: tr.querySelector(".kmFD")?.value || "",
-      peage: tr.querySelector(".peageFD")?.value || ""
+    .then(res => res.json())
+    .then(res => {
+      loadingMsg.style.display = "none";  
+      document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
+      fdTableBody.innerHTML = "";
+      createFDRow();
+    })
+    .catch(err => {
+      loadingMsg.style.display = "none";  
+      document.getElementById("fdConfirm").textContent = "Erreur : " + err;
     });
   });
-
-  const totalKm = totalKmEl.textContent;
-
-  const loadingMsg = document.getElementById("fdLoading");
-  loadingMsg.style.display = "block";          
-  document.getElementById("fdConfirm").textContent = ""; 
-
-
-
-  // -- URL WEBAPP Frais de déplacement
-  
-  fetch("https://script.google.com/macros/s/AKfycbz0LrYQYjtP4t8mcyW-Ro54OhESsiL9vbcTAcFIieWVaYaH4suZMrCR6STjIVufDXOPQA/exec", {  
-    method: "POST",
-    body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
-  })
-  .then(res => res.json())
-  .then(res => {
-    loadingMsg.style.display = "none";  
-    document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
-    tbody.innerHTML = "";
-    createFDRow();
-  })
-  .catch(err => {
-    loadingMsg.style.display = "none";  
-    document.getElementById("fdConfirm").textContent = "Erreur : " + err;
-  });
-});
 
 
 
