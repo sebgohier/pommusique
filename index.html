@@ -766,33 +766,39 @@ select {
 
 
 @media (max-width: 768px) {
-  .sticky-footer {
+  #fraisdeplacement .sticky-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #fff;
-    border-top: 1px solid #ccc;
-    padding: 10px;
+    background: #f9f9f9; /* couleur différente du reste */
+    border-top: 1px solid #ccc; /* petite séparation */
+    padding: 10px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
     z-index: 1000;
+    gap: 10px;
   }
 
-  body.dark-theme .sticky-footer {
-    background: #1e1e1e;
-    border-top-color: #444;
-    color: #eee;
+  #fraisdeplacement .sticky-footer span {
+    font-weight: bold;
+    font-size: 1em;
+    color: #333;
   }
 
-  .sticky-footer #sendFD {
-    margin-left: 10px;
+  #fraisdeplacement .sticky-footer button.btnSend {
     flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 1em;
+  }
+
+  /* Marge pour que le tableau et le bouton Ajouter ne soient pas cachés derrière le sticky-footer */
+  #fdTable {
+    margin-bottom: 100px; /* augmente la marge pour éviter le recouvrement */
   }
 }
-
 
 
 
@@ -1517,9 +1523,9 @@ select {
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
-    <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
-    <button id="sendFD" class="btnSend">Envoyer la demande</button>
-  </div>
+  <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
+  <button id="sendFD" class="btnSend">Envoyer la demande</button>
+</div>
 
   <!-- Messages de statut -->
   <p id="fdLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
