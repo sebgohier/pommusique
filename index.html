@@ -2344,6 +2344,7 @@ function updateTotalKmFD() {
 }
 
 // Crée une ligne de tableau
+
 function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
@@ -2383,7 +2384,6 @@ function createFDRow(data = {}) {
   </td>
 `;
 
-
   fdTableBody.appendChild(tr);
 
   // flatpickr pour sélection multiple
@@ -2407,15 +2407,36 @@ function createFDRow(data = {}) {
   });
 
   // bouton supprimer
-  tr.querySelector(".deleteFD").addEventListener("click", () => {
+  const deleteBtn = tr.querySelector(".deleteFD");
+  deleteBtn.addEventListener("click", () => {
     tr.remove();
     updateTotalKmFD();
   });
 
- 
+  // === BOUTON AJOUTER UNE LIGNE POUR MOBILE ===
+  if (window.innerWidth <= 768) {
+    const addMobileBtn = document.createElement("button");
+    addMobileBtn.type = "button";
+    addMobileBtn.textContent = "➕";
+    addMobileBtn.title = "Ajouter un trajet";
+    addMobileBtn.className = "addMobileFD";
+    addMobileBtn.style.marginTop = "6px"; // petit espace sous le bouton supprimer
+    addMobileBtn.style.padding = "6px 10px";
+    addMobileBtn.style.borderRadius = "6px";
+    addMobileBtn.style.border = "none";
+    addMobileBtn.style.backgroundColor = "#3498db";
+    addMobileBtn.style.color = "#fff";
+    addMobileBtn.style.cursor = "pointer";
+
+    const actionCell = tr.querySelector("td:last-child div");
+    actionCell.appendChild(addMobileBtn);
+
+    addMobileBtn.addEventListener("click", () => createFDRow());
+  }
 
   updateTotalKmFD();
 }
+
 
 // Ajouter ligne via bouton "Ajouter"
 document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
