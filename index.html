@@ -2349,40 +2349,40 @@ function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-  <td data-label="Dates">
-    <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
-  </td>
+    <td data-label="Dates">
+      <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
+    </td>
 
-  <td data-label="Itinéraire">
-    <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
-  </td>
+    <td data-label="Itinéraire">
+      <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
+    </td>
 
-  <td data-label="Kilomètres">
-    <input type="number" class="kmFD" min="0" value="${data.km || ''}">
-  </td>
+    <td data-label="Kilomètres">
+      <input type="number" class="kmFD" min="0" value="${data.km || ''}">
+    </td>
 
-  <td data-label="Péage (€)">
-    <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
-  </td>
+    <td data-label="Péage (€)">
+      <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
+    </td>
 
-  <td data-label="Total km">
-    <span class="totalLigneKm">0</span>
-  </td>
+    <td data-label="Total km">
+      <span class="totalLigneKm">0</span>
+    </td>
 
-  <td data-label="Motif">
-    <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
-  </td>
+    <td data-label="Motif">
+      <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
+    </td>
 
-  <td data-label="Actions">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <button type="button" class="deleteFD"
-        style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
-        X
-      </button>
-      <span style="font-size:0.7em;">Supprimer</span>
-    </div>
-  </td>
-`;
+    <td data-label="Actions">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <button type="button" class="deleteFD"
+          style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+          X
+        </button>
+        <span style="font-size:0.7em;">Supprimer</span>
+      </div>
+    </td>
+  `;
 
   fdTableBody.appendChild(tr);
 
@@ -2406,38 +2406,37 @@ function createFDRow(data = {}) {
     updateTotalKmFD();
   });
 
-  // bouton supprimer
-const deleteBtn = tr.querySelector(".deleteFD");
-deleteBtn.style.width = "auto"; // ne prend plus toute la largeur
-deleteBtn.addEventListener("click", () => {
-  tr.remove();
-  updateTotalKmFD();
-});
+  // bouton supprimer rouge
+  const deleteBtn = tr.querySelector(".deleteFD");
+  deleteBtn.addEventListener("click", () => {
+    tr.remove();
+    updateTotalKmFD();
+  });
 
-// bouton ajouter ligne mobile (seulement sur mobile)
-if (window.innerWidth <= 768) {
-  const addMobileBtn = document.createElement("button");
-  addMobileBtn.type = "button";
-  addMobileBtn.innerHTML = "➕"; // juste l'icône
-  addMobileBtn.title = "Ajouter un trajet";
-  addMobileBtn.className = "addMobileFD";
-  addMobileBtn.style.marginTop = "6px"; // petit espace sous le bouton supprimer
-  addMobileBtn.style.padding = "6px";
-  addMobileBtn.style.borderRadius = "6px";
-  addMobileBtn.style.border = "none";
-  addMobileBtn.style.backgroundColor = "#3498db";
-  addMobileBtn.style.color = "#fff";
-  addMobileBtn.style.cursor = "pointer";
-  addMobileBtn.style.width = "auto"; // taille du contenu
+  // bouton ajouter ligne mobile (➕)
+  if (window.innerWidth <= 768) {
+    const actionCellDiv = tr.querySelector("td:last-child div");
 
-  const actionCellDiv = tr.querySelector("td:last-child div");
-  actionCellDiv.appendChild(addMobileBtn);
+    const addMobileBtn = document.createElement("button");
+    addMobileBtn.type = "button";
+    addMobileBtn.textContent = "➕";
+    addMobileBtn.title = "Ajouter un trajet";
+    addMobileBtn.className = "addMobileFD";
 
-  addMobileBtn.addEventListener("click", () => createFDRow());
-}
+    const addMobileText = document.createElement("span");
+    addMobileText.textContent = "Ajouter";
+    addMobileText.style.fontSize = "0.7em";
+    addMobileText.style.marginTop = "2px";
+
+    actionCellDiv.appendChild(addMobileBtn);
+    actionCellDiv.appendChild(addMobileText);
+
+    addMobileBtn.addEventListener("click", () => createFDRow());
+  }
 
   updateTotalKmFD();
 }
+
 
 
 // Ajouter ligne via bouton "Ajouter"
