@@ -632,10 +632,11 @@ select {
 
 
 
-
 /* ============================= */
 /* Frais de déplacement */
 /* ============================= */
+
+
 
 #fraisdeplacement input {
   width: auto;          /* annule le 100% */
@@ -657,13 +658,35 @@ select {
 }
 
 
+/* === Conteneur pour aligner immat + puissance === */
 
+
+.fd-vehicule {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.fd-vehicule > div {
+  display: flex;
+  flex-direction: column;
+}
+
+#immatFD,
+#puissanceFD {
+  box-sizing: border-box;
+  height: 34px; /* même hauteur pour les deux */
+}
 
 
 
 /* ===== Frais de déplacement – mode mobile ===== */
+
+
 @media (max-width: 768px) {
 
+  /* Table en mode carte mobile */
   #fdTable thead {
     display: none;
   }
@@ -712,50 +735,19 @@ select {
     padding: 10px;
     margin-top: 10px;
   }
-}
 
-
-/* === Frais de déplacement : ligne véhicule en mobile === */
-@media (max-width: 768px) {
-  #fraisdeplacement label {
-    display: block;
-    font-size: 0.8em;
-    margin-top: 8px;
-  }
-
-  #fraisdeplacement #immatFD,
-  #fraisdeplacement #puissanceFD {
-    width: 100%;
-  }
-
-  /* Conteneur virtuel pour aligner les deux champs */
-  #fraisdeplacement h3 + label,
-  #fraisdeplacement h3 + label + input,
-  #fraisdeplacement h3 + label + input + label,
-  #fraisdeplacement h3 + label + input + label + input {
-    display: block;
-  }
-
-  /* On met les 2 champs côte à côte */
-  #fraisdeplacement {
-    --vehicule-gap: 10px;
+  /* Ligne véhicule mobile : empilé proprement */
+  .fd-vehicule {
+    flex-direction: column;
+    gap: 8px;
   }
 
   #immatFD,
   #puissanceFD {
-    display: inline-block;
-    box-sizing: border-box;
-  }
-
-  #immatFD {
-    width: 65%;
-  }
-
-  #puissanceFD {
-    width: calc(35% - var(--vehicule-gap));
-    margin-left: var(--vehicule-gap);
+    width: 100%;
   }
 }
+
 
 
 
@@ -1437,11 +1429,18 @@ select {
 
   <h3>Véhicule</h3>
 
-  <label>Immatriculation</label>
-  <input type="text" id="immatFD" placeholder="AA-123-BB">
+<div class="fd-vehicule">
+  <div>
+    <label>Immatriculation</label>
+    <input type="text" id="immatFD" placeholder="AA-123-BB">
+  </div>
 
-  <label>Puissance fiscale</label>
-  <input type="number" id="puissanceFD" placeholder="Ex : 6">
+  <div>
+    <label>Puissance fiscale</label>
+    <input type="number" id="puissanceFD" placeholder="Ex : 6">
+  </div>
+</div>
+
 
   <h3>Trajets</h3>
 
