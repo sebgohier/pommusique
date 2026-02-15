@@ -760,6 +760,44 @@ select {
 
 
 
+/* ============================= */
+/* Frais de déplacement – sticky footer mobile */
+/* ============================= */
+
+
+@media (max-width: 768px) {
+  .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  body.dark-theme .sticky-footer {
+    background: #1e1e1e;
+    border-top-color: #444;
+    color: #eee;
+  }
+
+  .sticky-footer #sendFD {
+    margin-left: 10px;
+    flex-shrink: 0;
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -1427,48 +1465,48 @@ select {
 
 
  <!-- Section Frais de déplacement -->
+
+
 <div id="fraisdeplacement" class="section">
 
   <h2>⛽ Frais de déplacement</h2>
 
   <p style="color:red;font-weight:bold;">
-  Les demandes de remboursement de frais de déplacement doivent être transmises au plus tard le 20 du mois, pour les frais engagés le mois précédent.<br>
-  <em>Par exemple, les frais du mois de janvier doivent être déclarés avant le 20 février.</em>
-</p>
+    Les demandes de remboursement de frais de déplacement doivent être transmises au plus tard le 20 du mois, pour les frais engagés le mois précédent.<br>
+    <em>Par exemple, les frais du mois de janvier doivent être déclarés avant le 20 février.</em>
+  </p>
 
   <h3>Véhicule</h3>
 
-<div class="fd-vehicule">
-  <div>
-    <label>Immatriculation</label>
-    <input type="text" id="immatFD" placeholder="AA-123-BB">
-  </div>
+  <div class="fd-vehicule">
+    <div>
+      <label>Immatriculation</label>
+      <input type="text" id="immatFD" placeholder="AA-123-BB">
+    </div>
 
-  <div>
-    <label>Puissance fiscale</label>
-    <input type="number" id="puissanceFD" placeholder="Ex : 6">
+    <div>
+      <label>Puissance fiscale</label>
+      <input type="number" id="puissanceFD" placeholder="Ex : 6">
+    </div>
   </div>
-</div>
-
 
   <h3>Trajets</h3>
 
   <table id="fdTable">
     <thead>
-  <tr>
-    <th data-label="Dates">
-      Date<br>
-      <span style="font-size:12px; color:#555;">(plusieurs jours possibles)</span>
-    </th>
-    <th data-label="Itinéraire">Itinéraire</th>
-    <th data-label="Kilomètres">Kilomètres</th>
-    <th data-label="Péage (€)">Péage (€)</th>
-    <th data-label="Total km">Total km</th>
-    <th data-label="Motif">Motif du déplacement</th>
-    <th data-label="Actions"></th>
-  </tr>
-</thead>
-
+      <tr>
+        <th data-label="Dates">
+          Date<br>
+          <span style="font-size:12px; color:#555;">(plusieurs jours possibles)</span>
+        </th>
+        <th data-label="Itinéraire">Itinéraire</th>
+        <th data-label="Kilomètres">Kilomètres</th>
+        <th data-label="Péage (€)">Péage (€)</th>
+        <th data-label="Total km">Total km</th>
+        <th data-label="Motif">Motif du déplacement</th>
+        <th data-label="Actions"></th>
+      </tr>
+    </thead>
 
     <tbody>
       <!-- Les lignes seront créées via JS -->
@@ -1477,15 +1515,18 @@ select {
 
   <button id="addRowFD">➕ Ajouter un trajet</button>
 
-  <p style="margin-top:10px;font-weight:bold;">
-    Total kilomètres : <span id="totalKmFD">0</span> km
-  </p>
+  <!-- Sticky footer mobile -->
+  <div class="sticky-footer">
+    <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
+    <button id="sendFD" class="btnSend">Envoyer la demande</button>
+  </div>
 
-  <button id="sendFD" class="btnSend">Envoyer la demande</button>
+  <!-- Messages de statut -->
   <p id="fdLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
   <p id="fdConfirm" style="color:green;font-weight:bold;"></p> 
 
 </div>
+
 
 
 
