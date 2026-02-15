@@ -708,6 +708,47 @@ select {
 }
 
 
+/* === Frais de déplacement : ligne véhicule en mobile === */
+@media (max-width: 768px) {
+  #fraisdeplacement label {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 8px;
+  }
+
+  #fraisdeplacement #immatFD,
+  #fraisdeplacement #puissanceFD {
+    width: 100%;
+  }
+
+  /* Conteneur virtuel pour aligner les deux champs */
+  #fraisdeplacement h3 + label,
+  #fraisdeplacement h3 + label + input,
+  #fraisdeplacement h3 + label + input + label,
+  #fraisdeplacement h3 + label + input + label + input {
+    display: block;
+  }
+
+  /* On met les 2 champs côte à côte */
+  #fraisdeplacement {
+    --vehicule-gap: 10px;
+  }
+
+  #immatFD,
+  #puissanceFD {
+    display: inline-block;
+    box-sizing: border-box;
+  }
+
+  #immatFD {
+    width: 65%;
+  }
+
+  #puissanceFD {
+    width: calc(35% - var(--vehicule-gap));
+    margin-left: var(--vehicule-gap);
+  }
+}
 
 
 
