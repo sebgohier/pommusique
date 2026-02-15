@@ -681,16 +681,16 @@ select {
 
 
 
-/* ===== Frais de déplacement – mode mobile ===== */
+
+/* ============================= */
+/* Frais de déplacement – mobile */
+/* ============================= */
 
 
 @media (max-width: 768px) {
 
-  /* Table en mode carte mobile */
-  #fdTable thead {
-    display: none;
-  }
-
+  /* Table responsive */
+  #fdTable thead { display: none; }
   #fdTable tr {
     display: block;
     margin-bottom: 14px;
@@ -699,12 +699,10 @@ select {
     padding: 10px;
     background: #fff;
   }
-
   body.dark-theme #fdTable tr {
     background: #1e1e1e;
     border-color: #444;
   }
-
   #fdTable td {
     display: flex;
     flex-direction: column;
@@ -712,7 +710,6 @@ select {
     padding: 6px 0;
     text-align: left;
   }
-
   #fdTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -720,32 +717,44 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-
-  body.dark-theme #fdTable td::before {
-    color: #bbb;
-  }
-
+  body.dark-theme #fdTable td::before { color: #bbb; }
   #fdTable input {
     width: 100%;
     font-size: 16px; /* évite le zoom iOS */
   }
-
   .deleteFD {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
   }
 
-  /* Ligne véhicule mobile : empilé proprement */
-  .fd-vehicule {
-    flex-direction: column;
-    gap: 8px;
+  /* Champs véhicule (immat + puissance) */
+  #fraisdeplacement label {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 8px;
   }
 
-  #immatFD,
-  #puissanceFD {
-    width: 100%;
+  #fraisdeplacement #immatFD,
+  #fraisdeplacement #puissanceFD {
+    box-sizing: border-box;
   }
+
+  /* Conteneur flex pour aligner les deux champs côte à côte et à gauche */
+  #fraisdeplacement h3 + label,
+  #fraisdeplacement h3 + label + input {
+    display: block;
+  }
+
+  #fraisdeplacement {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    justify-content: flex-start; /* aligne à gauche */
+  }
+
+  #immatFD { width: 65%; }
+  #puissanceFD { width: 35%; }
 }
 
 
