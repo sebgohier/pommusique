@@ -771,13 +771,13 @@ select {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #f9f9f9; /* couleur différente du reste */
-    border-top: 1px solid #ccc; /* petite séparation */
-    padding: 10px 15px;
+    background: #ffecb3; /* jaune clair bien visible */
+    border-top: 2px solid #f39c12; /* sépare visuellement du tableau */
+    padding: 12px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
     z-index: 1000;
     gap: 10px;
   }
@@ -785,7 +785,7 @@ select {
   #fraisdeplacement .sticky-footer span {
     font-weight: bold;
     font-size: 1em;
-    color: #333;
+    color: #111;
   }
 
   #fraisdeplacement .sticky-footer button.btnSend {
@@ -794,12 +794,11 @@ select {
     font-size: 1em;
   }
 
-  /* Marge pour que le tableau et le bouton Ajouter ne soient pas cachés derrière le sticky-footer */
+  /* On laisse plus d’espace pour tout le contenu */
   #fdTable {
-    margin-bottom: 100px; /* augmente la marge pour éviter le recouvrement */
+    margin-bottom: 140px; /* plus haut pour que le bouton Ajouter soit visible */
   }
 }
-
 
 
 
