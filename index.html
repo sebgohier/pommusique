@@ -2366,20 +2366,44 @@ function updateDurHs(){
 function addRowHs(data={}){ 
   const tbody=document.querySelector("#hsTable tbody"); 
   const tr=document.createElement("tr");
+
   tr.innerHTML=`
-    <td><input type="date" class="date" value="${data.date||''}"></td>
-    <td><select class="type">${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}</select></td>
-    <td><input type="time" class="debut" value="${data.debut||''}"></td>
-    <td><input type="time" class="fin" value="${data.fin||''}"></td>
-    <td class="duree">0h00</td>
-    <td><input type="text" class="lieu" value="${data.lieu||''}"></td>
-    <td><button type="button" class="deleteBtn">X</button></td>`;
+    <td data-label="Date"><input type="date" class="date" value="${data.date||''}" placeholder="jj/mm/aaaa"></td>
+    <td data-label="Type">
+      <select class="type">
+        ${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </td>
+    <td data-label="Début"><input type="time" class="debut" value="${data.debut||''}" placeholder="hh:mm"></td>
+    <td data-label="Fin"><input type="time" class="fin" value="${data.fin||''}" placeholder="hh:mm"></td>
+    <td data-label="Durée" class="duree">0h00</td>
+    <td data-label="Lieu"><input type="text" class="lieu" value="${data.lieu||''}" placeholder="Ex: Salle A"></td>
+    <td data-label="Action"><button type="button" class="deleteBtn">X</button></td>
+  `;
+
   tbody.appendChild(tr);
-  tr.querySelector(".debut").addEventListener("input",updateDurHs);
-  tr.querySelector(".fin").addEventListener("input",updateDurHs);
-  tr.querySelector(".deleteBtn").addEventListener("click",()=>{tr.remove(); updateDurHs();});
+
+  // recalcul durée
+  tr.querySelector(".debut").addEventListener("input", updateDurHs);
+  tr.querySelector(".fin").addEventListener("input", updateDurHs);
+
+  // bouton supprimer en rouge
+  const deleteBtn = tr.querySelector(".deleteBtn");
+  deleteBtn.style.backgroundColor = "#e74c3c";
+  deleteBtn.style.color = "#fff";
+  deleteBtn.style.border = "none";
+  deleteBtn.style.borderRadius = "6px";
+  deleteBtn.style.padding = "6px 10px";
+  deleteBtn.style.cursor = "pointer";
+
+  deleteBtn.addEventListener("click", ()=>{ tr.remove(); updateDurHs(); });
+
   updateDurHs();
 }
+
+
+
+
 document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
 addRowHs(); // première ligne
 
