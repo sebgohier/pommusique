@@ -682,32 +682,43 @@ select {
 
 
 
-/* ===== Frais de déplacement – mode mobile ===== */
+/* ============================= */
+/* Frais de déplacement – mobile (tableau uniquement) */
+/* ============================= */
 @media (max-width: 768px) {
-  /* Masque l'entête du tableau et format bloc pour chaque ligne */
+
+  /* Cache l'en-tête du tableau */
   #fdTable thead { display: none; }
+
+  /* tbody devient flex-column pour les lignes */
+  #fdTable tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* espace entre chaque ligne */
+  }
+
+  /* Chaque ligne devient un bloc avec padding et bordure */
   #fdTable tr {
-    display: block;
-    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
     background: #fff;
   }
-
   body.dark-theme #fdTable tr {
     background: #1e1e1e;
     border-color: #444;
   }
 
+  /* Chaque cellule empilée verticalement avec son label */
   #fdTable td {
     display: flex;
     flex-direction: column;
-    border: none;
     padding: 6px 0;
-    text-align: left;
   }
 
+  /* Labels générés automatiquement via data-label */
   #fdTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -715,74 +726,34 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-
   body.dark-theme #fdTable td::before { color: #bbb; }
 
+  /* Inputs prennent toute la largeur */
   #fdTable input {
     width: 100%;
-    font-size: 16px;
+    font-size: 16px; /* évite le zoom iOS */
+    box-sizing: border-box;
   }
 
-  /* Actions : boutons côte à côte */
-  #fdTable td:last-child {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 6px;
-  }
-
-  #fdTable td:last-child button {
-    flex: 1;
-    padding: 6px 8px;
+  /* Boutons Supprimer / Ajouter dans la ligne */
+  .fdActions button {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
     font-size: 0.9em;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  .fdActions span {
+    font-size: 0.7em;
+    text-align: center;
+    display: block;
   }
 
-  .deleteFD {
-    width: 100%;
-    margin-top: 0;
+  /* Marge sous le tableau pour sticky footer */
+  #fdTable {
+    margin-bottom: 140px; 
   }
-
-  /* Ligne véhicule sur mobile */
-  #fraisdeplacement .fd-vehicule {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  #fraisdeplacement #immatFD,
-  #fraisdeplacement #puissanceFD {
-    width: 50%;
-  }
-
-  /* Sticky footer mobile pour Total km + Envoyer la demande */
-  #fraisdeplacement .sticky-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #fcd34d; /* couleur bien visible */
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
-    gap: 10px;
-  }
-
-  #fraisdeplacement .sticky-footer span {
-    font-weight: bold;
-    font-size: 1em;
-  }
-
-  #fraisdeplacement .sticky-footer button.btnSend {
-    flex-shrink: 0;
-    padding: 10px 16px;
-    font-size: 1em;
-  }
-
-  /* Marge pour que le tableau ne soit pas caché derrière le sticky-footer */
-  #fdTable { margin-bottom: 70px; }
 }
 
 
