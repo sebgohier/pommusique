@@ -831,17 +831,14 @@ select {
 
 
 
-
 /* ============================= */
-/* Heures Sup – Desktop & Mobile */
+/* Heures Sup – mobile responsive */
 /* ============================= */
 
-/* Table responsive mobile */
 @media (max-width: 768px) {
-  /* Masquer le header */
-  #hsTable thead { display: none; }
 
-  /* Chaque ligne devient un bloc */
+  /* Table responsive */
+  #hsTable thead { display: none; }
   #hsTable tr {
     display: block;
     margin-bottom: 14px;
@@ -850,8 +847,6 @@ select {
     padding: 10px;
     background: #fff;
   }
-
-  /* Chaque cellule devient un mini-bloc vertical */
   #hsTable td {
     display: flex;
     flex-direction: column;
@@ -859,8 +854,6 @@ select {
     padding: 6px 0;
     text-align: left;
   }
-
-  /* Label avant chaque input (data-label) */
   #hsTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -868,24 +861,16 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-
-  /* Inputs et selects plein width */
-  #hsTable input,
-  #hsTable select {
+  #hsTable input, #hsTable select {
     width: 100%;
-    font-size: 16px; /* évite zoom iOS */
+    font-size: 16px;
   }
 
-  /* Bouton supprimer rouge */
+  /* Supprimer rouge identique Frais km */
   .deleteBtn {
     width: 100%;
     padding: 10px;
-    margin-top: 10px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    margin-top: 6px;
   }
 
   /* Sticky footer mobile */
@@ -894,7 +879,7 @@ select {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #ffecb3; /* jaune clair */
+    background: #ffecb3;
     border-top: 2px solid #f39c12;
     padding: 12px 15px;
     display: flex;
@@ -904,48 +889,66 @@ select {
     z-index: 1000;
     gap: 10px;
   }
-
   #heuresSup .sticky-footer span {
     font-weight: bold;
     font-size: 1em;
     color: #111;
   }
-
   #heuresSup .sticky-footer button.btnSend {
     flex-shrink: 0;
     padding: 10px 16px;
     font-size: 1em;
   }
 
-  /* Bouton Ajouter ligne mobile juste au-dessus du footer */
+  /* Laisser espace sous le tableau pour footer */
+  #hsTable { margin-bottom: 140px; }
+}
+
+
+
+
+
+
+/* ============================= */
+/* Bouton Ajouter ligne mobile fixe */
+/* ============================= */
+
+@media (max-width: 768px) {
   #addRowHsMobile {
     position: fixed;
-    bottom: 70px;
+    bottom: 70px;               /* juste au-dessus du sticky footer */
     left: 10px;
     right: 10px;
     z-index: 1001;
     padding: 12px;
     font-size: 16px;
+    opacity: 0.95;
     font-weight: bold;
+    letter-spacing: 0.3px;
     border-radius: 14px;
-    background: #27ae60; /* vert identique à Frais km */
+    background: #27ae60;       /* vert Frais km */
     color: white;
     border: none;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
     cursor: pointer;
-    display: block; /* important pour mobile */
   }
 
-  /* Marge pour que le tableau ne soit pas masqué par le footer */
-  #hsTable {
-    margin-bottom: 140px;
+  /* laisser place au bouton et au footer */
+  #heuresSup {
+    padding-bottom: 160px;
+  }
+
+  /* Cacher le bouton PC sur mobile */
+  #addRowHs {
+    display: none;
   }
 }
 
-/* Desktop : on cache le bouton mobile */
+/* PC : cacher le bouton mobile */
 #addRowHsMobile {
   display: none;
 }
+
 
 
 
