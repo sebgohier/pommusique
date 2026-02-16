@@ -1622,6 +1622,39 @@ select {
 
 
 
+<!-- Envoi en cours -->
+
+
+
+<div id="fdOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div style="
+    background: white;
+    padding: 24px 32px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.2em;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  ">
+    ⏳ Envoi en cours…
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
 
 </div>
 
@@ -2469,6 +2502,23 @@ createFDRow(); // première ligne
 
 
 
+function showFDOverlay() {
+  document.getElementById("fdOverlay").style.display = "flex";
+}
+
+function hideFDOverlay() {
+  document.getElementById("fdOverlay").style.display = "none";
+}
+
+
+
+
+
+
+
+
+
+
 
 // ---------------- Envoi vers Web App ----------------
 
@@ -2505,8 +2555,9 @@ createFDRow(); // première ligne
 
     const totalKm = totalKmEl.textContent;
     const loadingMsg = document.getElementById("fdLoading");
-    loadingMsg.style.display = "block";          
-    document.getElementById("fdConfirm").textContent = ""; 
+    showFDOverlay();
+    document.getElementById("fdConfirm").textContent = "";
+ 
 
 
      // URL de ton script Google Apps Script (Frais de déplacement)
@@ -2517,13 +2568,13 @@ createFDRow(); // première ligne
     })
     .then(res => res.json())
     .then(res => {
-      loadingMsg.style.display = "none";  
+      hideFDOverlay();
       document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
       fdTableBody.innerHTML = "";
       createFDRow();
     })
     .catch(err => {
-      loadingMsg.style.display = "none";  
+      hideFDOverlay();
       document.getElementById("fdConfirm").textContent = "Erreur : " + err;
     });
   });
