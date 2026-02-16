@@ -1700,7 +1700,8 @@ select {
     </tbody>
   </table>
 
-  <button id="addRowFD">+ Ajouter un trajet</button>
+  
+<button id="addRowFD" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
@@ -2727,7 +2728,7 @@ function hideFDOverlay() {
 
      // URL de ton script Google Apps Script (Frais de déplacement)
 
-    fetch("https://script.google.com/macros/s/AKfycbz1jquvxLVY_zm5V3uMtgK_3ZwoIP00lcUYujsxCWnskbZ7Oa5pLFTSYjFSo8mNbH579Q/exec", {  
+    fetch("https://script.google.com/macros/s/AKfycbzEimE0QVaB1HBpcZQJKK7b7AB7roBM0AMTDHI6TVlitBB-LGZ4JrhhzxkWKd_WFXBUpg/exec", {  
       method: "POST",
       body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
     })
