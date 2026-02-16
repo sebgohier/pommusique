@@ -2414,7 +2414,8 @@ function createFDRow(data = {}) {
   deleteBtn.style.borderRadius = "6px";
   deleteBtn.style.padding = "8px 12px";
   deleteBtn.style.cursor = "pointer";
-  deleteBtn.style.width = "42px";
+  deleteBtn.style.width = "100%";
+  deleteBtn.style.boxSizing = "border-box";
 
   const deleteLabel = document.createElement("span");
   deleteLabel.textContent = "Supprimer";
@@ -2441,7 +2442,8 @@ function createFDRow(data = {}) {
     addBtn.style.borderRadius = "6px";
     addBtn.style.padding = "8px 12px";
     addBtn.style.cursor = "pointer";
-    addBtn.style.width = "42px";
+    addBtn.style.width = "100%";
+    addBtn.style.boxSizing = "border-box";
 
     const addLabel = document.createElement("span");
     addLabel.textContent = "Ajouter";
