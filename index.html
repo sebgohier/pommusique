@@ -2452,100 +2452,117 @@ function updateTotalKmFD(){
 }
 
 // ===== Crée une ligne de tableau =====
-function createFDRow(data={}){
+function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-    <td data-label="Dates"><input type="text" class="datesFD" placeholder="Sélectionnez les jours"></td>
-    <td data-label="Itinéraire"><input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire||''}"></td>
-    <td data-label="Kilomètres"><input type="number" class="kmFD" min="0" value="${data.km||''}"></td>
-    <td data-label="Péage (€)"><input type="number" class="peageFD" min="0" step="0.01" value="${data.peage||''}"></td>
-    <td data-label="Total km"><span class="totalLigneKm">0</span></td>
-    <td data-label="Motif"><input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif||''}"></td>
-    <td data-label="Actions">
-      <div class="fdActions" style="display:flex; flex-direction:column; align-items:center; gap:6px;"></div>
-    </td>
+  <td data-label="Dates">
+    <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
+  </td>
+
+  <td data-label="Itinéraire">
+    <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
+  </td>
+
+  <td data-label="Kilomètres">
+    <input type="number" class="kmFD" min="0" value="${data.km || ''}">
+  </td>
+
+  <td data-label="Péage (€)">
+    <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
+  </td>
+
+  <td data-label="Total km">
+    <span class="totalLigneKm">0</span>
+  </td>
+
+  <td data-label="Motif">
+    <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
+  </td>
+
+  <td data-label="Actions">
+    <div class="fdActions" style="display:flex; flex-direction:column; align-items:center; gap:6px;"></div>
+  </td>
   `;
 
   fdTableBody.appendChild(tr);
 
-  // ---- flatpickr pour sélection multiple ----
-  const fpInstance = flatpickr(tr.querySelector(".datesFD"),{
-    mode:"multiple",
-    dateFormat:"d/m/Y",
-    locale:"fr",
-    onChange:function(selectedDates){
-      const km = parseFloat(tr.querySelector(".kmFD").value)||0;
-      tr.querySelector(".totalLigneKm").textContent = km*selectedDates.length;
+  // ---- flatpickr ----
+  const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
+    mode: "multiple",
+    dateFormat: "d/m/Y",
+    locale: "fr",
+    onChange: function (selectedDates) {
+      const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+      tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
       updateTotalKmFD();
     }
   });
 
   // recalcul si km change
-  tr.querySelector(".kmFD").addEventListener("input", ()=>{
+  tr.querySelector(".kmFD").addEventListener("input", () => {
     const selectedDates = fpInstance.selectedDates || [];
-    const km = parseFloat(tr.querySelector(".kmFD").value)||0;
-    tr.querySelector(".totalLigneKm").textContent = km*selectedDates.length;
+    const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+    tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
     updateTotalKmFD();
   });
 
-  // ===== Boutons Action =====
+  // ===== Boutons Actions =====
   const actionDiv = tr.querySelector(".fdActions");
 
   // --- Bouton Supprimer ---
   const deleteBtn = document.createElement("button");
-  deleteBtn.type="button";
-  deleteBtn.textContent="X";
-  Object.assign(deleteBtn.style,{
-    background:"#e74c3c",
-    color:"#fff",
-    border:"none",
-    borderRadius:"6px",
-    padding:"8px 12px",
-    cursor:"pointer",
-    width:"100%",
-    boxSizing:"border-box"
-  });
+  deleteBtn.type = "button";
+  deleteBtn.textContent = "X";
+  deleteBtn.className = "deleteFD";
+  deleteBtn.style.background = "#e74c3c";
+  deleteBtn.style.color = "white";
+  deleteBtn.style.border = "none";
+  deleteBtn.style.borderRadius = "6px";
+  deleteBtn.style.padding = "8px 12px";
+  deleteBtn.style.cursor = "pointer";
+  deleteBtn.style.width = "42px";
+
   const deleteLabel = document.createElement("span");
-  deleteLabel.textContent="Supprimer";
-  deleteLabel.style.fontSize="0.7em";
+  deleteLabel.textContent = "Supprimer";
+  deleteLabel.style.fontSize = "0.7em";
 
   actionDiv.appendChild(deleteBtn);
   actionDiv.appendChild(deleteLabel);
 
-  deleteBtn.addEventListener("click", ()=>{
+  deleteBtn.addEventListener("click", () => {
     tr.remove();
     updateTotalKmFD();
   });
 
   // --- Bouton Ajouter (mobile seulement) ---
-  if(window.innerWidth <= 768){
+  if (window.innerWidth <= 768) {
     const addBtn = document.createElement("button");
     addBtn.type = "button";
-    addBtn.textContent="➕";
-    addBtn.title="Ajouter un trajet";
-    Object.assign(addBtn.style,{
-      background:"#3498db",
-      color:"#fff",
-      border:"none",
-      borderRadius:"6px",
-      padding:"8px 12px",
-      cursor:"pointer",
-      width:"100%",
-      boxSizing:"border-box"
-    });
+    addBtn.textContent = "➕";
+    addBtn.title = "Ajouter un trajet";
+    addBtn.className = "addMobileFD";
+    addBtn.style.background = "#3498db";
+    addBtn.style.color = "white";
+    addBtn.style.border = "none";
+    addBtn.style.borderRadius = "6px";
+    addBtn.style.padding = "8px 12px";
+    addBtn.style.cursor = "pointer";
+    addBtn.style.width = "42px";
+
     const addLabel = document.createElement("span");
-    addLabel.textContent="Ajouter";
-    addLabel.style.fontSize="0.7em";
+    addLabel.textContent = "Ajouter";
+    addLabel.style.fontSize = "0.7em";
 
     actionDiv.appendChild(addBtn);
     actionDiv.appendChild(addLabel);
 
-    addBtn.addEventListener("click", ()=>createFDRow());
+    addBtn.addEventListener("click", () => createFDRow());
   }
 
   updateTotalKmFD();
 }
+
 
 // ===== Bouton Ajouter PC (sous le tableau) =====
 const addRowBtn = document.getElementById("addRowFD");
