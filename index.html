@@ -833,6 +833,92 @@ select {
 
 
 
+/* === Heures Sup – Mobile responsive === */
+
+
+@media (max-width:768px){
+  #hsTable thead { display: none; }
+  #hsTable tr {
+    display: block;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+  }
+  #hsTable td {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    padding: 6px 0;
+    text-align: left;
+  }
+  #hsTable td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    margin-bottom: 3px;
+  }
+  #hsTable input, #hsTable select {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* bouton supprimer rouge identique à Frais km */
+  .deleteBtn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  /* sticky footer */
+  #heuresSup .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffecb3;
+    border-top: 2px solid #f39c12;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+    z-index: 1000;
+    gap: 10px;
+  }
+  #heuresSup .sticky-footer span {
+    font-weight: bold;
+    font-size: 1em;
+    color: #111;
+  }
+  #heuresSup .sticky-footer button.btnSend {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 1em;
+  }
+
+  /* espace pour que le tableau ne soit pas masqué par le footer */
+  #hsTable { margin-bottom: 120px; }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -965,31 +1051,100 @@ select {
 
 
 
-  <!-- Section Heures Supplémentaires -->
+ <!-- Section Heures Supplémentaires -->
 
-  <div class="section" id="heuresSup">
-    <h2>⏰ Déclaration Heures Supplémentaires</h2>
-    <p style="color:red; font-weight:bold; margin-bottom:10px;">
-      Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
-      doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
-      Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
-    </p>
-    <table id="hsTable">
-      <thead>
-        <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
-      </tfoot>
-    </table>
-    <button id="addRowHs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+<div class="section" id="heuresSup">
+  <h2>⏰ Déclaration Heures Supplémentaires</h2>
+  <p style="color:red; font-weight:bold; margin-bottom:10px;">
+    Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
+    doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
+    Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
+  </p>
+
+  <table id="hsTable">
+    <thead>
+      <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
+    </tfoot>
+  </table>
+
+  <!-- Bouton Ajouter ligne -->
+  <button id="addRowHs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+
+  <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+
+  <!-- Sticky footer mobile -->
+  <div class="sticky-footer">
+    <span>Total heures sup : <span id="totalDurationFooter">0h00</span></span>
     <button id="sendHs" class="btnSend">Envoyer la demande</button>
-    <p id="hsLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
-    <p id="confirmHs" style="color:green;font-weight:bold;"></p>
   </div>
 
+  <!-- Overlay Envoi en cours -->
+<div id="hsOverlay" style="
+  display: none; 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.4); 
+  align-items: center; 
+  justify-content: center; 
+  z-index: 9999;
+">
+  <div style="
+    background: white; 
+    padding: 24px 32px; 
+    border-radius: 12px; 
+    text-align: center; 
+    font-size: 1.2em; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+    font-weight: bold;
+  ">
+    ⏳ Envoi en cours…
+  </div>
+</div>
+
+
+<!-- Overlay PDF envoyé -->
+<div id="hsPdfOverlay" style="
+  display:none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  
+">
+  <div style="
+    background: white;
+    padding: 24px 32px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  ">
+    ✅ PDF envoyé avec succès
+  </div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
   <!-- Section Absences -->
+
+
   <div class="section" id="absences">
     <h2>📝 Demande d'Absences</h2>
     <p style="color:red; font-weight:bold; margin-bottom:10px;">
@@ -2189,15 +2344,24 @@ function calculateDuration(start,end){
 function updateDurHs(){
   let totalMins=0;
   document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
-    const start=tr.querySelector(".debut").value;
-    const end=tr.querySelector(".fin").value;
-    const dur=calculateDuration(start,end);
-    tr.querySelector(".duree").textContent=dur;
-    const [h,m]=dur.split("h").map(Number);
-    totalMins+=h*60+m;
+    const start = tr.querySelector(".debut").value;
+    const end   = tr.querySelector(".fin").value;
+    const dur   = calculateDuration(start,end);
+    tr.querySelector(".duree").textContent = dur;
+    const [h,m] = dur.split("h").map(Number);
+    totalMins += h*60 + m;
   });
-  document.getElementById("totalDuration").textContent=formatDuration(Math.floor(totalMins/60), totalMins%60);
+
+  const totalStr = formatDuration(Math.floor(totalMins/60), totalMins%60);
+
+  // mettre à jour le total dans le tableau
+  document.querySelector("#hsTable #totalDuration").textContent = totalStr;
+
+  // mettre à jour le total dans le sticky footer
+  const footer = document.getElementById("totalDurationFooter");
+  if(footer) footer.textContent = totalStr;
 }
+
 function addRowHs(data={}){ 
   const tbody=document.querySelector("#hsTable tbody"); 
   const tr=document.createElement("tr");
@@ -2218,12 +2382,20 @@ function addRowHs(data={}){
 document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
 addRowHs(); // première ligne
 
-// --- Envoi Heures Supplémentaires ---
 
+
+
+
+
+
+// --- Envoi Heures Supplémentaires ---
 document.getElementById("sendHs").addEventListener("click", ()=>{
   const profAffiche = document.getElementById("selectProfGlobal").value.trim();
   const nomProfHs = profMap[profAffiche];
-  if(!nomProfHs){ alert("Indiquez le nom du professeur !"); return; }
+  if(!nomProfHs){ 
+    alert("Indiquez le nom du professeur !"); 
+    return; 
+  }
 
   const tbody = document.querySelector("#hsTable tbody");
   const lignes = [];
@@ -2240,31 +2412,41 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
   });
 
   const total = document.getElementById("totalDuration").textContent;
-  const loadingMsg = document.getElementById("hsLoading");
-  loadingMsg.style.display = "block";          // 🔹 afficher "envoi en cours"
+
+  // 🔹 afficher overlay "Envoi en cours"
+  document.getElementById("hsOverlay").style.display = "flex";
   document.getElementById("confirmHs").textContent = ""; // vider ancien message
 
-
-
-
   // URL de ton script Google Apps Script (Heures supplémentaires) 
-  
   fetch("https://script.google.com/macros/s/AKfycbzlJ0hgRiuJVWdQszMMp127I9VhGIwmnMEiSj1mekioM3WFiwxamxI1W8wAsBMj02uQ/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
   .then(res => res.json())
   .then(res => {
-    loadingMsg.style.display = "none";  // 🔹 masquer "envoi en cours"
+    // 🔹 masquer overlay "Envoi en cours"
+    document.getElementById("hsOverlay").style.display = "none";
+
+    // 🔹 afficher overlay "PDF envoyé"
+    const pdfOverlay = document.getElementById("hsPdfOverlay");
+    pdfOverlay.style.display = "flex";
+
+    // masquer après 2,5 secondes
+    setTimeout(() => { pdfOverlay.style.display = "none"; }, 2500);
+
+    // message texte classique
     document.getElementById("confirmHs").textContent = res.message || "Heures sup envoyées avec succès";
+
+    // remettre le tableau à zéro
     tbody.innerHTML = "";
     addRowHs(); // remettre une ligne vide
   })
   .catch(err => {
-    loadingMsg.style.display = "none";  // 🔹 masquer même en erreur
+    document.getElementById("hsOverlay").style.display = "none";
     document.getElementById("confirmHs").textContent = "Erreur : " + err;
   });
 });
+
 
 
 
