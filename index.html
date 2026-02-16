@@ -689,7 +689,6 @@ select {
 
   /* Table responsive */
   #fdTable thead { display: none; }
-
   #fdTable tr {
     display: block;
     margin-bottom: 14px;
@@ -698,12 +697,10 @@ select {
     padding: 10px;
     background: #fff;
   }
-
   body.dark-theme #fdTable tr {
     background: #1e1e1e;
     border-color: #444;
   }
-
   #fdTable td {
     display: flex;
     flex-direction: column;
@@ -711,7 +708,6 @@ select {
     padding: 6px 0;
     text-align: left;
   }
-
   #fdTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -719,16 +715,11 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-
-  body.dark-theme #fdTable td::before {
-    color: #bbb;
-  }
-
+  body.dark-theme #fdTable td::before { color: #bbb; }
   #fdTable input {
     width: 100%;
     font-size: 16px; /* évite le zoom iOS */
   }
-
   .deleteFD {
     width: 100%;
     padding: 10px;
@@ -745,20 +736,19 @@ select {
   #fraisdeplacement #immatFD,
   #fraisdeplacement #puissanceFD {
     box-sizing: border-box;
-    height: 34px;
   }
 
-  /* Conteneur flex uniquement pour aligner immat + puissance */
+  /* Conteneur flex pour aligner immat + puissance */
   .fd-vehicule {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;  /* permet aux champs de passer à la ligne si nécessaire */
-    justify-content: flex-start;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
   }
 
   #immatFD { width: 65%; }
   #puissanceFD { width: 35%; }
-
+  
   /* Sticky footer mobile */
   #fraisdeplacement .sticky-footer {
     position: fixed;
@@ -788,11 +778,12 @@ select {
     font-size: 1em;
   }
 
-  /* Marge pour que le bouton Ajouter / footer ne chevauche pas le tableau */
+  /* Marge sous le tableau pour voir le sticky footer */
   #fdTable {
     margin-bottom: 140px;
   }
 }
+
 
 
 
@@ -2573,6 +2564,15 @@ createFDRow(); // première ligne
 
 
 
+function showFDOverlay() {
+  document.getElementById("fdOverlay").style.display = "flex";
+}
+
+function hideFDOverlay() {
+  document.getElementById("fdOverlay").style.display = "none";
+}
+
+
 
 
 
@@ -2583,49 +2583,49 @@ createFDRow(); // première ligne
 // ---------------- Envoi vers Web App ----------------
 
 
-  document.getElementById("sendFD").addEventListener("click", () => {
-    const profAffiche = document.getElementById("selectProfGlobal").value.trim();
-    const nomProfFD = profMap[profAffiche];
-    if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
+document.getElementById("sendFD").addEventListener("click", () => {
+  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+  const nomProfFD = profMap[profAffiche];
+  if (!nomProfFD) {
+    alert("Indiquez le nom du professeur !");
+    return;
+  }
 
-    const immatFD = document.getElementById("immatFD").value.trim();
-    const puissanceFD = document.getElementById("puissanceFD").value.trim();
+  const immatFD = document.getElementById("immatFD").value.trim();
+  const puissanceFD = document.getElementById("puissanceFD").value.trim();
 
-    const lignes = [];
+  const lignes = [];
+  fdTableBody.querySelectorAll("tr").forEach(tr => {
+    const fp = tr.querySelector(".datesFD")?._flatpickr;
+    const dates = fp
+      ? fp.selectedDates.map(d => {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        })
+      : [];
 
-    fdTableBody.querySelectorAll("tr").forEach(tr => {
-      const fp = tr.querySelector(".datesFD")?._flatpickr;
-      const dates = fp
-        ? fp.selectedDates.map(d => {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${y}-${m}-${day}`;
-          })
-        : [];
-
-      lignes.push({
-        dates: dates,
-        itineraire: tr.querySelector(".itineraireFD")?.value || "",
-        motif: tr.querySelector(".motifFD")?.value || "",
-        km: tr.querySelector(".kmFD")?.value || "",
-        peage: tr.querySelector(".peageFD")?.value || ""
-      });
+    lignes.push({
+      dates: dates,
+      itineraire: tr.querySelector(".itineraireFD")?.value || "",
+      motif: tr.querySelector(".motifFD")?.value || "",
+      km: tr.querySelector(".kmFD")?.value || "",
+      peage: tr.querySelector(".peageFD")?.value || ""
     });
+  });
 
-    const totalKm = totalKmEl.textContent;
-    const loadingMsg = document.getElementById("fdLoading");
-    showFDOverlay();
-    document.getElementById("fdConfirm").textContent = "";
- 
+  const totalKm = totalKmEl.textContent;
+  const loadingMsg = document.getElementById("fdLoading");
+  showFDOverlay();
+  document.getElementById("fdConfirm").textContent = "";
 
 
-     // URL de ton script Google Apps Script (Frais de déplacement)
-
-    fetch("https://script.google.com/macros/s/AKfycbw8wbPzZZ1IIzNquBlq1n3HiSOh8f1EhYBlISt9kWtZijQiTtipYUEVbnRudgt1vOmsKw/exec", {  
-      method: "POST",
-      body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
-    })
+  // URL de ton script Google Apps Script (Frais de déplacement)
+  fetch("https://script.google.com/macros/s/AKfycbw8wbPzZZ1IIzNquBlq1n3HiSOh8f1EhYBlISt9kWtZijQiTtipYUEVbnRudgt1vOmsKw/exec", {
+    method: "POST",
+    body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
+  })
     .then(res => res.json())
     .then(res => {
       hideFDOverlay();
@@ -2637,7 +2637,8 @@ createFDRow(); // première ligne
       hideFDOverlay();
       document.getElementById("fdConfirm").textContent = "Erreur : " + err;
     });
-  });
+});
+
 
 
 
