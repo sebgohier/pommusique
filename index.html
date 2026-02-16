@@ -1186,6 +1186,9 @@ select {
 
 
 
+
+
+
   <!-- Section Absences -->
 
 
@@ -1861,7 +1864,7 @@ select {
 
 
 
-<!-- Envoi en cours -->
+<!-- Envoi en cours frais de déplacement -->
 
 <div id="fdOverlay" style="
   position: fixed;
@@ -1888,6 +1891,53 @@ select {
 
 
 
+<!-- Overlay Envoi Heures Sup -->
+<div id="hsOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div id="hsOverlayBox" style="
+    background: white;
+    padding: 26px 32px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    max-width: 90%;
+  ">
+    ⏳ Envoi en cours…
+  </div>
+</div>
+
+<!-- Overlay PDF envoyé -->
+<div id="hsPdfOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div style="
+    background: white;
+    padding: 26px 32px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    max-width: 90%;
+  ">
+    ✅ PDF envoyé avec succès
+  </div>
+</div>
 
 
 
