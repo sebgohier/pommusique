@@ -991,6 +991,165 @@ select {
 
 
 
+/* ============================= */
+/* Absences – mobile responsive */
+/* ============================= */
+
+@media (max-width: 768px) {
+  #absTable thead { display: none; }
+  #absTable tr {
+    display: block;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+  }
+  body.dark-theme #absTable tr {
+    background: #1e1e1e;
+    border-color: #444;
+  }
+  #absTable td {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    padding: 6px 0;
+    text-align: left;
+  }
+  #absTable td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    margin-bottom: 3px;
+  }
+  body.dark-theme #absTable td::before { color: #bbb; }
+  #absTable input, #absTable select {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* Bouton supprimer rouge */
+  .deleteBtn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: all 0.2s;
+  }
+
+  /* Sticky footer jaune */
+  #absences .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffecb3;
+    border-top: 2px solid #f39c12;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: flex-end; /* seul bouton envoyer à droite */
+    align-items: center;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
+    z-index: 1000;
+  }
+
+  #absences .sticky-footer button.btnSend {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    font-size: 1em;
+    font-weight: bold;
+  }
+
+  /* Espace pour que le tableau ne soit pas masqué par le footer */
+  #absTable { margin-bottom: 120px; }
+}
+
+/* ============================= */
+/* Bouton Ajouter ligne mobile */
+
+
+@media (max-width: 768px) {
+  #addRowAbsMobile {
+    position: fixed;
+    bottom: 70px;               /* juste au-dessus du sticky footer */
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
+    opacity: 0.95;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    border-radius: 14px;
+    background: #27ae60; /* vert */
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  /* Pour que le tableau soit visible sous le bouton */
+  #absences {
+    padding-bottom: 160px;
+  }
+}
+
+/* PC : bouton Ajouter ligne vert */
+#addRowAbs {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* PC : cacher le bouton mobile */
+#addRowAbsMobile {
+  display: none;
+}
+
+/* ============================= */
+/* Bouton Ajouter ligne mobile sticky */
+/* ============================= */
+@media (max-width: 768px) {
+  #addRowAbsMobile {
+    display: block;               /* visible sur mobile */
+    position: fixed;              /* fixe au-dessus du footer */
+    bottom: 70px;                 /* juste au-dessus du sticky footer */
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    border-radius: 14px;
+    background: #27ae60;          /* vert */
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+    opacity: 0.95;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 </style>
@@ -1186,31 +1345,77 @@ select {
 
 
 
+<!-- Section Absences -->
 
 
+<div class="section" id="absences">
+  <h2>📝 Demande d'Absences</h2>
+  <p style="color:red; font-weight:bold; margin-bottom:10px;">
+    Toute absence pour convenance personnelle doit être saisie dans ce tableau au moins 10 jours à l’avance.<br>
+    Les demandes hors délai ou non validées par la direction ne seront pas acceptées.
+  </p>
 
-  <!-- Section Absences -->
+  <table id="absTable">
+    <thead>
+      <tr>
+        <th>Date d'absence</th>
+        <th>Créneau</th>
+        <th>Date rattrapage</th>
+        <th>Créneau rattrapage</th>
+        <th>Salle</th>
+        <th>Accord</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
+  <!-- Bouton Ajouter ligne PC -->
+  <button id="addRowAbs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">
+    + Ajouter une ligne
+  </button>
 
-  <div class="section" id="absences">
-    <h2>📝 Demande d'Absences</h2>
-    <p style="color:red; font-weight:bold; margin-bottom:10px;">
-      Toute absence pour convenance personnelle doit être saisie dans ce tableau au moins 10 jours à l’avance.<br>
-      Les demandes hors délai ou non validées par la direction ne seront pas acceptées.
-      </p>
-    <table id="absTable">
-      <thead>
-        <tr>
-          <th>Date d'absence</th><th>Créneau</th><th>Date rattrapage</th><th>Créneau rattrapage</th><th>Salle</th><th>Accord</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button id="addRowAbs" style="background-color:#ddd; color:#000; border:none; border-radius:4px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+  <!-- Bouton Ajouter ligne mobile -->
+  <button id="addRowAbsMobile" class="addRowMobile">
+    + Ajouter une ligne
+  </button>
+
+  <!-- Sticky footer mobile -->
+  <div class="sticky-footer">
     <button id="sendAbs" class="btnSend">Envoyer la demande</button>
-    <p id="absLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
-    <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
   </div>
+
+  <!-- Overlay envoi -->
+  <div id="absOverlay" style="
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  ">
+    <div style="
+      background: white;
+      padding: 26px 32px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      max-width: 90%;
+    ">
+      ⏳ Envoi en cours…
+    </div>
+  </div>
+
+  <!-- Confirmation -->
+  <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
+</div>
+
+
+
+ 
 
 
 
@@ -1942,6 +2147,57 @@ select {
 
 
 
+<!-- Overlay Envoi Absences -->
+<div id="absOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div id="absOverlayBox" style="
+    background: white;
+    padding: 26px 32px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    max-width: 90%;
+  ">
+    ⏳ Envoi en cours…
+  </div>
+</div>
+
+<!-- Overlay PDF envoyé Absences -->
+<div id="absPdfOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
+  <div style="
+    background: white;
+    padding: 26px 32px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    max-width: 90%;
+  ">
+    ✅ PDF envoyé avec succès
+  </div>
+</div>
+
+
+
+
 
 
 
@@ -2590,12 +2846,14 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
 
 
 
+
+
+
 // --- Absences ---
-
-
 
 const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
+// Ajouter une ligne dans le tableau Absences
 function addRowAbs(data={}) {
   const tbody = document.querySelector("#absTable tbody");
   const tr = document.createElement("tr");
@@ -2605,28 +2863,45 @@ function addRowAbs(data={}) {
     <td><input type="text" class="creneauAbs" placeholder="Ex: 16h30-18h30" value="${data.creneauAbs||''}"></td>
     <td><input type="date" class="dateRatt" value="${data.dateRatt||''}"></td>
     <td><input type="text" class="creneauRatt" placeholder="Ex: 16h30-18h30" value="${data.creneauRatt||''}"></td>
-    <td><select class="salle">${sallesAbs.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}</select></td>
+    <td>
+      <select class="salle">
+        ${sallesAbs.map(s=>`<option value="${s}" ${s===data.salle?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </td>
     <td><input type="checkbox" class="accord" ${data.accord?'checked':''}></td>
-    <td><button type="button" class="deleteBtn">X</button></td>
+    <td>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <button type="button" class="deleteBtn"
+          style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+          X
+        </button>
+        <span style="font-size:0.7em;">Supprimer</span>
+      </div>
+    </td>
   `;
 
   tbody.appendChild(tr);
 
-  // Supprimer ligne
-  tr.querySelector(".deleteBtn").addEventListener("click",()=> tr.remove());
+  // Bouton supprimer
+  tr.querySelector(".deleteBtn").addEventListener("click", ()=>{
+    tr.remove();
+  });
 }
 
-// Ajouter ligne Absence
-
+// Bouton Ajouter ligne PC
 document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
-addRowAbs(); // première ligne
+
+// Ajouter première ligne par défaut
+addRowAbs();
 
 // --- Envoi Absences ---
-
 document.getElementById("sendAbs").addEventListener("click", ()=>{
   const profAffiche = document.getElementById("selectProfGlobal").value.trim();
   const nomProfAbs = profMap[profAffiche];
-  if(!nomProfAbs){ alert("Indiquez le nom du professeur !"); return; }
+  if(!nomProfAbs){ 
+    alert("Indiquez le nom du professeur !"); 
+    return; 
+  }
 
   const tbody = document.querySelector("#absTable tbody");
   const lignes = [];
@@ -2642,13 +2917,9 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
     });
   });
 
-  const loadingMsg = document.getElementById("absLoading");
-  loadingMsg.style.display = "block";   // 🔹 afficher "envoi en cours"
-  document.getElementById("confirmAbs").textContent = ""; // vider ancien message
-
-  
-
-  // URL de ton script Google Apps Script (Demande d'autorisation d'absence) 
+  // Afficher overlay "envoi en cours"
+  document.getElementById("absOverlay").style.display = "flex";
+  document.getElementById("confirmAbs").textContent = "";
 
   fetch("https://script.google.com/macros/s/AKfycbx_ouP5hyCczGmnO_Gy-rlbD4r_ygnGPAlhc1zmMbeZCAIywnJlSx2V9Lv19XurAqL1/exec", {
     method: "POST",
@@ -2656,20 +2927,32 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
   })
   .then(res => res.json())
   .then(res => {
-    loadingMsg.style.display = "none"; // 🔹 masquer "envoi en cours"
+    document.getElementById("absOverlay").style.display = "none";
+    const pdfOverlay = document.getElementById("absPdfOverlay");
+    pdfOverlay.style.display = "flex";
+    setTimeout(()=>{ pdfOverlay.style.display = "none"; }, 2500);
     document.getElementById("confirmAbs").textContent = res.message || "PDF envoyé avec succès";
     tbody.innerHTML = "";
     addRowAbs(); // remettre une ligne vide
   })
   .catch(err => {
-    loadingMsg.style.display = "none"; // 🔹 masquer "envoi en cours" même en erreur
+    document.getElementById("absOverlay").style.display = "none";
     document.getElementById("confirmAbs").textContent = "Erreur : " + err;
   });
 });
 
 
 
+
+
+
+
+
+
+
 // --- Partitions / Onglets morceaux ---
+
+
 
 
 window.toggleMorceau = function(el) {
