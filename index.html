@@ -832,13 +832,16 @@ select {
 
 
 
+/* ============================= */
+/* Heures Sup – Desktop & Mobile */
+/* ============================= */
 
-/* === Heures Sup – Mobile responsive === */
-
-
+/* Table responsive mobile */
 @media (max-width: 768px) {
-  /* Table responsive */
+  /* Masquer le header */
   #hsTable thead { display: none; }
+
+  /* Chaque ligne devient un bloc */
   #hsTable tr {
     display: block;
     margin-bottom: 14px;
@@ -847,6 +850,8 @@ select {
     padding: 10px;
     background: #fff;
   }
+
+  /* Chaque cellule devient un mini-bloc vertical */
   #hsTable td {
     display: flex;
     flex-direction: column;
@@ -854,6 +859,8 @@ select {
     padding: 6px 0;
     text-align: left;
   }
+
+  /* Label avant chaque input (data-label) */
   #hsTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -861,12 +868,15 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-  #hsTable input, #hsTable select {
+
+  /* Inputs et selects plein width */
+  #hsTable input,
+  #hsTable select {
     width: 100%;
-    font-size: 16px;
+    font-size: 16px; /* évite zoom iOS */
   }
 
-  /* bouton supprimer rouge identique à Frais km */
+  /* Bouton supprimer rouge */
   .deleteBtn {
     width: 100%;
     padding: 10px;
@@ -878,13 +888,13 @@ select {
     cursor: pointer;
   }
 
-  /* sticky footer */
+  /* Sticky footer mobile */
   #heuresSup .sticky-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #ffecb3;
+    background: #ffecb3; /* jaune clair */
     border-top: 2px solid #f39c12;
     padding: 12px 15px;
     display: flex;
@@ -894,19 +904,21 @@ select {
     z-index: 1000;
     gap: 10px;
   }
+
   #heuresSup .sticky-footer span {
     font-weight: bold;
     font-size: 1em;
     color: #111;
   }
+
   #heuresSup .sticky-footer button.btnSend {
     flex-shrink: 0;
     padding: 10px 16px;
     font-size: 1em;
   }
 
-  /* bouton Ajouter ligne mobile juste au-dessus du footer */
-  .addRowMobile {
+  /* Bouton Ajouter ligne mobile juste au-dessus du footer */
+  #addRowHsMobile {
     position: fixed;
     bottom: 70px;
     left: 10px;
@@ -916,22 +928,24 @@ select {
     font-size: 16px;
     font-weight: bold;
     border-radius: 14px;
-    background: #27ae60; /* vert Frais km */
+    background: #27ae60; /* vert identique à Frais km */
     color: white;
     border: none;
     box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
     cursor: pointer;
+    display: block; /* important pour mobile */
   }
 
-  /* marge pour que le tableau ne soit pas masqué par le footer */
-  #hsTable { margin-bottom: 140px; }
+  /* Marge pour que le tableau ne soit pas masqué par le footer */
+  #hsTable {
+    margin-bottom: 140px;
+  }
 }
 
-/* PC : on cache le bouton mobile */
-#addRowHsMobile { display: none; }
-
-
-
+/* Desktop : on cache le bouton mobile */
+#addRowHsMobile {
+  display: none;
+}
 
 
 
@@ -1067,95 +1081,54 @@ select {
 
 
 
- <!-- Section Heures Supplémentaires -->
 
-<div class="section" id="heuresSup">
-  <h2>⏰ Déclaration Heures Supplémentaires</h2>
-  <p style="color:red; font-weight:bold; margin-bottom:10px;">
-    Toute heure effectuée en dehors du planning habituel (lié à un événement, répétition, remplacement, concert, etc.)<br>
-    doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
-    Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
+<!-- Section Heures Sup -->
+
+
+<div id="heuresSup" class="section">
+
+  <h2>🕒 Heures supplémentaires</h2>
+
+  <p style="color:red;font-weight:bold;">
+    Les heures supplémentaires doivent être déclarées chaque mois avant le 20.
   </p>
 
   <table id="hsTable">
     <thead>
-      <tr><th>Date</th><th>Type</th><th>Début</th><th>Fin</th><th>Durée</th><th>Lieu</th><th>Action</th></tr>
+      <tr>
+        <th data-label="Date">Date</th>
+        <th data-label="Type">Type</th>
+        <th data-label="Début">Début</th>
+        <th data-label="Fin">Fin</th>
+        <th data-label="Durée">Durée</th>
+        <th data-label="Lieu">Lieu</th>
+        <th data-label="Action">Actions</th>
+      </tr>
     </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr><td colspan="4">Total</td><td id="totalDuration">0h00</td><td colspan="2"></td></tr>
-    </tfoot>
+    <tbody>
+      <!-- Les lignes seront créées via JS -->
+    </tbody>
   </table>
 
   <!-- Bouton Ajouter ligne PC -->
   <button id="addRowHs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
 
-  <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+  <!-- Bouton Ajouter ligne Mobile (fixe, au-dessus du sticky footer) -->
+  <button id="addRowHsMobile" class="addRowMobile">➕ Ajouter une ligne</button>
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
-    <span>Total heures sup : <span id="totalDurationFooter">0h00</span></span>
-    <button id="sendHs" class="btnSend">Envoyer la demande</button>
+    <span>Total heures : <span id="totalDurationFooter">0h00</span></span>
+    <button id="sendHs" class="btnSend">Envoyer</button>
   </div>
-</div>
 
-
-
-
-  <!-- Overlay Envoi en cours -->
-
-
-<div id="hsOverlay" style="
-  display: none; 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0,0,0,0.4); 
-  align-items: center; 
-  justify-content: center; 
-  z-index: 9999;
-">
-  <div style="
-    background: white; 
-    padding: 24px 32px; 
-    border-radius: 12px; 
-    text-align: center; 
-    font-size: 1.2em; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
-    font-weight: bold;
-  ">
-    ⏳ Envoi en cours…
-  </div>
-</div>
-
-
-<!-- Overlay PDF envoyé -->
-<div id="hsPdfOverlay" style="
-  display:none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  
-">
-  <div style="
-    background: white;
-    padding: 24px 32px;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: bold;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  ">
-    ✅ PDF envoyé avec succès
-  </div>
-</div>
-
-
-
+  <!-- Messages / overlay -->
+  <p id="hsOverlay" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
+  <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+  <div id="hsPdfOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);color:white;align-items:center;justify-content:center;font-size:1.5em;">PDF envoyé ✅</div>
 
 </div>
+
 
 
 
@@ -1187,7 +1160,17 @@ select {
     <p id="confirmAbs" style="color:green;font-weight:bold;"></p>
   </div>
 
+
+
+
+
+
+
+
   <!-- Section Partitions -->
+
+
+
 <div class="section" id="partitions">
   <h2>🎼 Partitions concert de fin d'année 2025-2026</h2>
 
@@ -2351,14 +2334,18 @@ document.getElementById("selectProfGlobal").addEventListener("change", e=>{
 
 
 
+
+
 // --- Heures Sup ---
 
 const typesEvenement = ["Concert","Répétition","Autre"];
 
+// Formater durée en h:mm
 function formatDuration(h,m){ 
   return `${h}h${m.toString().padStart(2,'0')}`; 
 }
 
+// Calculer durée entre deux heures
 function calculateDuration(start,end){
   if(!start||!end) return "0h00";
   const [h1,m1]=start.split(":").map(Number);
@@ -2368,6 +2355,7 @@ function calculateDuration(start,end){
   return formatDuration(Math.floor(total/60), total%60);
 }
 
+// Recalculer total du tableau
 function updateDurHs(){
   let totalMins=0;
   document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
@@ -2381,79 +2369,57 @@ function updateDurHs(){
 
   const totalStr = formatDuration(Math.floor(totalMins/60), totalMins%60);
 
-  // total tableau PC
+  // Total PC
   const totalTable = document.getElementById("totalDuration");
   if(totalTable) totalTable.textContent = totalStr;
 
-  // total sticky footer mobile
+  // Total sticky footer mobile
   const totalFooter = document.getElementById("totalDurationFooter");
   if(totalFooter) totalFooter.textContent = totalStr;
 }
 
+// Ajouter une ligne dans le tableau
 function addRowHs(data={}){ 
   const tbody=document.querySelector("#hsTable tbody"); 
   const tr=document.createElement("tr");
 
   tr.innerHTML=`
-    <td data-label="Date"><input type="date" class="date" value="${data.date||''}" placeholder="jj/mm/aaaa"></td>
+    <td data-label="Date"><input type="date" class="date" value="${data.date||''}"></td>
     <td data-label="Type">
       <select class="type">
         ${typesEvenement.map(t=>`<option value="${t}" ${t===data.type?'selected':''}>${t}</option>`).join('')}
       </select>
     </td>
-    <td data-label="Début"><input type="time" class="debut" value="${data.debut||''}" placeholder="hh:mm"></td>
-    <td data-label="Fin"><input type="time" class="fin" value="${data.fin||''}" placeholder="hh:mm"></td>
+    <td data-label="Début"><input type="time" class="debut" value="${data.debut||''}"></td>
+    <td data-label="Fin"><input type="time" class="fin" value="${data.fin||''}"></td>
     <td data-label="Durée" class="duree">0h00</td>
-    <td data-label="Lieu"><input type="text" class="lieu" value="${data.lieu||''}" placeholder="Ex: Salle A"></td>
+    <td data-label="Lieu"><input type="text" class="lieu" value="${data.lieu||''}"></td>
     <td data-label="Action"><button type="button" class="deleteBtn">X</button></td>
   `;
 
   tbody.appendChild(tr);
 
-  // recalcul durée
+  // Recalcul à chaque changement d'heure
   tr.querySelector(".debut").addEventListener("input", updateDurHs);
   tr.querySelector(".fin").addEventListener("input", updateDurHs);
 
-  // bouton supprimer rouge
-  const deleteBtn = tr.querySelector(".deleteBtn");
-  deleteBtn.style.backgroundColor = "#e74c3c";
-  deleteBtn.style.color = "#fff";
-  deleteBtn.style.border = "none";
-  deleteBtn.style.borderRadius = "6px";
-  deleteBtn.style.padding = "6px 10px";
-  deleteBtn.style.cursor = "pointer";
-  deleteBtn.addEventListener("click", ()=>{ tr.remove(); updateDurHs(); });
+  // Bouton supprimer
+  tr.querySelector(".deleteBtn").addEventListener("click", ()=>{
+    tr.remove();
+    updateDurHs();
+  });
 
   updateDurHs();
 }
 
-// bouton Ajouter ligne PC
+// Bouton Ajouter ligne PC
 document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
 
+// Bouton Ajouter ligne Mobile
+document.getElementById("addRowHsMobile").addEventListener("click",()=>addRowHs());
 
-
-
-// bouton Ajouter ligne mobile (créé dynamiquement si non présent)
-let addRowHsMobileBtn = document.getElementById("addRowHsMobile");
-if(!addRowHsMobileBtn){
-  addRowHsMobileBtn = document.createElement("button");
-  addRowHsMobileBtn.id = "addRowHsMobile";
-  addRowHsMobileBtn.className = "addRowMobile";
-  addRowHsMobileBtn.textContent = "➕ Ajouter une ligne";
-  document.querySelector("#heuresSup .sticky-footer").before(addRowHsMobileBtn);
-}
-addRowHsMobileBtn.addEventListener("click", ()=>addRowHs());
-
-
-
-
-addRowHs(); // première ligne
-
-
-
-
-
-
+// Ajouter première ligne par défaut
+addRowHs();
 
 // --- Envoi Heures Supplémentaires ---
 document.getElementById("sendHs").addEventListener("click", ()=>{
@@ -2478,33 +2444,23 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
     });
   });
 
-  const total = document.getElementById("totalDuration").textContent;
+  const total = document.getElementById("totalDuration").textContent || "0h00";
 
-  // 🔹 afficher overlay "Envoi en cours"
+  // Afficher overlay envoi
   document.getElementById("hsOverlay").style.display = "flex";
-  document.getElementById("confirmHs").textContent = ""; // vider ancien message
+  document.getElementById("confirmHs").textContent = "";
 
-  // URL de ton script Google Apps Script (Heures supplémentaires) 
   fetch("https://script.google.com/macros/s/AKfycbzlJ0hgRiuJVWdQszMMp127I9VhGIwmnMEiSj1mekioM3WFiwxamxI1W8wAsBMj02uQ/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
   .then(res => res.json())
   .then(res => {
-    // 🔹 masquer overlay "Envoi en cours"
     document.getElementById("hsOverlay").style.display = "none";
-
-    // 🔹 afficher overlay "PDF envoyé"
     const pdfOverlay = document.getElementById("hsPdfOverlay");
     pdfOverlay.style.display = "flex";
-
-    // masquer après 2,5 secondes
-    setTimeout(() => { pdfOverlay.style.display = "none"; }, 2500);
-
-    // message texte classique
+    setTimeout(()=>{ pdfOverlay.style.display = "none"; }, 2500);
     document.getElementById("confirmHs").textContent = res.message || "Heures sup envoyées avec succès";
-
-    // remettre le tableau à zéro
     tbody.innerHTML = "";
     addRowHs(); // remettre une ligne vide
   })
@@ -2513,6 +2469,7 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
     document.getElementById("confirmHs").textContent = "Erreur : " + err;
   });
 });
+
 
 
 
