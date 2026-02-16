@@ -682,33 +682,7 @@ select {
 
 
 
-/* ============================= */
-/* Frais de déplacement – Mobile (tableau + sticky footer) */
-/* ============================= */
-@media (max-width: 768px) {
-  /* Tableau classique */
-  #fdTable thead { display: table-header-group; }
-  #fdTable tr { display: table-row; }
-  #fdTable td { display: table-cell; }
 
-  /* Sticky footer */
-  #fraisdeplacement .sticky-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #ffecb3;
-    border-top: 2px solid #f39c12;
-    padding: 12px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  #fdTable {
-    margin-bottom: 140px; 
-  }
 }
 
 
@@ -1446,15 +1420,13 @@ select {
   </table>
 
                <!-- Bouton Ajouter ligne (PC) -->
-<button id="addRowFD">+ Ajouter une ligne</button>  
+<button id="addRowFD">+ Ajouter une ligne</button>
+<button id="sendFD" class="btnSend">Envoyer la demande</button>
+ 
 
 
 
-  <!-- Sticky footer mobile -->
-  <div class="sticky-footer">
-  <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
-  <button id="sendFD" class="btnSend">Envoyer la demande</button>
-</div>
+
 
   <!-- Messages de statut -->
   <p id="fdLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
