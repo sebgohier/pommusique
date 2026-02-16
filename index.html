@@ -2570,7 +2570,9 @@ function createFDRow(data = {}) {
 document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
 
 // ===== Crée la première ligne =====
-createFDRow(); // première ligne
+// Crée la première ligne uniquement si le tableau est vide
+if (fdTableBody.children.length === 0) createFDRow();
+
 
 
 
