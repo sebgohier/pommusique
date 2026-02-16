@@ -685,12 +685,11 @@ select {
 /* ============================= */
 /* Frais de déplacement – mobile */
 /* ============================= */
-
-
 @media (max-width: 768px) {
 
   /* Table responsive */
   #fdTable thead { display: none; }
+
   #fdTable tr {
     display: block;
     margin-bottom: 14px;
@@ -699,10 +698,12 @@ select {
     padding: 10px;
     background: #fff;
   }
+
   body.dark-theme #fdTable tr {
     background: #1e1e1e;
     border-color: #444;
   }
+
   #fdTable td {
     display: flex;
     flex-direction: column;
@@ -710,6 +711,7 @@ select {
     padding: 6px 0;
     text-align: left;
   }
+
   #fdTable td::before {
     content: attr(data-label);
     font-size: 12px;
@@ -717,11 +719,16 @@ select {
     color: #777;
     margin-bottom: 3px;
   }
-  body.dark-theme #fdTable td::before { color: #bbb; }
+
+  body.dark-theme #fdTable td::before {
+    color: #bbb;
+  }
+
   #fdTable input {
     width: 100%;
     font-size: 16px; /* évite le zoom iOS */
   }
+
   .deleteFD {
     width: 100%;
     padding: 10px;
@@ -738,41 +745,28 @@ select {
   #fraisdeplacement #immatFD,
   #fraisdeplacement #puissanceFD {
     box-sizing: border-box;
+    height: 34px;
   }
 
-  /* Conteneur flex pour aligner les deux champs côte à côte et à gauche */
-  #fraisdeplacement h3 + label,
-  #fraisdeplacement h3 + label + input {
-    display: block;
-  }
-
-  #fraisdeplacement {
+  /* Conteneur flex uniquement pour aligner immat + puissance */
+  .fd-vehicule {
     display: flex;
     gap: 10px;
-    flex-wrap: nowrap;
-    justify-content: flex-start; /* aligne à gauche */
+    flex-wrap: wrap;  /* permet aux champs de passer à la ligne si nécessaire */
+    justify-content: flex-start;
   }
 
   #immatFD { width: 65%; }
   #puissanceFD { width: 35%; }
-}
 
-
-
-
-/* ============================= */
-/* Frais de déplacement – sticky footer mobile */
-/* ============================= */
-
-
-@media (max-width: 768px) {
+  /* Sticky footer mobile */
   #fraisdeplacement .sticky-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #ffecb3; /* jaune clair bien visible */
-    border-top: 2px solid #f39c12; /* sépare visuellement du tableau */
+    background: #ffecb3; /* jaune clair */
+    border-top: 2px solid #f39c12;
     padding: 12px 15px;
     display: flex;
     justify-content: space-between;
@@ -794,11 +788,12 @@ select {
     font-size: 1em;
   }
 
-  /* On laisse plus d’espace pour tout le contenu */
+  /* Marge pour que le bouton Ajouter / footer ne chevauche pas le tableau */
   #fdTable {
-    margin-bottom: 140px; /* plus haut pour que le bouton Ajouter soit visible */
+    margin-bottom: 140px;
   }
 }
+
 
 
 
@@ -2429,7 +2424,6 @@ window.showOnglet = function(id, btn, event) {
 
 // --- Frais de déplacement ---
 
-// --- Frais de déplacement ---
 
 const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
