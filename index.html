@@ -910,8 +910,52 @@ select {
 }
 
 
+/* Bouton Ajouter ligne sur mobile */
+
+@media (max-width: 768px) {
+  .addRowMobile {
+    display: block;
+    width: 100%;
+    background-color: #2ecc71; /* vert */
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 0;
+    margin-bottom: 8px; /* espace au-dessus du sticky footer */
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+
+  /* On cache le bouton PC sur mobile */
+  #addRowHs {
+    display: none;
+  }
+}
 
 
+/* PC : cacher le bouton mobile */
+#addRowHsMobile {
+  display: none;
+}
+
+/* Mobile : cacher le bouton PC et afficher le bouton mobile */
+@media (max-width: 768px) {
+  #addRowHs {
+    display: none;
+  }
+  #addRowHsMobile {
+    display: inline-block; /* ou flex selon le style */
+    background-color: #2ecc71; /* vert */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    margin-bottom: 10px; /* pour l'espacement au-dessus de la barre jaune */
+  }
+}
 
 
 
@@ -1076,13 +1120,25 @@ select {
 
   <p id="confirmHs" style="color:green;font-weight:bold;"></p>
 
+<!-- Bouton Ajouter ligne mobile -->
+<button id="addRowHsMobile" class="addRowMobile">
+  ➕ Ajouter une ligne
+</button>
+
+
+
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
     <span>Total heures sup : <span id="totalDurationFooter">0h00</span></span>
     <button id="sendHs" class="btnSend">Envoyer la demande</button>
   </div>
 
+
+
+
   <!-- Overlay Envoi en cours -->
+
+
 <div id="hsOverlay" style="
   display: none; 
   position: fixed; 
@@ -2331,17 +2387,21 @@ document.getElementById("selectProfGlobal").addEventListener("change", e=>{
 
 // --- Heures Sup ---
 
-
-
 const typesEvenement = ["Concert","Répétition","Autre"];
-function formatDuration(h,m){ return `${h}h${m.toString().padStart(2,'0')}`; }
+
+function formatDuration(h,m){ 
+  return `${h}h${m.toString().padStart(2,'0')}`; 
+}
+
 function calculateDuration(start,end){
   if(!start||!end) return "0h00";
   const [h1,m1]=start.split(":").map(Number);
   const [h2,m2]=end.split(":").map(Number);
-  let total=(h2*60+m2)-(h1*60+m1); if(total<0) total=0;
+  let total=(h2*60+m2)-(h1*60+m1); 
+  if(total<0) total=0;
   return formatDuration(Math.floor(total/60), total%60);
 }
+
 function updateDurHs(){
   let totalMins=0;
   document.querySelectorAll("#hsTable tbody tr").forEach(tr=>{
@@ -2355,12 +2415,13 @@ function updateDurHs(){
 
   const totalStr = formatDuration(Math.floor(totalMins/60), totalMins%60);
 
-  // mettre à jour le total dans le tableau
-  document.querySelector("#hsTable #totalDuration").textContent = totalStr;
+  // total tableau PC
+  const totalTable = document.getElementById("totalDuration");
+  if(totalTable) totalTable.textContent = totalStr;
 
-  // mettre à jour le total dans le sticky footer
-  const footer = document.getElementById("totalDurationFooter");
-  if(footer) footer.textContent = totalStr;
+  // total sticky footer mobile
+  const totalFooter = document.getElementById("totalDurationFooter");
+  if(totalFooter) totalFooter.textContent = totalStr;
 }
 
 function addRowHs(data={}){ 
@@ -2387,7 +2448,7 @@ function addRowHs(data={}){
   tr.querySelector(".debut").addEventListener("input", updateDurHs);
   tr.querySelector(".fin").addEventListener("input", updateDurHs);
 
-  // bouton supprimer en rouge
+  // bouton supprimer rouge
   const deleteBtn = tr.querySelector(".deleteBtn");
   deleteBtn.style.backgroundColor = "#e74c3c";
   deleteBtn.style.color = "#fff";
@@ -2395,16 +2456,17 @@ function addRowHs(data={}){
   deleteBtn.style.borderRadius = "6px";
   deleteBtn.style.padding = "6px 10px";
   deleteBtn.style.cursor = "pointer";
-
   deleteBtn.addEventListener("click", ()=>{ tr.remove(); updateDurHs(); });
 
   updateDurHs();
 }
 
-
-
-
+// bouton Ajouter ligne PC
 document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
+
+// bouton Ajouter ligne mobile (au-dessus de la barre jaune)
+document.getElementById("addRowHsMobile")?.addEventListener("click",()=>addRowHs());
+
 addRowHs(); // première ligne
 
 
