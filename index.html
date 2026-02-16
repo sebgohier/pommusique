@@ -800,6 +800,30 @@ select {
   }
 }
 
+@media (max-width: 768px) {
+
+  /* bouton Ajouter devient sticky juste au-dessus de la barre jaune */
+  #addRowFD {
+    position: fixed;
+    bottom: 70px;               /* juste au-dessus de la barre jaune */
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+  }
+
+  /* on laisse la place pour les deux barres */
+  #fraisdeplacement {
+    padding-bottom: 160px;
+  }
+
+}
 
 
 
