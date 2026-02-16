@@ -1660,15 +1660,17 @@ select {
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 9999;
 ">
-  <div style="
+  <div id="fdOverlayBox" style="
     background: white;
-    padding: 24px 32px;
-    border-radius: 12px;
+    padding: 26px 32px;
+    border-radius: 14px;
     text-align: center;
     font-size: 1.2em;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    font-weight: bold;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    max-width: 90%;
   ">
     ⏳ Envoi en cours…
   </div>
@@ -2487,7 +2489,8 @@ createFDRow(); // première ligne
 
 
 
-function showFDOverlay() {
+function showFDOverlay(message) {
+  document.getElementById("fdOverlayBox").textContent = message;
   document.getElementById("fdOverlay").style.display = "flex";
 }
 
@@ -2534,26 +2537,29 @@ function hideFDOverlay() {
     });
 
     const totalKm = totalKmEl.textContent;
-    showFDOverlay();
+    showFDOverlay("⏳ Envoi en cours…");
     document.getElementById("fdConfirm").textContent = "";
+
 
 
 
      // URL de ton script Google Apps Script (Frais de déplacement)
 
-    fetch("https://script.google.com/macros/s/AKfycbw8wbPzZZ1IIzNquBlq1n3HiSOh8f1EhYBlISt9kWtZijQiTtipYUEVbnRudgt1vOmsKw/exec", {  
+    fetch("https://script.google.com/macros/s/AKfycbz1jquvxLVY_zm5V3uMtgK_3ZwoIP00lcUYujsxCWnskbZ7Oa5pLFTSYjFSo8mNbH579Q/exec", {  
       method: "POST",
       body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
     })
     .then(res => res.json())
     .then(res => {
-      hideFDOverlay();
+      showFDOverlay("✅ " + (res.message || "Demande envoyée avec succès"));
+      setTimeout(() => hideFDOverlay(), 2000);
       document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
       fdTableBody.innerHTML = "";
       createFDRow();
     })
     .catch(err => {
-      hideFDOverlay();
+      showFDOverlay("❌ Erreur lors de l’envoi");
+      setTimeout(() => hideFDOverlay(), 3000);
       document.getElementById("fdConfirm").textContent = "Erreur : " + err;
     });
   });
