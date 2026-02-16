@@ -1081,53 +1081,61 @@ select {
 
 
 
+<!-- Section Heures Supplémentaires -->
 
-<!-- Section Heures Sup -->
 
 
-<div id="heuresSup" class="section">
-
-  <h2>🕒 Heures supplémentaires</h2>
-
-  <p style="color:red;font-weight:bold;">
-    Les heures supplémentaires doivent être déclarées chaque mois avant le 20.
+<div class="section" id="heuresSup">
+  <h2>⏰ Déclaration Heures Supplémentaires</h2>
+  <p style="color:red; font-weight:bold; margin-bottom:10px;">
+    Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
+    doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
+    Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
   </p>
 
   <table id="hsTable">
     <thead>
       <tr>
-        <th data-label="Date">Date</th>
-        <th data-label="Type">Type</th>
-        <th data-label="Début">Début</th>
-        <th data-label="Fin">Fin</th>
-        <th data-label="Durée">Durée</th>
-        <th data-label="Lieu">Lieu</th>
-        <th data-label="Action">Actions</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Début</th>
+        <th>Fin</th>
+        <th>Durée</th>
+        <th>Lieu</th>
+        <th>Action</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Les lignes seront créées via JS -->
-    </tbody>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">Total</td>
+        <td id="totalDuration">0h00</td>
+        <td colspan="2"></td>
+      </tr>
+    </tfoot>
   </table>
 
   <!-- Bouton Ajouter ligne PC -->
-  <button id="addRowHs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+  <button id="addRowHs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">
+    + Ajouter une ligne
+  </button>
 
-  <!-- Bouton Ajouter ligne Mobile (fixe, au-dessus du sticky footer) -->
-  <button id="addRowHsMobile" class="addRowMobile">➕ Ajouter une ligne</button>
+  <!-- Confirmation -->
+  <p id="confirmHs" style="color:green;font-weight:bold;"></p>
+
+  <!-- Bouton Ajouter ligne mobile -->
+  <button id="addRowHsMobile" class="addRowMobile">
+    + Ajouter une ligne
+  </button>
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
-    <span>Total heures : <span id="totalDurationFooter">0h00</span></span>
-    <button id="sendHs" class="btnSend">Envoyer</button>
+    <span>Total heures sup : <span id="totalDurationFooter">0h00</span></span>
+    <button id="sendHs" class="btnSend">Envoyer la demande</button>
   </div>
-
-  <!-- Messages / overlay -->
-  <p id="hsOverlay" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
-  <p id="confirmHs" style="color:green;font-weight:bold;"></p>
-  <div id="hsPdfOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);color:white;align-items:center;justify-content:center;font-size:1.5em;">PDF envoyé ✅</div>
-
 </div>
+
+
 
 
 
@@ -2394,8 +2402,24 @@ function addRowHs(data={}){
     <td data-label="Fin"><input type="time" class="fin" value="${data.fin||''}"></td>
     <td data-label="Durée" class="duree">0h00</td>
     <td data-label="Lieu"><input type="text" class="lieu" value="${data.lieu||''}"></td>
-    <td data-label="Action"><button type="button" class="deleteBtn">X</button></td>
-  `;
+    <td data-label="Action">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <button type="button" class="deleteBtn"
+        style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+        X
+      </button>
+      <span style="font-size:0.7em;">Supprimer</span>
+    </div>
+  </td>
+`;
+
+
+
+
+
+
+
+
 
   tbody.appendChild(tr);
 
