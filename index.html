@@ -2429,23 +2429,25 @@ window.showOnglet = function(id, btn, event) {
 
 // --- Frais de déplacement ---
 
+// --- Frais de déplacement ---
+
 const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
 const immatInput = document.getElementById("immatFD");
 
 // ===== Immatriculation automatique AA-123-BB =====
 immatInput.addEventListener("input", () => {
-  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g,''); // majuscules et chiffres uniquement
-  if(val.length>2) val = val.slice(0,2) + '-' + val.slice(2);
-  if(val.length>6) val = val.slice(0,6) + '-' + val.slice(6);
-  val = val.slice(0,9); // limite AA-123-BB
+  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // majuscules et chiffres uniquement
+  if (val.length > 2) val = val.slice(0,2) + '-' + val.slice(2);
+  if (val.length > 6) val = val.slice(0,6) + '-' + val.slice(6);
+  val = val.slice(0,9); // limite à 8 caractères : AA-123-BB
   immatInput.value = val;
 });
 
-// ===== Fonction calcul total km =====
-function updateTotalKmFD(){
+// ===== Fonction pour recalculer le total général =====
+function updateTotalKmFD() {
   let total = 0;
-  document.querySelectorAll(".totalLigneKm").forEach(span=>{
+  document.querySelectorAll(".totalLigneKm").forEach(span => {
     total += parseFloat(span.textContent) || 0;
   });
   totalKmEl.textContent = total;
@@ -2521,7 +2523,8 @@ function createFDRow(data = {}) {
   deleteBtn.style.borderRadius = "6px";
   deleteBtn.style.padding = "8px 12px";
   deleteBtn.style.cursor = "pointer";
-  deleteBtn.style.width = "42px";
+  deleteBtn.style.width = "100%";
+  deleteBtn.style.boxSizing = "border-box";
 
   const deleteLabel = document.createElement("span");
   deleteLabel.textContent = "Supprimer";
@@ -2548,7 +2551,8 @@ function createFDRow(data = {}) {
     addBtn.style.borderRadius = "6px";
     addBtn.style.padding = "8px 12px";
     addBtn.style.cursor = "pointer";
-    addBtn.style.width = "42px";
+    addBtn.style.width = "100%";
+    addBtn.style.boxSizing = "border-box";
 
     const addLabel = document.createElement("span");
     addLabel.textContent = "Ajouter";
@@ -2564,36 +2568,13 @@ function createFDRow(data = {}) {
 }
 
 
-// ===== Bouton Ajouter PC (sous le tableau) =====
-const addRowBtn = document.getElementById("addRowFD");
 
-if (addRowBtn) { 
-  Object.assign(addRowBtn.style,{
-    backgroundColor:"#3498db",
-    color:"#fff",
-    border:"none",
-    borderRadius:"6px",
-    padding:"8px 12px",
-    cursor:"pointer",
-    
-  });
 
-  addRowBtn.addEventListener("click", () => createFDRow());
-}
+// ===== Ajouter ligne via bouton "Ajouter" =====
+document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
 
 // ===== Crée la première ligne =====
-createFDRow();
-
-
-
-
-// ===== Sticky overlay pour "envoi en cours" (optionnel) =====
-function showFDOverlay() {
-  document.getElementById("fdOverlay").style.display = "flex";
-}
-function hideFDOverlay() {
-  document.getElementById("fdOverlay").style.display = "none";
-}
+createFDRow(); // première ligne
 
 
 
