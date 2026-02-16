@@ -952,6 +952,44 @@ select {
 
 
 
+/* ============================= */
+/* Heures sup – bouton mobile sticky */
+/* ============================= */
+@media (max-width: 768px) {
+
+  /* cacher le bouton PC */
+  #addRowHs {
+    display: none;
+  }
+
+  /* bouton mobile comme Frais KM */
+  #addRowHsMobile {
+    position: fixed;
+    bottom: 70px;              /* juste au-dessus de la barre jaune */
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 14px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    display: block;
+  }
+
+  /* on laisse la place aux deux barres */
+  #heuresSup {
+    padding-bottom: 160px;
+  }
+}
+
+
+
+
+
 
 
 
