@@ -685,8 +685,8 @@ select {
 /* ============================= */
 /* Frais de déplacement – Mobile (tableau + sticky footer) */
 /* ============================= */
-@media (max-width:768px) {
-  /* Afficher le tableau normalement */
+@media (max-width: 768px) {
+  /* Tableau classique */
   #fdTable thead { display: table-header-group; }
   #fdTable tr { display: table-row; }
   #fdTable td { display: table-cell; }
@@ -2452,31 +2452,7 @@ function createFDRow(data = {}) {
     updateTotalKmFD();
   });
 
-  // --- Bouton Ajouter (mobile seulement) ---
-  if (window.innerWidth <= 768) {
-    const addBtn = document.createElement("button");
-    addBtn.type = "button";
-    addBtn.textContent = "➕";
-    addBtn.title = "Ajouter un trajet";
-    addBtn.className = "addMobileFD";
-    addBtn.style.background = "#3498db";
-    addBtn.style.color = "white";
-    addBtn.style.border = "none";
-    addBtn.style.borderRadius = "6px";
-    addBtn.style.padding = "8px 12px";
-    addBtn.style.cursor = "pointer";
-    addBtn.style.width = "100%";
-    addBtn.style.boxSizing = "border-box";
-
-    const addLabel = document.createElement("span");
-    addLabel.textContent = "Ajouter";
-    addLabel.style.fontSize = "0.7em";
-
-    actionDiv.appendChild(addBtn);
-    actionDiv.appendChild(addLabel);
-
-    addBtn.addEventListener("click", () => createFDRow());
-  }
+  
 
   updateTotalKmFD();
 }
