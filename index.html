@@ -2519,9 +2519,9 @@ function createFDRow(data={}){
   });
 
   // --- Bouton Ajouter (mobile seulement) ---
-  if(window.innerWidth<=768){
+  if(window.innerWidth <= 768){
     const addBtn = document.createElement("button");
-    addBtn.type="button";
+    addBtn.type = "button";
     addBtn.textContent="➕";
     addBtn.title="Ajouter un trajet";
     Object.assign(addBtn.style,{
@@ -2550,23 +2550,23 @@ function createFDRow(data={}){
 // ===== Bouton Ajouter PC (sous le tableau) =====
 const addRowBtn = document.getElementById("addRowFD");
 
-if (addRowBtn) { // vérifier qu'il existe
-  // style bleu comme pour Heures Sup
-  addRowBtn.style.backgroundColor = "#3498db"; // bleu
-  addRowBtn.style.color = "#fff";              // texte blanc
-  addRowBtn.style.border = "none";
-  addRowBtn.style.borderRadius = "6px";
-  addRowBtn.style.padding = "6px 12px";       // taille normale
-  addRowBtn.style.cursor = "pointer";
-  
+if (addRowBtn) { 
+  Object.assign(addRowBtn.style,{
+    backgroundColor:"#3498db",
+    color:"#fff",
+    border:"none",
+    borderRadius:"6px",
+    padding:"8px 12px",
+    cursor:"pointer",
+    
+  });
 
-  // clic pour ajouter une ligne
   addRowBtn.addEventListener("click", () => createFDRow());
 }
 
-
 // ===== Crée la première ligne =====
 createFDRow();
+
 
 
 
