@@ -836,7 +836,8 @@ select {
 /* === Heures Sup – Mobile responsive === */
 
 
-@media (max-width:768px){
+@media (max-width: 768px) {
+  /* Table responsive */
   #hsTable thead { display: none; }
   #hsTable tr {
     display: block;
@@ -867,14 +868,14 @@ select {
 
   /* bouton supprimer rouge identique à Frais km */
   .deleteBtn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
     background-color: #e74c3c;
     color: white;
     border: none;
     border-radius: 6px;
-    padding: 8px 12px;
-    width: 100%;
     cursor: pointer;
-    margin-top: 6px;
   }
 
   /* sticky footer */
@@ -904,59 +905,30 @@ select {
     font-size: 1em;
   }
 
-  /* espace pour que le tableau ne soit pas masqué par le footer */
-  #hsTable { margin-bottom: 120px; }
-
-}
-
-
-/* Bouton Ajouter ligne sur mobile */
-
-@media (max-width: 768px) {
+  /* bouton Ajouter ligne mobile juste au-dessus du footer */
   .addRowMobile {
-    display: block;
-    width: 100%;
-    background-color: #2ecc71; /* vert */
-    color: white;
+    position: fixed;
+    bottom: 70px;
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
     font-weight: bold;
+    border-radius: 14px;
+    background: #27ae60; /* vert Frais km */
+    color: white;
     border: none;
-    border-radius: 8px;
-    padding: 10px 0;
-    margin-bottom: 8px; /* espace au-dessus du sticky footer */
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
     cursor: pointer;
-    font-size: 1em;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
 
-  /* On cache le bouton PC sur mobile */
-  #addRowHs {
-    display: none;
-  }
+  /* marge pour que le tableau ne soit pas masqué par le footer */
+  #hsTable { margin-bottom: 140px; }
 }
 
-
-/* PC : cacher le bouton mobile */
-#addRowHsMobile {
-  display: none;
-}
-
-/* Mobile : cacher le bouton PC et afficher le bouton mobile */
-@media (max-width: 768px) {
-  #addRowHs {
-    display: none;
-  }
-  #addRowHsMobile {
-    display: inline-block; /* ou flex selon le style */
-    background-color: #2ecc71; /* vert */
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    cursor: pointer;
-    margin-bottom: 10px; /* pour l'espacement au-dessus de la barre jaune */
-  }
-}
-
+/* PC : on cache le bouton mobile */
+#addRowHsMobile { display: none; }
 
 
 
@@ -1100,7 +1072,7 @@ select {
 <div class="section" id="heuresSup">
   <h2>⏰ Déclaration Heures Supplémentaires</h2>
   <p style="color:red; font-weight:bold; margin-bottom:10px;">
-    Toute heure effectuée en dehors du planning habituel (liée à un événement, répétition, remplacement, concert, etc.)<br>
+    Toute heure effectuée en dehors du planning habituel (lié à un événement, répétition, remplacement, concert, etc.)<br>
     doit être déclarée dans ce tableau AVANT LE 20 DU MOIS CONCERNÉ.<br>
     Seules les heures déclarées et validées par la direction seront prises en compte pour la paie.
   </p>
@@ -1115,23 +1087,17 @@ select {
     </tfoot>
   </table>
 
-  <!-- Bouton Ajouter ligne -->
+  <!-- Bouton Ajouter ligne PC -->
   <button id="addRowHs" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
 
   <p id="confirmHs" style="color:green;font-weight:bold;"></p>
-
-<!-- Bouton Ajouter ligne mobile -->
-<button id="addRowHsMobile" class="addRowMobile">
-  ➕ Ajouter une ligne
-</button>
-
-
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
     <span>Total heures sup : <span id="totalDurationFooter">0h00</span></span>
     <button id="sendHs" class="btnSend">Envoyer la demande</button>
   </div>
+</div>
 
 
 
@@ -2464,8 +2430,22 @@ function addRowHs(data={}){
 // bouton Ajouter ligne PC
 document.getElementById("addRowHs").addEventListener("click",()=>addRowHs());
 
-// bouton Ajouter ligne mobile (au-dessus de la barre jaune)
-document.getElementById("addRowHsMobile")?.addEventListener("click",()=>addRowHs());
+
+
+
+// bouton Ajouter ligne mobile (créé dynamiquement si non présent)
+let addRowHsMobileBtn = document.getElementById("addRowHsMobile");
+if(!addRowHsMobileBtn){
+  addRowHsMobileBtn = document.createElement("button");
+  addRowHsMobileBtn.id = "addRowHsMobile";
+  addRowHsMobileBtn.className = "addRowMobile";
+  addRowHsMobileBtn.textContent = "➕ Ajouter une ligne";
+  document.querySelector("#heuresSup .sticky-footer").before(addRowHsMobileBtn);
+}
+addRowHsMobileBtn.addEventListener("click", ()=>addRowHs());
+
+
+
 
 addRowHs(); // première ligne
 
