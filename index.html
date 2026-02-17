@@ -1012,6 +1012,7 @@ select {
 /* ============================= */
 
 @media (max-width: 768px) {
+
   #absTable thead { display: none; }
   #absTable tr {
     display: block;
@@ -1059,6 +1060,7 @@ select {
   }
 
   /* Sticky footer jaune */
+
   #absences .sticky-footer {
     position: fixed;
     bottom: 0;
@@ -1113,17 +1115,15 @@ select {
   #absences {
     padding-bottom: 160px;
   }
-}
 
-/* PC : bouton Ajouter ligne vert */
-#addRowAbs {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-  margin-top: 8px;
+
+
+
+ /* Cacher le bouton PC sur mobile */
+  #addRowAbs {
+    display: none;
+  }
+
 }
 
 /* PC : cacher le bouton mobile */
@@ -1135,6 +1135,15 @@ select {
 /* Bouton Ajouter ligne mobile sticky */
 /* ============================= */
 @media (max-width: 768px) {
+
+
+/* PC : cacher le bouton mobile */
+#addRowAbsMobile {
+  display: none;
+}
+
+
+
   #addRowAbsMobile {
     display: block;               /* visible sur mobile */
     position: fixed;              /* fixe au-dessus du footer */
@@ -1154,6 +1163,11 @@ select {
     cursor: pointer;
     opacity: 0.95;
   }
+
+   /* Pour que le tableau soit visible sous le bouton */
+  #absences {
+    padding-bottom: 160px;
+ }
 }
 
 
