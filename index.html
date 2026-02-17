@@ -2951,6 +2951,11 @@ function addRowAbs(data={}) {
 // Bouton Ajouter ligne PC
 document.getElementById("addRowAbs").addEventListener("click",()=>addRowAbs());
 
+// Bouton Ajouter ligne PC
+document.getElementById("addRowAbsMobile").addEventListener("click",()=>addRowAbs());
+
+
+
 // Ajouter première ligne par défaut
 addRowAbs();
 
@@ -3146,8 +3151,12 @@ function createFDRow(data = {}) {
   updateTotalKmFD();
 }
 
-// Ajouter ligne via bouton "Ajouter"
+// Ajouter ligne via bouton "Ajouter" PC
 document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
+
+
+// Ajouter ligne via bouton "Ajouter" Mobile
+document.getElementById("addRowFDMobile").addEventListener("click", () => createFDRow());
 createFDRow(); // première ligne
 
 
