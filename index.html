@@ -683,9 +683,8 @@ select {
 
 
 /* ============================= */
-/* Frais de déplacement – mobile */
+/* Frais de déplacement – mobile responsive */
 /* ============================= */
-
 
 @media (max-width: 768px) {
 
@@ -740,13 +739,8 @@ select {
     box-sizing: border-box;
   }
 
-  /* Conteneur flex pour aligner les deux champs côte à côte et à gauche */
-  #fraisdeplacement h3 + label,
-  #fraisdeplacement h3 + label + input {
-    display: block;
-  }
-
-  #fraisdeplacement {
+  /* Conteneur flex pour aligner les deux champs côte à côte */
+  #fraisdeplacement .fd-vehicule {
     display: flex;
     gap: 10px;
     flex-wrap: nowrap;
@@ -755,24 +749,23 @@ select {
 
   #immatFD { width: 65%; }
   #puissanceFD { width: 35%; }
-}
 
 
 
 
-/* ============================= */
-/* Frais de déplacement – sticky footer mobile */
-/* ============================= */
+
+  /* ============================= */
+  /* Sticky footer mobile */
+  /* ============================= */
 
 
-@media (max-width: 768px) {
   #fraisdeplacement .sticky-footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #ffecb3; /* jaune clair bien visible */
-    border-top: 2px solid #f39c12; /* sépare visuellement du tableau */
+    background: #ffecb3;
+    border-top: 2px solid #f39c12;
     padding: 12px 20px;
     display: flex;
     justify-content: flex-start;
@@ -794,28 +787,29 @@ select {
     font-size: 1em;
   }
 
- 
-
-  /* On laisse plus d’espace pour tout le contenu */
-  #fdTable {
-    margin-bottom: 140px; /* plus haut pour que le bouton Ajouter soit visible */
-  }
+  /* Laisser espace sous le tableau pour footer */
+  #fdTable { margin-bottom: 140px; }
+  
 }
 
-@media (max-width: 768px) {
 
-  /* bouton Ajouter devient sticky juste au-dessus de la barre jaune */
-  #addRowFD {
+
+
+  /* ============================= */
+  /* Bouton Ajouter ligne mobile */
+  /* ============================= */
+  
+@media (max-width: 768px) {
+#addRowFDMobile {
+    display: block;
     position: fixed;
-    bottom: 70px;               /* juste au-dessus de la barre jaune */
+    bottom: 70px;
     left: 10px;
     right: 10px;
     z-index: 1001;
     padding: 12px;
     font-size: 16px;
-    opacity: 0.95;
     font-weight: bold;
-    letter-spacing: 0.3px;
     border-radius: 14px;
     background: #27ae60;
     color: white;
@@ -824,18 +818,107 @@ select {
     cursor: pointer;
   }
 
-  /* on laisse la place pour les deux barres */
+   /* laisser de l’espace pour sticky-footer et bouton mobile */
   #fraisdeplacement {
     padding-bottom: 160px;
   }
-   
-  /* Cacher le bouton PC sur mobile */
+
+  /* cacher le bouton PC sur mobile */
   #addRowFD {
+    display: none;
+  }
+ }
+
+/* PC : cacher le bouton mobile */
+#addRowFDMobile {
+  display: none;
+}
+
+
+
+
+
+
+
+/* ============================= */
+/* PC : cacher le bouton mobile et sticky-footer */
+/* ============================= */
+
+
+@media (min-width: 769px) {
+ 
+   #addRowFD {
     display: none;
   }
 
 
+   /* bouton mobile comme Frais KM */
+  #addRowFDMobile {
+    position: fixed;
+    bottom: 70px;              /* juste au-dessus de la barre jaune */
+    left: 10px;
+    right: 10px;
+    z-index: 1001;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 14px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    display: block;
+  }
+
+  /* on laisse la place aux deux barres */
+  #fraisdeplacement {
+    padding-bottom: 160px;
+  }
 }
+   
+/* ============================= */
+/* PC – bouton Ajouter ligne et sticky-footer normal */
+/* ============================= */
+@media (min-width: 769px) {
+
+  /* bouton PC visible */
+  #addRowFD {
+    display: block;
+  }
+
+  /* bouton mobile caché sur PC */
+  #addRowFDMobile {
+    display: none;
+  }
+
+  /* sticky-footer visible sous le tableau */
+  #fraisdeplacement .sticky-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin-top: 12px; /* espace sous le tableau et bouton PC */
+  }
+}
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1996,6 +2079,14 @@ select {
 
   
 <button id="addRowFD" style="background-color:#28a745; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Ajouter une ligne</button>
+
+  <!-- Bouton Ajouter ligne mobile -->
+  <button id="addRowFDMobile" class="addRowMobile">
+    + Ajouter une ligne
+  </button>
+
+
+
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
