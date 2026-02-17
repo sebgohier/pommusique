@@ -883,7 +883,7 @@ select {
     border-top: 2px solid #f39c12;
     padding: 12px 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
     z-index: 1000;
@@ -899,6 +899,11 @@ select {
     padding: 10px 16px;
     font-size: 1em;
   }
+
+  #heuresSup .sticky-footer span {
+  margin-left: auto;
+}
+
 
   /* Laisser espace sous le tableau pour footer */
   #hsTable { margin-bottom: 140px; }
@@ -1967,9 +1972,9 @@ select {
 
   <!-- Sticky footer mobile -->
   <div class="sticky-footer">
-  <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
   <button id="sendFD" class="btnSend">Envoyer la demande</button>
-</div>
+  <span>Total kilomètres : <span id="totalKmFD">0</span> km</span>
+  </div>
 
   <!-- Messages de statut -->
   <p id="fdLoading" style="display:none;color:#f39c12;font-weight:bold;">⏳ Envoi en cours...</p>
