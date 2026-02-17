@@ -2307,6 +2307,9 @@ const profMap = {
   "Vincent DESGRIPPES": "Vincent"
 };
 
+
+
+
 const typesEvenement = ["Concert","Répétition","Autre"];
 const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
@@ -2880,7 +2883,12 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
   document.getElementById("hsOverlay").style.display = "flex";
   document.getElementById("confirmHs").textContent = "";
 
-  fetch("https://script.google.com/macros/s/AKfycbzlJ0hgRiuJVWdQszMMp127I9VhGIwmnMEiSj1mekioM3WFiwxamxI1W8wAsBMj02uQ/exec", {
+   
+
+  // URL de ton script Google Apps Script (heures supp)
+
+
+  fetch("https://script.google.com/macros/s/AKfycbzsOvtYIBZSLrjuIDsxUwhkCDhETu5kwMgpBKF2QZJSS2yfWFFLwgkrc2akDXMO1EFF/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
@@ -2986,7 +2994,10 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
   document.getElementById("absOverlay").style.display = "flex";
   document.getElementById("confirmAbs").textContent = "";
 
-  fetch("https://script.google.com/macros/s/AKfycbx_ouP5hyCczGmnO_Gy-rlbD4r_ygnGPAlhc1zmMbeZCAIywnJlSx2V9Lv19XurAqL1/exec", {
+
+     // URL de ton script Google Apps Script (demande d'autoristation d'absence)
+
+  fetch("https://script.google.com/macros/s/AKfycbwZ4pNzJ69o6sALtNHN2Dx_A4yPhmr839fhuRQ7u1TvR7Qn812VJPVe0s0ihpP-MB78/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfAbs,lignes})
   })
@@ -3058,6 +3069,26 @@ const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
 const immatInput = document.getElementById("immatFD");
 
+
+// ================================
+// TRAJETS RÉCURRENTS PAR PROF
+// ================================
+const trajetsRecurrents = {
+  "Anthony BUNEL": { itineraire: "Chez Anthony → École", km: 10, motif: "Domicile → École" },
+  "Arnaud GRASSIN": { itineraire: "Chez Arnaud → École", km: 12, motif: "Domicile → École" },
+  "Christian SALMERO": { itineraire: "Chez Christian → École", km: 8, motif: "Domicile → École" },
+  "Christelle SOUBOUKOU KIFOULA": { itineraire: "Chez Christelle → École", km: 15, motif: "Domicile → École" },
+  "Laurence DINET": { itineraire: "Chez Laurence → École", km: 9, motif: "Domicile → École" },
+  "Marion BRETTEVILLE": { itineraire: "Chez Marion → École", km: 11, motif: "Domicile → École" },
+  "Sébastien GOHIER": { itineraire: "Chez Sébastien → École", km: 14, motif: "Domicile → École" },
+  "Valérie LOPEZ": { itineraire: "Chez Valérie → École", km: 13, motif: "Domicile → École" }
+};
+
+
+
+
+
+
   // ===== Immatriculation automatique AA-123-BB =====
   immatInput.addEventListener("input", () => {
   let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // majuscules et chiffres uniquement
@@ -3119,6 +3150,67 @@ function createFDRow(data = {}) {
 
 
   fdTableBody.appendChild(tr);
+
+// Auto-suggestion trajet récurrent (menu déroulant)
+const itinInput = tr.querySelector(".itineraireFD");
+
+itinInput.addEventListener("focus", e => {
+  const prof = document.getElementById("selectProfGlobal").value;
+  const trajet = trajetsRecurrents[prof];
+
+  // Supprimer ancien dropdown si existant
+  let oldMenu = tr.querySelector(".itinDropdown");
+  if(oldMenu) oldMenu.remove();
+
+  if(trajet){
+    // Créer le menu
+    const menu = document.createElement("div");
+    menu.className = "itinDropdown";
+    menu.style.position = "absolute";
+    menu.style.background = "#fff";
+    menu.style.border = "1px solid #ccc";
+    menu.style.padding = "6px";
+    menu.style.cursor = "pointer";
+    menu.style.zIndex = "1000";
+    menu.style.marginTop = "2px";
+    menu.style.width = itinInput.offsetWidth + "px";
+    menu.textContent = trajet.itineraire;
+
+    // Ajouter au DOM juste après l'input
+    itinInput.parentNode.appendChild(menu);
+
+    // Clic sur suggestion
+    menu.addEventListener("click", () => {
+      itinInput.value = trajet.itineraire;
+      tr.querySelector(".kmFD").value = trajet.km;
+      tr.querySelector(".motifFD").value = trajet.motif;
+
+      // Recalcul si dates déjà sélectionnées
+      const fp = tr.querySelector(".datesFD")._flatpickr;
+      const nbDates = fp ? fp.selectedDates.length : 0;
+      tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
+      updateTotalKmFD();
+
+      menu.remove(); // fermer menu après validation
+    });
+
+    // Supprimer le menu si l'utilisateur clique ailleurs
+    document.addEventListener("click", function handler(ev){
+      if(ev.target !== itinInput && ev.target !== menu){
+        menu.remove();
+        document.removeEventListener("click", handler);
+      }
+    });
+  }
+});
+
+
+
+
+
+
+
+
 
   // flatpickr pour sélection multiple
   const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
@@ -3218,7 +3310,7 @@ function hideFDOverlay() {
 
      // URL de ton script Google Apps Script (Frais de déplacement)
 
-    fetch("https://script.google.com/macros/s/AKfycbzEimE0QVaB1HBpcZQJKK7b7AB7roBM0AMTDHI6TVlitBB-LGZ4JrhhzxkWKd_WFXBUpg/exec", {  
+    fetch("https://script.google.com/macros/s/AKfycbw5Iuvsfgd-b3Y2JyUYQl0Hmo2_x_8U-5h9tS8wimsEddo-xciKQiCRV9dvXrxSukRHFA/exec", {  
       method: "POST",
       body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
     })
