@@ -1239,7 +1239,7 @@ select {
 <div class="menu-item" onclick="showSection('absences')">📝 <span>Absences</span></div>
 <div class="menu-item" onclick="showSection('fraisdeplacement')">⛽ <span>Frais de déplacement</span></div>
 <div class="menu-item" onclick="showSection('partitions')">🎼 <span>Partitions</span></div>
-<div class="menu-item" onclick="showSection('contacts'); loadContacts()">📞 <span>Contacts</span></div>
+<div class="menu-item" onclick="showSection('contacts')">📞 <span>Contacts</span></div>
 <div class="menu-item" onclick="showSection('documentsUtiles')">📑 <span>Documents utiles</span></div>
 <div class="menu-item" onclick="showSection('evenements')">🎤 <span>Évènements</span></div>
 </div>
@@ -2346,6 +2346,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =================================
   // SECTIONS
   // =================================
+
   window.showSection = section => {
     const prof = document.getElementById("selectProfGlobal").value;
     if(!prof && section !== 'accueil') {
@@ -2354,6 +2355,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
     document.getElementById(section).style.display = 'block';
+    if(section === "contacts") {
+    loadContacts();
+}
     document.getElementById('profSelectorWrapper').style.display = (section === 'accueil') ? 'block' : 'none';
     if (window.innerWidth < 768) document.querySelector(".sidebar").classList.remove("open");
   };
@@ -2376,6 +2380,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Affichage accueil
   showSection('accueil');
+
+
+
+
+
+
+
 
   // =================================
   // PLANNING
@@ -2601,58 +2612,6 @@ window.initEvents = function() {
 
 // 🔹 Initialisation
 initEvents();
-
-
-
-
-  // =================================
-  // CONTACTS
-  // =================================
-  window.loadContacts = function(){
-    if(window.contactsAlreadyLoaded) return;
-    window.contactsAlreadyLoaded = true;
-
-    const contactsTableBody=document.querySelector("#contactsTable tbody");
-    const loadingMsg=document.getElementById("contactsLoading");
-    const contactsMsg=document.getElementById("contactsMsg");
-    contactsTableBody.innerHTML=""; contactsMsg.textContent=""; loadingMsg.style.display="block";
-
- 
-   
-    // URL de ton script Google Apps Script (Répertoire 2025/2026)
-
-
-    const url="https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
-
-    fetch(url).then(r=>r.json()).then(data=>{
-      loadingMsg.style.display="none"; contactsTableBody.innerHTML=""; contactsMsg.textContent="";
-      if(data.error){contactsMsg.textContent="❌ "+data.error; return;}
-      data.sort((a,b)=>a.Nom.trim().split(" ").pop().toLowerCase().localeCompare(b.Nom.trim().split(" ").pop().toLowerCase()));
-      data.forEach(contact=>{
-        const tr=document.createElement("tr");
-        tr.innerHTML=`<td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Nom}</td>
-        <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(contact.Téléphone)}</td>
-        <td style="padding:8px;border-bottom:1px solid #ddd;"><a href="mailto:${contact.Email}">${contact.Email}</a></td>
-        <td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Fonction}</td>`;
-        contactsTableBody.appendChild(tr);
-      });
-    }).catch(err=>{
-      loadingMsg.style.display="none";
-      contactsMsg.textContent="❌ Erreur lors du chargement : "+err;
-      console.error(err);
-    });
-  };
-
-  document.querySelector(".menu-item[onclick*='contacts']").addEventListener("click", ()=>{
-    showSection("contacts");
-    loadContacts();
-  });
-
-
-
-
-
-
 
 
 
@@ -3543,10 +3502,7 @@ function loadContacts() {
     });
 }
 
-document.querySelector(".menu-item[onclick*='contacts']").addEventListener("click", () => {
-  showSection("contacts");
-  loadContacts();
-});
+
 
 
 
