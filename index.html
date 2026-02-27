@@ -219,7 +219,11 @@ th { background-color: #f0f0f0; }
   .sidebar.open { left: 0; }
   .content, .main-content { padding-top: 60px; }
 
+
+
 /* === BOUTON THEME === */
+
+
   #themeToggle {
     margin-left: auto; /* pousse le bouton à droite */
     font-size: 22px;
@@ -242,7 +246,13 @@ th { background-color: #f0f0f0; }
   }
 }
 
+
+
+
 /* === THEME SOMBRE MOBILE === */
+
+
+
 body.dark-theme {
   background-color: #1a1a1a;
   color: #f0f0f0;
@@ -269,6 +279,9 @@ body.dark-theme .menu-item:hover {
 
 
 /* === DARK MODE MOBILE UNIQUEMENT === */
+
+
+
 @media (max-width: 768px) {
   body.dark-theme {
     background-color: #121212;
@@ -1200,36 +1213,134 @@ select {
 
 
 
+/* ============================= */
+/* CARTES CONTACTS VERTICALES MODERNES */
+/* ============================= */
+
+#contactsCards {
+  display: none; /* par défaut invisible sur desktop */
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
-  /* Masquer le tableau sur mobile */
+
+  /* Masquer tableau */
   #contactsTable {
     display: none;
   }
 
-  /* Afficher le conteneur cartes */
+  /* Conteneur des cartes */
   #contactsCards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  /* Carte verticale */
+  .contact-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    border-left: 4px solid #ffb629;
+    transition: all 0.25s ease;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  }
+
+  /* Nom */
+  .contact-card strong {
+    font-size: 17px;
+    color: #222;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Fonction */
+  .contact-card .fonction {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 8px;
+  }
+
+  /* Téléphone */
+  .contact-card .phone-link {
+    display: inline-block;
+    background: #ffb629;
+    color: #000 !important;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
+
+  .contact-card .phone-link:hover {
+    background: #ffa000;
+  }
+
+  /* Email */
+  .contact-card a[href^="mailto"] {
+    font-size: 13px;
+    color: #555;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .contact-card a[href^="mailto"]:hover {
+    text-decoration: underline;
+  }
+}
+
+
+
+
+/* ============================= */
+/* Section Répertoire mobile */
+/* ============================= */
+
+
+
+
+@media (max-width: 768px) {
+  /* Masquer le tableau desktop */
+  #repertoireTable {
+    display: none;
+  }
+
+  /* Afficher le conteneur cartes mobile */
+  #repertoireCards {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
   /* Style des cartes */
-  .contact-card {
+  .repertoire-card {
     background-color: #fff;
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
 
-  .contact-card a {
+  .repertoire-card a {
     color: #ffb629;
     text-decoration: none;
   }
 
-  .contact-card p {
+  .repertoire-card p {
     margin: 4px 0;
   }
 }
+
+
+
 
 
 
@@ -1281,7 +1392,13 @@ select {
 
 <div class="content">
 
-  <!-- SECTION ACCUEIL -->
+ 
+
+
+
+ <!-- SECTION ACCUEIL -->
+
+
 
 <div class="section" id="accueil" style="display:flex; flex-direction:column; align-items:center;">
   <div id="accueilMessage" style="
@@ -1306,7 +1423,7 @@ select {
       <option>Anthony BUNEL</option>
       <option>Arnaud GRASSIN</option>
       <option>Christian SALMERO</option>
-      <option>Christelle SOUBOUKOU KIFOULA</option>
+      <option>Christelle SABOUKOULOU-KIFOULA</option>
       <option>Laurence DINET</option>
       <option>Lorène RENAUD</option>
       <option>Marion BRETTEVILLE</option>
@@ -1318,7 +1435,14 @@ select {
 </div>
 
 
+
+
+
+
   <!-- Section Répertoire Élèves -->
+
+
+
 
   <div class="section" id="sectionRepertoire">
     <h2>📁 Répertoire élèves</h2>
@@ -1333,6 +1457,11 @@ select {
         </thead>
         <tbody></tbody>
       </table>
+
+      <!-- Conteneur cartes mobile -->
+     <div id="repertoireCards" style="display:none; margin-top:20px;"></div>
+
+
     </div>
     <p id="repertoireMsg" style="color:red; margin-top:10px;"></p>
   </div>
@@ -1340,7 +1469,15 @@ select {
 
 
 
+
+
+
+
+
   <!-- Section Planning -->
+
+
+
 
   <div class="section" id="planning">
     <h2>📅 Planning des salles</h2>
@@ -2104,11 +2241,8 @@ select {
 
 
    <!-- Conteneur cartes mobile -->
-<div id="contactsCards" style="display:none; margin-top:20px;"></div>
+<div id="contactsCards"></div>
     
-
-
-
 
     <!-- Message de chargement -->
   <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
@@ -2344,7 +2478,7 @@ const profMap = {
   "Anthony BUNEL": "Anthony",
   "Arnaud GRASSIN": "Arnaud",
   "Christian SALMERO": "Christian",
-  "Christelle SOUBOUKOU KIFOULA": "Christelle",
+  "Christelle SABOUKOULOU-KIFOULA": "Christelle",
   "Laurence DINET": "Laurence",
   "Lorène RENAUD" : "Lorène",
   "Marion BRETTEVILLE": "Marion",
@@ -2665,6 +2799,7 @@ initEvents();
 
 
 
+
 // --- Répertoire ---
 
 
@@ -2683,7 +2818,6 @@ function formatPhone(phone){
   return `<a href="tel:${raw}" class="phone-link">${pretty}</a>`;
 }
 
-
 function loadRepertoire(profName) {
   repertoireTableBody.innerHTML = "";
   repertoireMsg.textContent = "";
@@ -2698,6 +2832,8 @@ function loadRepertoire(profName) {
 
 
   // URL de ton script Google Apps Script (Répertoire 2025/2026)
+
+
 
   const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" + encodeURIComponent(profName);
 
@@ -2724,6 +2860,7 @@ function loadRepertoire(profName) {
         return true;
       });
 
+      // ---- TABLEAU DESKTOP ----
       uniqueEleves.forEach((eleve, i) => {
         const tr = document.createElement("tr");
         tr.style.backgroundColor = i % 2 === 0 ? "#fff" : "#f9f9f9";
@@ -2736,6 +2873,23 @@ function loadRepertoire(profName) {
         repertoireTableBody.appendChild(tr);
       });
 
+      // ---- CARTES MOBILE ----
+      const repertoireCards = document.getElementById("repertoireCards");
+      repertoireCards.innerHTML = ""; // vider les cartes existantes
+
+      uniqueEleves.forEach(eleve => {
+        const card = document.createElement("div");
+        card.className = "repertoire-card";
+
+        card.innerHTML = `
+          <p><strong>${eleve.Nom}</strong></p>
+          <p>📞 ${formatPhone(eleve.Téléphone)}</p>
+          <p>✉️ <a href="mailto:${eleve.Email}">${eleve.Email}</a></p>
+        `;
+
+        repertoireCards.appendChild(card);
+      });
+
       // Tout est chargé → masquer le message
       repertoireMsg.textContent = "";
     })
@@ -2745,14 +2899,13 @@ function loadRepertoire(profName) {
     });
 }
 
-
-
-
 document.getElementById("selectProfGlobal").addEventListener("change", e=>{
   const profAffiche = e.target.value;
   const prof = profMap[profAffiche];
   loadRepertoire(prof);
 });
+
+
 
 
 
@@ -3504,12 +3657,21 @@ function loadContacts() {
 
   const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
 
-  function formatPhone(phone) {
-    if (!phone) return "";
-    let raw = phone.toString().replace(/\D/g, "");
-    if (!raw.startsWith("0")) raw = "0" + raw;
-    return `<a href="tel:${raw}" class="phone-link">${raw.replace(/(\d{2})(?=\d)/g, "$1 ")}</a>`;
-  }
+ function formatPhone(phone) {
+  if (!phone) return "";
+
+  // convertir en string et enlever tous les caractères non numériques
+  let raw = phone.toString().replace(/\D/g, "");
+
+  // ajouter 0 au début si le numéro fait 9 chiffres (ex : 633634630 → 0633634630)
+  if (raw.length === 9) raw = "0" + raw;
+
+  // mise en forme pour affichage
+  const formatted = raw.replace(/(\d{2})(?=\d)/g, "$1 ");
+
+  // retourne le lien avec le 0 forcé
+  return `<a href="tel:${raw}" class="phone-link">${formatted}</a>`;
+}
 
   fetch(url)
     .then(r => r.json())
@@ -3544,20 +3706,27 @@ function loadContacts() {
         contactsTableBody.appendChild(tr);
       });
 
+
        // ---- CARTES MOBILE ----
-      data.forEach(contact => {
-        const card = document.createElement("div");
-        card.className = "contact-card";
 
-        card.innerHTML = `
-          <p><strong>${contact.Nom}</strong></p>
-          <p>📞 ${formatPhone(contact.Téléphone)}</p>
-          <p>✉️ <a href="mailto:${contact.Email}">${contact.Email}</a></p>
-          <p>${contact.Fonction}</p>
-        `;
+      const contactsCards = document.getElementById("contactsCards");
+contactsCards.innerHTML = ""; // vider le conteneur
 
-        contactsCards.appendChild(card);
-      });
+
+// NE CRÉE LES CARTES QUE SI MOBILE
+
+data.forEach(contact => {
+  const card = document.createElement("div");
+  card.className = "contact-card";
+
+  card.innerHTML = `
+    <strong>${contact.Nom}</strong>
+    <p class="fonction">${contact.Fonction}</p>
+    <p>📞 ${formatPhone(contact.Téléphone)}</p>
+    <p>✉️ <a href="mailto:${contact.Email}">${contact.Email}</a></p>
+  `;
+  contactsCards.appendChild(card);
+});
 
 
 
