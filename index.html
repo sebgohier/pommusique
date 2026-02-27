@@ -421,6 +421,12 @@ body.dark-theme .menu-item:hover {
 
 <title>Agenda Événements POM Musique</title>
 <style>
+
+
+
+
+
+
 /* ================================
    Global
    ================================ */
@@ -1273,6 +1279,7 @@ select {
       <option>Christian SALMERO</option>
       <option>Christelle SOUBOUKOU KIFOULA</option>
       <option>Laurence DINET</option>
+      <option>Lorène RENAUD</option>
       <option>Marion BRETTEVILLE</option>
       <option>Sébastien GOHIER</option>
       <option>Valérie LOPEZ</option>
@@ -2051,10 +2058,7 @@ select {
 <div class="section" id="contacts">
   <h2>📞 Contacts</h2>
 
-  <!-- Message de chargement -->
-  <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
-
-  <!-- Tableau des contacts -->
+   <!-- Tableau des contacts -->
   <div style="overflow-x:auto; margin-top:20px;">
     <table id="contactsTable" style="width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
       <thead style="background: #ffb629; color:#000; text-align:left;">
@@ -2068,6 +2072,10 @@ select {
       <tbody></tbody>
     </table>
   </div>
+
+    <!-- Message de chargement -->
+  <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
+   
 
   <!-- Message d'erreur -->
   <p id="contactsMsg" style="color:red; margin-top:10px;"></p>
@@ -2301,6 +2309,7 @@ const profMap = {
   "Christian SALMERO": "Christian",
   "Christelle SOUBOUKOU KIFOULA": "Christelle",
   "Laurence DINET": "Laurence",
+  "Lorène RENAUD" : "Lorène",
   "Marion BRETTEVILLE": "Marion",
   "Sébastien GOHIER": "Séb",
   "Valérie LOPEZ": "Valérie",
@@ -3039,6 +3048,7 @@ const trajetsRecurrents = {
   "Christelle SOUBOUKOU KIFOULA": { itineraire: "Mondeville → Moult → Mondeville", km: 30, motif: "Cours" },
   "Laurence DINET": { itineraire: "Hérouville-Saint-Clair → Moult → Hérouville-Saint-Clair", km: 36, motif: "Cours" },
   "Marion BRETTEVILLE": { itineraire: "Chez Marion → Moult", km: 11, motif: "Cours" },
+  "Lorène Renaud": { itineraire: "Chez Lorène → Moult", km: 11, motif: "Cours" },
   "Sébastien GOHIER": { itineraire: "Chicheboville → Moult → Chicheboville", km: 13, motif: "Cours" },
   "Valérie LOPEZ": { itineraire: "Chez Valérie → Moult", km: 13, motif: "Cours" },
   "Vincent DESGRIPPES": { itineraire: "Janville → Moult → Janville", km: 14, motif: "Cours" }
@@ -3270,7 +3280,7 @@ function hideFDOverlay() {
 
      // URL de ton script Google Apps Script (Frais de déplacement)
 
-    fetch("https://script.google.com/macros/s/AKfycbw5Iuvsfgd-b3Y2JyUYQl0Hmo2_x_8U-5h9tS8wimsEddo-xciKQiCRV9dvXrxSukRHFA/exec", {  
+    fetch("https://script.google.com/macros/s/AKfycbwXqx9fS-1MiPVt1AVJ9XnrWy9bstI05Q64-smclKUQADGpMdsClvVeiHJIOVXFN0Grmw/exec", {  
       method: "POST",
       body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
     })
@@ -3482,8 +3492,10 @@ function loadContacts() {
         return nomA.localeCompare(nomB, 'fr', { sensitivity: 'base' });
       });
 
-      data.forEach(contact => {
+      data.forEach((contact, i) => {
         const tr = document.createElement("tr");
+        tr.style.backgroundColor = i % 2 === 0 ? "#fff" : "#f9f9f9";
+        
         tr.innerHTML = `
           <td style="padding:8px;border-bottom:1px solid #ddd;">${contact.Nom}</td>
           <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(contact.Téléphone)}</td>
