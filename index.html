@@ -1200,7 +1200,36 @@ select {
 
 
 
+@media (max-width: 768px) {
+  /* Masquer le tableau sur mobile */
+  #contactsTable {
+    display: none;
+  }
 
+  /* Afficher le conteneur cartes */
+  #contactsCards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Style des cartes */
+  .contact-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .contact-card a {
+    color: #ffb629;
+    text-decoration: none;
+  }
+
+  .contact-card p {
+    margin: 4px 0;
+  }
+}
 
 
 
@@ -2072,6 +2101,14 @@ select {
       <tbody></tbody>
     </table>
   </div>
+
+
+   <!-- Conteneur cartes mobile -->
+<div id="contactsCards" style="display:none; margin-top:20px;"></div>
+    
+
+
+
 
     <!-- Message de chargement -->
   <div id="contactsLoading" style="font-weight:bold; color:#f39c12; display:none;">⏳ Chargement des contacts…</div>
@@ -3506,6 +3543,25 @@ function loadContacts() {
         `;
         contactsTableBody.appendChild(tr);
       });
+
+       // ---- CARTES MOBILE ----
+      data.forEach(contact => {
+        const card = document.createElement("div");
+        card.className = "contact-card";
+
+        card.innerHTML = `
+          <p><strong>${contact.Nom}</strong></p>
+          <p>📞 ${formatPhone(contact.Téléphone)}</p>
+          <p>✉️ <a href="mailto:${contact.Email}">${contact.Email}</a></p>
+          <p>${contact.Fonction}</p>
+        `;
+
+        contactsCards.appendChild(card);
+      });
+
+
+
+
     })
     .catch(err => {
       loadingMsg.style.display = "none";
