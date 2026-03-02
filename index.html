@@ -1537,7 +1537,38 @@ select {
 
 
 
+/* ============================= */
+/* ===== BOUTONS DOCUMENTS ===== */
+/* ============================= */
 
+/* Container des boutons */
+.doc-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Style des boutons */
+.btn-doc {
+  background-color: #a7f0ba;      /* vert clair pour harmoniser */
+  color: #000;
+  padding: 10px 20px;
+  text-decoration: none;          /* supprime le souligné */
+  font-weight: bold;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Hover */
+.btn-doc:hover {
+  background-color: #4caf50;      /* vert plus foncé au survol */
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
 
 
