@@ -500,114 +500,99 @@ select {
 }
 
 /* ================================
-   Événements passés (scroll horizontal, éventail)
+   Cartes Événements - Style uniformisé
    ================================ */
 
-.past-events .event-card {
-  display: inline-block;
-  vertical-align: top;
-  width: 220px;
-  font-size: 0.85em;
-  margin-right: -40px; /* chevauchement éventail */
-  transform: rotate(-5deg);
-  transition: transform 0.3s, z-index 0.3s, filter 0.3s, background-color 0.3s;
-  position: relative;
-
-  /* GRIS + léger transparent */
-  filter: grayscale(80%);
-  background-color: rgba(255, 255, 255, 0.85); /* légèrement transparent */
-}
-
-/* Diagonale rouge */
-.past-events .event-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -10%;
-  width: 120%;
-  height: 2px;
-  background: red;
-  transform: rotate(-45deg);
-  transform-origin: center;
-  pointer-events: none;
-}
-
-/* Hover pour effet éventail */
-.past-events .event-card:hover {
-  transform: rotate(0deg) scale(1.1);
-  z-index: 10;
-  filter: grayscale(0%);
-  background-color: #fff; /* redevient normal au hover */
-}
-
-
-
-/* ================================
-   Cartes d'événements
-   ================================ */
+/* Conteneur global des cartes */
 .event-card {
-  background: #fff;
-  border-radius: 12px;
+  background-color: #fff;
+  border-radius: 14px;                 /* arrondi comme Contacts/Répertoire */
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
   position: relative;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+  padding: 16px;
+  transition: transform 0.25s, box-shadow 0.25s, opacity 0.5s, background-color 0.25s;
+
+  border-left: 4px solid transparent; /* bord gauche coloré selon type */
 }
 
+
+/* Apparition animée */
 .event-card.show {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* Hover identique aux cartes mobiles */
 .event-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* ================================
-   Header carte
-   ================================ */
+/* Bord coloré selon type d'événement */
+.event-card.concert { border-left-color: #f59e0b; }    /* orange */
+.event-card.reunion { border-left-color: #3b82f6; }     /* bleu */
+.event-card.repetition { border-left-color: #10b981; }  /* vert */
+
+/* Header de la carte */
 .event-header {
-  padding: 0.75rem 1rem;
-  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
 }
 
 .event-date {
-  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
   font-size: 1rem;
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #111827; 
 }
+
+
+.event-card.concert .event-date {
+  background-color: rgba(245, 158, 11, 0.15); /* orange clair transparent */
+}
+.event-card.reunion .event-date {
+  background-color: rgba(59, 130, 246, 0.15); /* bleu clair transparent */
+}
+.event-card.repetition .event-date {
+  background-color: rgba(16, 185, 129, 0.15); /* vert clair transparent */
+}
+
 
 .badge-next {
   background: #f59e0b;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: bold;
 }
 
-/* ================================
-   Body carte
-   ================================ */
+/* Body de la carte */
 .event-body {
-  padding: 1rem;
+  background-color: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .event-name {
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.3rem;       /* un peu plus grand que la date */
+  font-weight: 700;        /* gras */
   color: #111827;
-  margin-bottom: 0.5rem;
+  margin-bottom: 4px;      /* petit espace avant infos */
 }
 
 .event-info {
   font-size: 0.95rem;
   color: #374151;
-  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -624,15 +609,69 @@ select {
 }
 
 /* ================================
-   Scrollbar (passés)
+   Événements passés - pile horizontale + petite taille
    ================================ */
+.past-events {
+  position: relative;
+  height: 260px; /* ajustable selon la taille des cartes */
+  overflow-x: visible; /* important pour voir les chevauchements */
+}
+
+.past-events .event-card {
+  position: absolute;           /* superpose les cartes */
+  top: 0;
+  left: 0;
+  width: 220px;
+  transform: scale(0.85);
+  transform-origin: left center;
+  filter: grayscale(90%) brightness(0.85);
+  opacity: 0.7;
+  border-left: 4px solid transparent;
+  transition: transform 0.3s, filter 0.3s, opacity 0.3s, z-index 0.3s;
+}
+
+/* Décalage horizontal pour chaque carte via JS */
+.past-events .event-card[data-index="0"] { left: 0px; z-index: 1; }
+.past-events .event-card[data-index="1"] { left: 40px; z-index: 2; }
+.past-events .event-card[data-index="2"] { left: 80px; z-index: 3; }
+/* et ainsi de suite, JS peut ajouter dynamiquement left = 40px * index */
+
+/* Bord gauche coloré selon type */
+.past-events .event-card.concert { border-left-color: rgba(245,158,11,0.5); }
+.past-events .event-card.reunion { border-left-color: rgba(59,130,246,0.5); }
+.past-events .event-card.repetition { border-left-color: rgba(16,185,129,0.5); }
+
+/* Hover / tap : redeviennent taille normale et couleur pleine */
+.past-events .event-card:hover,
+.past-events .event-card:active {
+  transform: scale(1);
+  filter: grayscale(0%) brightness(1);
+  opacity: 1;
+  /* z-index géré dynamiquement en JS */
+  cursor: pointer;
+}
+
+/* Scrollbar personnalisée */
 .past-events::-webkit-scrollbar {
   height: 8px;
 }
-
 .past-events::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 4px;
+}
+
+/* Version mobile : pile plus compacte et hover tactile */
+@media (max-width: 768px) {
+  .past-events .event-card {
+    flex: 0 0 180px;
+    margin-right: -30px;
+    transform: scale(0.8);
+    transform-origin: left;
+  }
+
+  .past-events .event-card:active {
+    transform: scale(1);
+  }
 }
 
 /* ================================
@@ -644,10 +683,14 @@ select {
   }
 
   .past-events .event-card {
-    width: 180px;
-    margin-right: -30px;
+    flex: 0 0 180px;
   }
 }
+
+
+
+
+
 
 
 
@@ -1300,45 +1343,89 @@ select {
 
 
 
-
 /* ============================= */
-/* Section Répertoire mobile */
+/* SECTION RÉPERTOIRE */
 /* ============================= */
 
+#repertoireCards {
+  display: none; /* caché sur desktop */
+}
 
-
-
+/* MOBILE */
 @media (max-width: 768px) {
-  /* Masquer le tableau desktop */
+
+  /* Masquer tableau */
   #repertoireTable {
     display: none;
   }
 
-  /* Afficher le conteneur cartes mobile */
+  /* Conteneur cartes */
   #repertoireCards {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    margin-top: 20px;
   }
 
-  /* Style des cartes */
+  /* Carte */
   .repertoire-card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    border-left: 4px solid #ffb629;
+    transition: all 0.25s ease;
   }
 
-  .repertoire-card a {
-    color: #ffb629;
+  .repertoire-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  }
+
+  /* Nom */
+  .repertoire-card strong {
+    font-size: 16px;
+    color: #222;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* Texte général */
+  .repertoire-card p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #555;
+  }
+
+  /* Téléphone */
+  .repertoire-card .phone-link {
+    display: inline-block;
+    background: #ffb629;
+    color: #000 !important;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
+
+  .repertoire-card .phone-link:hover {
+    background: #ffa000;
+  }
+
+  /* Email */
+  .repertoire-card a[href^="mailto"] {
+    font-size: 13px;
+    color: #555;
     text-decoration: none;
   }
 
-  .repertoire-card p {
-    margin: 4px 0;
+  .repertoire-card a[href^="mailto"]:hover {
+    text-decoration: underline;
   }
 }
-
 
 
 
@@ -1459,7 +1546,7 @@ select {
       </table>
 
       <!-- Conteneur cartes mobile -->
-     <div id="repertoireCards" style="display:none; margin-top:20px;"></div>
+     <div id="repertoireCards"></div>
 
 
     </div>
@@ -2800,58 +2887,78 @@ initEvents();
 
 
 
-// --- Répertoire ---
-
-
+// =============================
+// SECTION RÉPERTOIRE
+// =============================
 
 const repertoireTableBody = document.querySelector("#repertoireTable tbody");
 const repertoireMsg = document.getElementById("repertoireMsg");
 
+
+// -----------------------------
+// Formatage téléphone
+// -----------------------------
 function formatPhone(phone){
   if(!phone) return "";
 
-  let raw = phone.toString().replace(/\D/g,''); // enlève espaces et caractères
-  if(!raw.startsWith("0")) raw = "0" + raw;
+  let raw = phone.toString().replace(/\D/g,'');
+
+  // Ajouter 0 si numéro à 9 chiffres
+  if(raw.length === 9){
+    raw = "0" + raw;
+  }
+
+  // Sécurité si plus de 10 chiffres
+  if(raw.length > 10){
+    raw = raw.slice(-10);
+  }
 
   const pretty = raw.replace(/(\d{2})(?=\d)/g,'$1 ');
 
   return `<a href="tel:${raw}" class="phone-link">${pretty}</a>`;
 }
 
+
+// -----------------------------
+// Chargement Répertoire
+// -----------------------------
 function loadRepertoire(profName) {
+
   repertoireTableBody.innerHTML = "";
   repertoireMsg.textContent = "";
 
   if (!profName) return;
 
-  // Affichage du message "Chargement en cours…"
+  // Message chargement
   repertoireMsg.style.color = "#f39c12";
   repertoireMsg.textContent = "⏳ Chargement en cours…";
 
 
+// URL de ton script Google Apps Script (Répertoire 2025/2026)
 
 
-  // URL de ton script Google Apps Script (Répertoire 2025/2026)
-
-
-
-  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" + encodeURIComponent(profName);
+  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" 
+              + encodeURIComponent(profName);
 
   fetch(url)
     .then(r => r.json())
     .then(data => {
+
       if (data.error) {
         repertoireMsg.style.color = "red";
         repertoireMsg.textContent = data.error;
         return;
       }
+
       if (data.length === 0) {
         repertoireMsg.style.color = "red";
         repertoireMsg.textContent = "Aucun élève trouvé pour " + profName;
         return;
       }
 
-      // Supprimer les doublons d'élèves (même nom et email)
+      // -----------------------------
+      // Suppression doublons
+      // -----------------------------
       const seen = new Set();
       const uniqueEleves = data.filter(eleve => {
         const key = eleve.Nom + "|" + eleve.Email;
@@ -2860,24 +2967,35 @@ function loadRepertoire(profName) {
         return true;
       });
 
-      // ---- TABLEAU DESKTOP ----
+
+      // =============================
+      // TABLEAU DESKTOP
+      // =============================
       uniqueEleves.forEach((eleve, i) => {
+
         const tr = document.createElement("tr");
         tr.style.backgroundColor = i % 2 === 0 ? "#fff" : "#f9f9f9";
+
         tr.innerHTML = `
           <td style="padding:8px;border-bottom:1px solid #ddd;">${eleve.Nom}</td>
           <td style="padding:8px;border-bottom:1px solid #ddd;">${formatPhone(eleve.Téléphone)}</td>
           <td style="padding:8px;border-bottom:1px solid #ddd;">
             <a href="mailto:${eleve.Email}">${eleve.Email}</a>
-          </td>`;
+          </td>
+        `;
+
         repertoireTableBody.appendChild(tr);
       });
 
-      // ---- CARTES MOBILE ----
+
+      // =============================
+      // CARTES MOBILE
+      // =============================
       const repertoireCards = document.getElementById("repertoireCards");
-      repertoireCards.innerHTML = ""; // vider les cartes existantes
+      repertoireCards.innerHTML = "";
 
       uniqueEleves.forEach(eleve => {
+
         const card = document.createElement("div");
         card.className = "repertoire-card";
 
@@ -2890,7 +3008,7 @@ function loadRepertoire(profName) {
         repertoireCards.appendChild(card);
       });
 
-      // Tout est chargé → masquer le message
+      // Tout est chargé
       repertoireMsg.textContent = "";
     })
     .catch(err => {
@@ -2899,11 +3017,20 @@ function loadRepertoire(profName) {
     });
 }
 
+
+// -----------------------------
+// Changement professeur
+// -----------------------------
 document.getElementById("selectProfGlobal").addEventListener("change", e=>{
   const profAffiche = e.target.value;
   const prof = profMap[profAffiche];
   loadRepertoire(prof);
 });
+
+  
+
+
+
 
 
 
@@ -3235,10 +3362,10 @@ const trajetsRecurrents = {
   "Anthony BUNEL": { itineraire: "Chez Anthony → Moult", km: 10, motif: "Cours" },
   "Arnaud GRASSIN": { itineraire: "Chez Arnaud → Moult", km: 12, motif: "Cours" },
   "Christian SALMERO": { itineraire: "Chez Christian → Moult", km: 8, motif: "Cours" },
-  "Christelle SOUBOUKOU KIFOULA": { itineraire: "Mondeville → Moult → Mondeville", km: 30, motif: "Cours" },
+  "Christelle SABOUKOULOU-KIFOULA": { itineraire: "Mondeville → Moult → Mondeville", km: 30, motif: "Cours" },
   "Laurence DINET": { itineraire: "Hérouville-Saint-Clair → Moult → Hérouville-Saint-Clair", km: 36, motif: "Cours" },
   "Marion BRETTEVILLE": { itineraire: "Chez Marion → Moult", km: 11, motif: "Cours" },
-  "Lorène Renaud": { itineraire: "Chez Lorène → Moult", km: 11, motif: "Cours" },
+  "Lorène RENAUD": { itineraire: "Chez Lorène → Moult", km: 11, motif: "Cours" },
   "Sébastien GOHIER": { itineraire: "Chicheboville → Moult → Chicheboville", km: 13, motif: "Cours" },
   "Valérie LOPEZ": { itineraire: "Chez Valérie → Moult", km: 13, motif: "Cours" },
   "Vincent DESGRIPPES": { itineraire: "Janville → Moult → Janville", km: 14, motif: "Cours" }
@@ -3548,28 +3675,30 @@ function initEvents() {
     renderEvents(filtered);
   }
 
-  function renderEvents(events) {
-    if (!upcomingContainer || !pastContainer) return;
+function renderEvents(events) {
+  if (!upcomingContainer || !pastContainer) return;
 
-    const now = new Date();
-    const upcoming = [];
-    const past = [];
+  const now = new Date();
+  const upcoming = [];
+  const past = [];
 
-    events.forEach(ev => {
-      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
-      if (eventDate >= now) upcoming.push(ev);
-      else past.push(ev);
-    });
+  // Séparer futurs et passés
+  events.forEach(ev => {
+    const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+    if (eventDate >= now) upcoming.push(ev);
+    else past.push(ev);
+  });
 
-    // --- FUTURS ÉVÉNEMENTS ---
-    upcomingContainer.innerHTML = upcoming.map(ev => {
-      let headerColor = "#6366F1";
-      if (ev.type === "Réunion") headerColor = "#F59E0B";
-      if (ev.type === "Répétition") headerColor = "#10B981";
+  // --- FUTURS ÉVÉNEMENTS ---
+  upcomingContainer.innerHTML = upcoming.map(ev => {
+    let typeClass = "";
+    if (ev.type === "Concert") typeClass = "concert";
+    if (ev.type === "Réunion") typeClass = "reunion";
+    if (ev.type === "Répétition") typeClass = "repetition";
 
-      return `
-      <div class="event-card">
-        <div class="event-header" style="background:${headerColor}">
+    return `
+      <div class="event-card ${typeClass} show">
+        <div class="event-header">
           <div class="event-date">${formatDateFR(ev.date)}</div>
           <div class="badge-next">Prochain</div>
         </div>
@@ -3580,17 +3709,21 @@ function initEvents() {
           <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
         </div>
       </div>`;
-    }).join("");
+  }).join("");
 
-    // --- PASSÉS ÉVÉNEMENTS ---
-    pastContainer.innerHTML = past.map(ev => {
-      let headerColor = "#6366F1";
-      if (ev.type === "Réunion") headerColor = "#F59E0B";
-      if (ev.type === "Répétition") headerColor = "#10B981";
+  // --- PASSÉS ÉVÉNEMENTS ---
+  pastContainer.innerHTML = past.map((ev, i) => {
+    let typeClass = "";
+    switch(ev.type) {
+      case "Concert": typeClass = "concert"; break;
+      case "Réunion": typeClass = "reunion"; break;
+      case "Répétition": typeClass = "repetition"; break;
+      default: typeClass = "";
+    }
 
-      return `
-      <div class="event-card past">
-        <div class="event-header" style="background:${headerColor}">
+    return `
+      <div class="event-card past ${typeClass}" data-index="${i}">
+        <div class="event-header">
           <div class="event-date">${formatDateFR(ev.date)}</div>
         </div>
         <div class="event-body">
@@ -3600,12 +3733,31 @@ function initEvents() {
           <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
         </div>
       </div>`;
-    }).join("");
+  }).join("");
 
-    // --- Animations ---
-    upcomingContainer.querySelectorAll(".event-card").forEach((card,i) => setTimeout(() => card.classList.add("show"), i*100));
-    pastContainer.querySelectorAll(".event-card").forEach((card,i) => setTimeout(() => card.classList.add("show"), i*50));
-  }
+  // --- Animations apparition ---
+  upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => {
+    setTimeout(() => card.classList.add("show"), i * 100);
+  });
+
+  pastContainer.querySelectorAll(".event-card").forEach((card, i) => {
+    setTimeout(() => card.classList.add("show"), i * 50);
+
+    // Empilement avec décalage horizontal
+    card.style.left = `${i * 40}px`;
+    card.style.zIndex = i + 1;
+    card.style.position = "absolute";
+
+    // Hover / touch pour passer au-dessus
+    const raiseCard = () => card.style.zIndex = 1000;
+    const resetCard = () => card.style.zIndex = i + 1;
+
+    card.addEventListener("mouseenter", raiseCard);
+    card.addEventListener("mouseleave", resetCard);
+    card.addEventListener("touchstart", raiseCard);
+    card.addEventListener("touchend", resetCard);
+  });
+}
 
   // --- FETCH ---
   fetch(API_EVENTS_URL + "?action=events")
