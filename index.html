@@ -103,8 +103,10 @@ th { background-color: #f0f0f0; }
 /* ============================= */
 
 /* Wrapper et grille */
-.partitions-wrapper {
-  margin-top: 20px;
+@media (max-width: 768px) {
+  .partitions-wrapper {
+    padding-top: 20px;
+  }
 }
 
 .partitions-container {
@@ -113,14 +115,12 @@ th { background-color: #f0f0f0; }
   gap: 24px;
 }
 
-/* Carte principale */
 .morceau {
-  background: #f9f9f9;
-  border-left: 6px solid #ffb629;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  background: #fff;
+  border-radius: 14px;
   padding: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border-left: 4px solid #ffb629;
 }
 
 .morceau:hover {
@@ -151,6 +151,11 @@ th { background-color: #f0f0f0; }
   font-weight: 500;
   opacity: 1;
   color: #333;
+}
+
+
+.morceauTitre .titre::first-letter {
+  font-style: normal;
 }
 
 /* Boutons visibles Partitions / Audios */
@@ -1847,7 +1852,7 @@ select {
      
 
       <span class="groupe">Queen</span>
-      <span class="titre">🎵 The Show Must Go On</span>
+      <span class="titre">🎧 The Show Must Go On</span>
     </div>
 
   <!-- Boutons visibles -->
@@ -1908,7 +1913,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">Shaka Ponk vs Scala & Kolacny Brothers</span>
-    <span class="titre">🎵 Smells Like Teens Spirit</span>
+    <span class="titre">🎧 Smells Like Teens Spirit</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -1963,7 +1968,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">U2</span>
-    <span class="titre">🎵 I Still Haven't Found What I'm Looking For</span>
+    <span class="titre">🎧 I Still Haven't Found What I'm Looking For</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -2011,7 +2016,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">Hair</span>
-    <span class="titre">🎵 Let The Sunshine In</span>
+    <span class="titre">🎧 Let The Sunshine In</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -2070,7 +2075,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">Bourvil</span>
-    <span class="titre">🎵 La Tendresse</span>
+    <span class="titre">🎧 La Tendresse</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -2144,7 +2149,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">Annie Lennox</span>
-    <span class="titre">🎵 I Put a Spell On You</span>
+    <span class="titre">🎧 I Put a Spell On You</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -2213,7 +2218,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">K Pop Deamons Hunters</span>
-    <span class="titre">🎵 Free</span>
+    <span class="titre">🎧 Free</span>
   </div>
 
   <!-- Boutons visibles -->
@@ -2268,7 +2273,7 @@ select {
 
   <div class="morceauTitre">
     <span class="groupe">Kids United</span>
-    <span class="titre">🎵 Le Lion Est Mort ce Soir</span>
+    <span class="titre">🎧 Le Lion Est Mort ce Soir</span>
   </div>
 
   <!-- Boutons visibles -->
