@@ -3016,144 +3016,15 @@ loadPlanning();
 
 
 
- // =================================
-// EVENEMENTS
-// =================================
-
-window.initEvents = function() {
-
-
-   // URL de ton script Google Apps Script (évènements de l'année)
-
-  const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
-  let allEvents = [];
-
-  const upcomingContainer = document.getElementById("upcoming-events");
-  const pastContainer = document.getElementById("past-events");
-
-  function formatDateFR(dateStr) {
-    const d = new Date(dateStr);
-    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
-  }
-
-  function populateProfFilter() {
-    const profSet = new Set();
-    allEvents.forEach(ev => ev.profs.forEach(p => profSet.add(p)));
-
-    const profFilter = document.getElementById("prof-filter");
-    if(!profFilter) return;
-    profFilter.innerHTML = `<option value="all">Tous les profs</option>`;
-
-    profSet.forEach(prof => {
-      const opt = document.createElement("option");
-      opt.value = prof;
-      opt.textContent = prof;
-      profFilter.appendChild(opt);
-    });
-
-    profFilter.addEventListener("change", applyFilters);
-    document.getElementById("type-filter").addEventListener("change", applyFilters);
-  }
-
-  function applyFilters() {
-    const typeValue = document.getElementById("type-filter").value;
-    const profValue = document.getElementById("prof-filter").value;
-
-    let filtered = allEvents;
-    if(typeValue) filtered = filtered.filter(ev => ev.type === typeValue);
-    if(profValue !== "all") filtered = filtered.filter(ev => ev.profs.includes(profValue));
-
-    renderEvents(filtered);
-  }
-
-  function renderEvents(events) {
-    if(!upcomingContainer || !pastContainer) return;
-
-    const now = new Date();
-    const upcoming = [];
-    const past = [];
-
-    events.forEach(ev => {
-      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
-      if(eventDate >= now) upcoming.push(ev);
-      else past.push(ev);
-    });
-
-    // --- FUTURS ---
-    upcomingContainer.innerHTML = upcoming.map(ev => {
-      let headerColor = "#6366F1";
-      if(ev.type === "Réunion") headerColor = "#F59E0B";
-      if(ev.type === "Répétition") headerColor = "#10B981";
-      return `
-        <div class="event-card">
-          <div class="event-header" style="background:${headerColor}">
-            <div class="event-date">${formatDateFR(ev.date)}</div>
-            <div class="badge-next">Prochain</div>
-          </div>
-          <div class="event-body">
-            <div class="event-name">${ev.nom}</div>
-            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
-            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
-            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
-          </div>
-        </div>`;
-    }).join("");
-
-    // --- PASSÉS ---
-    pastContainer.innerHTML = past.map((ev, i) => {
-      let headerColor = "#6366F1";
-      if(ev.type === "Réunion") headerColor = "#F59E0B";
-      if(ev.type === "Répétition") headerColor = "#10B981";
-      return `
-        <div class="event-card past" style="z-index:${past.length - i}">
-          <div class="event-header" style="background:${headerColor}">
-            <div class="event-date">${formatDateFR(ev.date)}</div>
-          </div>
-          <div class="event-body">
-            <div class="event-name">${ev.nom}</div>
-            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
-            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
-            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
-          </div>
-        </div>`;
-    }).join("");
-
-    // Animations
-    upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 100));
-    pastContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 50));
-  }
-
-  // --- FETCH ---
-  fetch(API_EVENTS_URL + "?action=events")
-    .then(r => r.json())
-    .then(data => {
-      allEvents = data.map(ev => ({
-        ...ev,
-        profs: typeof ev.profs === "string" ? ev.profs.split(",").map(p => p.trim()) : ev.profs
-      }));
-      populateProfFilter();
-      applyFilters();
-    })
-    .catch(err => {
-      if(upcomingContainer) upcomingContainer.innerHTML = `<p style="color:red">${err.message}</p>`;
-      console.error(err);
-    });
-};
-
-// 🔹 Initialisation
-initEvents();
-
-
-
-
-
 
 
 
 // =============================
 // SECTION RÉPERTOIRE
 // =============================
+
+
+
 
 const repertoireTableBody = document.querySelector("#repertoireTable tbody");
 const repertoireMsg = document.getElementById("repertoireMsg");
@@ -3303,6 +3174,9 @@ document.getElementById("selectProfGlobal").addEventListener("change", e=>{
 
 
 // --- Heures Sup ---
+
+
+
 
 const typesEvenement = ["Concert","Répétition","Autre"];
 
@@ -3466,6 +3340,9 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
 
 
 // --- Absences ---
+
+
+
 
 const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
@@ -3875,7 +3752,12 @@ function hideFDOverlay() {
 
 
 
-// --- Événements ---
+
+
+
+ // =================================
+// SECTION ÉVÉNEMENTS
+// =================================
 
 
 
@@ -3883,22 +3765,27 @@ function initEvents() {
 
 
   // URL WebApp Google Apps Script (évènements de l'année)
-
-
-  const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+ 
+ const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
   let allEvents = [];
 
   const upcomingContainer = document.getElementById("upcoming-events");
   const pastContainer = document.getElementById("past-events");
 
+  if (!upcomingContainer || !pastContainer) {
+    console.warn("Conteneurs événements introuvables");
+    return;
+  }
+
+  // --- Formater date en français avec jour de la semaine ---
   function formatDateFR(dateStr) {
-  const d = new Date(dateStr);
-  const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
-  const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-  return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
-}
+    const d = new Date(dateStr);
+    const jours = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    return `${jours[d.getDay()]} ${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
+  }
 
-
+  // --- Peupler filtre prof ---
   function populateProfFilter() {
     const profSet = new Set();
     allEvents.forEach(ev => ev.profs.forEach(p => profSet.add(p)));
@@ -3918,6 +3805,7 @@ function initEvents() {
     document.getElementById("type-filter").addEventListener("change", applyFilters);
   }
 
+  // --- Appliquer les filtres ---
   function applyFilters() {
     const typeValue = document.getElementById("type-filter").value;
     const profValue = document.getElementById("prof-filter").value;
@@ -3929,89 +3817,81 @@ function initEvents() {
     renderEvents(filtered);
   }
 
-function renderEvents(events) {
-  if (!upcomingContainer || !pastContainer) return;
+  // --- Afficher les événements ---
+  function renderEvents(events) {
+    const now = new Date();
+    const upcoming = [];
+    const past = [];
 
-  const now = new Date();
-  const upcoming = [];
-  const past = [];
+    events.forEach(ev => {
+      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+      if (eventDate >= now) upcoming.push(ev);
+      else past.push(ev);
+    });
 
-  // Séparer futurs et passés
-  events.forEach(ev => {
-    const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
-    if (eventDate >= now) upcoming.push(ev);
-    else past.push(ev);
-  });
+    // --- Futurs événements ---
+    upcomingContainer.innerHTML = upcoming.map(ev => {
+      let typeClass = "";
+      switch(ev.type) {
+        case "Concert": typeClass = "concert"; break;
+        case "Réunion": typeClass = "reunion"; break;
+        case "Répétition": typeClass = "repetition"; break;
+      }
+      return `
+        <div class="event-card ${typeClass} show">
+          <div class="event-header">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+            <div class="badge-next">Prochain</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
 
-  // --- FUTURS ÉVÉNEMENTS ---
-  upcomingContainer.innerHTML = upcoming.map(ev => {
-    let typeClass = "";
-    if (ev.type === "Concert") typeClass = "concert";
-    if (ev.type === "Réunion") typeClass = "reunion";
-    if (ev.type === "Répétition") typeClass = "repetition";
+    // --- Passés événements ---
+    pastContainer.innerHTML = past.map((ev, i) => {
+      let typeClass = "";
+      switch(ev.type) {
+        case "Concert": typeClass = "concert"; break;
+        case "Réunion": typeClass = "reunion"; break;
+        case "Répétition": typeClass = "repetition"; break;
+      }
+      return `
+        <div class="event-card past ${typeClass}" data-index="${i}">
+          <div class="event-header">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
 
-    return `
-      <div class="event-card ${typeClass} show">
-        <div class="event-header">
-          <div class="event-date">${formatDateFR(ev.date)}</div>
-          <div class="badge-next">Prochain</div>
-        </div>
-        <div class="event-body">
-          <div class="event-name">${ev.nom}</div>
-          <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
-          <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
-          <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
-        </div>
-      </div>`;
-  }).join("");
+    // --- Animations apparition ---
+    upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => {
+      setTimeout(() => card.classList.add("show"), i * 100);
+    });
 
-  // --- PASSÉS ÉVÉNEMENTS ---
-  pastContainer.innerHTML = past.map((ev, i) => {
-    let typeClass = "";
-    switch(ev.type) {
-      case "Concert": typeClass = "concert"; break;
-      case "Réunion": typeClass = "reunion"; break;
-      case "Répétition": typeClass = "repetition"; break;
-      default: typeClass = "";
-    }
-
-    return `
-      <div class="event-card past ${typeClass}" data-index="${i}">
-        <div class="event-header">
-          <div class="event-date">${formatDateFR(ev.date)}</div>
-        </div>
-        <div class="event-body">
-          <div class="event-name">${ev.nom}</div>
-          <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
-          <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
-          <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
-        </div>
-      </div>`;
-  }).join("");
-
-  // --- Animations apparition ---
-  upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => {
-    setTimeout(() => card.classList.add("show"), i * 100);
-  });
-
-  pastContainer.querySelectorAll(".event-card").forEach((card, i) => {
-    setTimeout(() => card.classList.add("show"), i * 50);
-
-    // Empilement avec décalage horizontal
-    card.style.left = `${i * 40}px`;
-    card.style.zIndex = i + 1;
-    card.style.position = "absolute";
-
-    // Hover / touch pour passer au-dessus
-    const raiseCard = () => card.style.zIndex = 1000;
-    const resetCard = () => card.style.zIndex = i + 1;
-
-    card.addEventListener("mouseenter", raiseCard);
-    card.addEventListener("mouseleave", resetCard);
-    card.addEventListener("touchstart", raiseCard);
-    card.addEventListener("touchend", resetCard);
-  });
-}
+    pastContainer.querySelectorAll(".event-card").forEach((card, i) => {
+      setTimeout(() => card.classList.add("show"), i * 50);
+      card.style.left = `${i * 40}px`;
+      card.style.zIndex = i + 1;
+      card.style.position = "absolute";
+      const raiseCard = () => card.style.zIndex = 1000;
+      const resetCard = () => card.style.zIndex = i + 1;
+      card.addEventListener("mouseenter", raiseCard);
+      card.addEventListener("mouseleave", resetCard);
+      card.addEventListener("touchstart", raiseCard);
+      card.addEventListener("touchend", resetCard);
+    });
+  }
 
   // --- FETCH ---
   fetch(API_EVENTS_URL + "?action=events")
@@ -4030,8 +3910,8 @@ function renderEvents(events) {
     });
 }
 
-// 🔹 Initialisation
-document.addEventListener("DOMContentLoaded", () => initEvents());
+// 🔹 Initialisation directe pour iPhone / tous navigateurs
+initEvents();
 
 
 
