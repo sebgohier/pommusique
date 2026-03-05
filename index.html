@@ -1623,6 +1623,16 @@ select {
     padding-right: 6px; 
     font-size: 12px;
   }
+
+  /* Réduire et tronquer les noms des salles */
+  .salle-header {
+    font-size: 10px;         /* texte plus petit */
+    white-space: nowrap;      /* pas de retour à la ligne */
+    overflow: hidden;         /* masque le surplus */
+    text-overflow: ellipsis;  /* ajoute "..." si le texte dépasse */
+    padding: 2px 4px;         /* moins de padding pour gagner de la place */
+  }
+
 }
 
 
