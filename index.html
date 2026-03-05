@@ -1530,6 +1530,101 @@ select {
 
 
 
+/* ============================= */
+/* SECTION PLANNING */
+/* ============================= */
+
+/* Conteneur planning */
+#planningWrapper {
+  display: flex;
+  border: 1px solid #000;
+  height: 700px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Colonne horaires */
+#horaires {
+  width: 50px;           /* largeur PC */
+  border-right: 1px solid #000;
+  text-align: center;    /* centrer les heures */
+  padding: 0;            /* plus de padding à droite */
+  position: relative;
+  font-size: 12px;
+}
+
+/* Conteneur des colonnes de salles */
+#planningContainer {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* Colonnes de salles */
+.salle-column {
+  flex: 1;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  position: relative;
+}
+
+/* Bloc de cours */
+.cours {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 4px;
+  border: 1px solid #000;
+  padding: 4px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Texte à l'intérieur du bloc (masqué sur mobile) */
+.coursTexte {
+  /* affichage normal par défaut (PC) */
+}
+
+/* Bulle mobile pour détails */
+#coursTooltip {
+  position: absolute;
+  display: none;
+  background: #fff;
+  border: 1px solid #000;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 100;
+}
+
+/* ============================= */
+/* MOBILE (max-width 768px) */
+/* ============================= */
+@media (max-width: 768px){
+
+  /* Masquer le texte dans les blocs de cours */
+  .coursTexte {
+    display: none;
+  }
+
+  /* Scroll horizontal si trop de salles */
+  #planningWrapper {
+    overflow-x: auto;
+  }
+
+  /* Largeur de la colonne horaires + padding ajusté */
+  #horaires {
+    width: 70px;       /* un peu plus large pour la lisibilité */
+    padding-right: 6px; 
+    font-size: 12px;
+  }
+}
+
 
 
 
@@ -1680,10 +1775,14 @@ select {
     <!-- Indicateur de chargement -->
     <p id="planningLoading" style="font-weight:bold; color:#f39c12; display:none;">Chargement du planning…</p>
 
-    <div id="planningWrapper" style="display:flex; border:1px solid #000; height:700px; overflow-y:auto;">
-      <div id="horaires" style="width:50px; border-right:1px solid #000; text-align:right; padding-right:4px; position:relative;"></div>
-      <div id="planningContainer" style="display:flex; flex:1; position:relative;"></div>
-    </div>
+  <div id="planningWrapper" style="display:flex; border:1px solid #000; height:700px; overflow-y:auto;">
+  <div id="horaires"></div>
+  <div id="planningContainer" style="display:flex; flex:1; position:relative;"></div>
+
+  <!-- Bulle de détails des cours (mobile) -->
+  <div id="coursTooltip" style="position:absolute; display:none; background:#fff; border:1px solid #000; padding:6px; border-radius:4px; font-size:12px; z-index:100;"></div>
+
+ </div>
   </div>
 
 
@@ -2742,98 +2841,166 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  // =================================
-  // PLANNING
-  // =================================
-  window.loadPlanning = async function() {
-    const day = selectJour.value;
-    const loadingMsg = document.getElementById("planningLoading");
-    loadingMsg.textContent = "⏳ Chargement du planning…";
-    loadingMsg.style.display = "block";
 
-    const wrapper = document.getElementById("planningWrapper");
-    const planningContainer = document.getElementById("planningContainer");
-    const horaires = document.getElementById("horaires");
 
-    try {
 
-      
-      // URL de ton script Google Apps Script (Répertoire 2025/2026)
 
-      const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
-      const res = await fetch(url);
-      const data = await res.json();
 
-      planningContainer.innerHTML = "";
-      horaires.innerHTML = "";
 
-      const totalMin = (endHour - startHour) * 60;
-      planningContainer.style.height = totalMin * pxMin + "px";
-      horaires.style.height = planningContainer.style.height;
 
-      // Colonnes
-      salles.forEach(s => {
-        const c = document.createElement("div");
-        c.className="salle-column"; c.dataset.salle=s;
-        c.style.flex="1"; c.style.borderLeft="1px solid #000"; c.style.borderRight="1px solid #000"; c.style.position="relative";
-        c.innerHTML=`<div class="salle-header" style="position:sticky;top:0;background:#ffb629;text-align:center;border-bottom:1px solid #000;padding:4px;font-weight:bold;z-index:10;">${s}</div>`;
-        for(let i=0;i<totalMin;i+=15){
-          const l=document.createElement("div");
-          l.className="ligne-interval"; l.style.position="absolute"; l.style.left="0"; l.style.right="0"; l.style.height="1px"; l.style.background="#eee"; l.style.top=i*pxMin+"px";
-          c.appendChild(l);
-        }
-        planningContainer.appendChild(c);
-      });
+// =================================
+// PLANNING
+// =================================
+window.loadPlanning = async function() {
+  const day = selectJour.value;
+  const loadingMsg = document.getElementById("planningLoading");
+  loadingMsg.textContent = "⏳ Chargement du planning…";
+  loadingMsg.style.display = "block";
 
-      // Horaires
-      for(let h=startHour; h<=endHour; h++){
-        const d = document.createElement("div");
-        d.className="heure"; d.style.position="absolute"; d.style.top=(h-startHour)*60*pxMin+"px"; d.style.width="100%"; d.style.fontSize="12px"; d.innerText=h+":00";
-        horaires.appendChild(d);
+  const wrapper = document.getElementById("planningWrapper");
+  const planningContainer = document.getElementById("planningContainer");
+  const horaires = document.getElementById("horaires");
+  const tooltip = document.getElementById("coursTooltip");
+  const isMobile = window.innerWidth < 768; // déclenchement du mode mobile
+
+
+
+     // URL de ton script Google Apps Script (Répertoire 2025/2026)
+
+
+
+  try {
+    const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
+    const res = await fetch(url);
+    const data = await res.json();
+
+    planningContainer.innerHTML = "";
+    horaires.innerHTML = "";
+
+    const totalMin = (endHour - startHour) * 60;
+    planningContainer.style.height = totalMin * pxMin + "px";
+    horaires.style.height = planningContainer.style.height;
+
+    // Colonnes
+    salles.forEach(s => {
+      const c = document.createElement("div");
+      c.className = "salle-column"; 
+      c.dataset.salle = s;
+      c.style.flex = "1"; 
+      c.style.borderLeft = "1px solid #000"; 
+      c.style.borderRight = "1px solid #000"; 
+      c.style.position = "relative";
+      c.innerHTML = `<div class="salle-header" style="position:sticky;top:0;background:#ffb629;text-align:center;border-bottom:1px solid #000;padding:4px;font-weight:bold;z-index:10;">${s}</div>`;
+      for(let i = 0; i < totalMin; i += 15){
+        const l = document.createElement("div");
+        l.className = "ligne-interval"; 
+        l.style.position = "absolute"; 
+        l.style.left = "0"; 
+        l.style.right = "0"; 
+        l.style.height = "1px"; 
+        l.style.background = "#eee"; 
+        l.style.top = i * pxMin + "px";
+        c.appendChild(l);
+      }
+      planningContainer.appendChild(c);
+    });
+
+    // Horaires
+    for(let h = startHour; h <= endHour; h++){
+      const d = document.createElement("div");
+      d.className = "heure"; 
+      d.style.position = "absolute"; 
+      d.style.top = (h - startHour) * 60 * pxMin + "px"; 
+      d.style.width = "100%"; 
+      d.style.fontSize = "12px"; 
+      d.innerText = h + ":00";
+      horaires.appendChild(d);
+    }
+
+    // Cours
+    data.forEach(c => {
+      if(c.jour !== day || !salles.includes(c.salle)) return;
+      const d = new Date(c.horaire);
+      const min = d.getHours() * 60 + d.getMinutes();
+      const top = (min - startHour * 60) * pxMin;
+      let dur = 30;
+      if(c.type === "collectif"){
+        const n = c.cours.toLowerCase();
+        if(n.includes("chorale")) dur = 120;
+        else if(n.includes("éveil")||n.includes("eveil")) dur = 45;
+        else dur = 60;
       }
 
-      // Cours
-      data.forEach(c => {
-        if(c.jour!==day || !salles.includes(c.salle)) return;
-        const d = new Date(c.horaire);
-        const min = d.getHours()*60 + d.getMinutes();
-        const top = (min-startHour*60)*pxMin;
-        let dur = 30;
-        if(c.type==="collectif"){
-          const n=c.cours.toLowerCase();
-          if(n.includes("chorale")) dur=120;
-          else if(n.includes("éveil")||n.includes("eveil")) dur=45;
-          else dur=60;
-        }
-        const b=document.createElement("div");
-        b.className="cours"; b.style.position="absolute"; b.style.left="4px"; b.style.right="4px"; b.style.top=top+"px"; b.style.height=dur*pxMin+"px";
-        b.style.borderRadius="4px"; b.style.border="1px solid #000"; b.style.padding="4px"; b.style.fontSize="12px"; b.style.display="flex"; b.style.flexDirection="column"; b.style.justifyContent="center"; b.style.alignItems="center"; b.style.textAlign="center"; b.style.boxSizing="border-box";
-        b.style.backgroundColor=c.prof&&profs[c.prof]?profs[c.prof]:"#ddd";
-        b.innerHTML=(c.type==="collectif"?c.cours:c.eleve)+(c.prof?`<div class="prof" style="font-style:italic;color:#444;font-size:11px;">${c.prof}</div>`:"");
-        document.querySelector(`[data-salle='${c.salle}']`).appendChild(b);
+      const b = document.createElement("div");
+      b.className = "cours"; 
+      b.style.position = "absolute"; 
+      b.style.left = "4px"; 
+      b.style.right = "4px"; 
+      b.style.top = top + "px"; 
+      b.style.height = dur * pxMin + "px";
+      b.style.borderRadius = "4px"; 
+      b.style.border = "1px solid #000"; 
+      b.style.padding = "4px"; 
+      b.style.fontSize = "12px"; 
+      b.style.display = "flex"; 
+      b.style.flexDirection = "column"; 
+      b.style.justifyContent = "center"; 
+      b.style.alignItems = "center"; 
+      b.style.textAlign = "center"; 
+      b.style.boxSizing = "border-box";
+      b.style.backgroundColor = c.prof && profs[c.prof] ? profs[c.prof] : "#ddd";
+
+      // --- Nouveau : texte dans un conteneur ---
+      const texteBloc = document.createElement("div");
+      texteBloc.className = "coursTexte";
+      texteBloc.innerHTML = (c.type === "collectif" ? c.cours : c.eleve) +
+                            (c.prof ? `<div class="prof" style="font-style:italic;color:#444;font-size:11px;">${c.prof}</div>` : "");
+      b.appendChild(texteBloc);
+
+      // --- Gestion du clic pour mobile ---
+      if(isMobile){
+        b.addEventListener("click", (e) => {
+          tooltip.innerHTML = texteBloc.innerHTML;
+          const rect = b.getBoundingClientRect();
+          const wrapperRect = wrapper.getBoundingClientRect();
+          tooltip.style.left = (rect.left - wrapperRect.left + wrapper.scrollLeft) + "px";
+          tooltip.style.top = (rect.top - wrapperRect.top + wrapper.scrollTop - rect.height - 6) + "px";
+          tooltip.style.display = "block";
+          e.stopPropagation();
+        });
+      }
+
+      document.querySelector(`[data-salle='${c.salle}']`).appendChild(b);
+    });
+
+    // Fermer la bulle si on clique ailleurs
+    if(isMobile){
+      document.addEventListener("click", () => {
+        tooltip.style.display = "none";
       });
-
-      // Scroll auto vers premier cours
-      setTimeout(()=>{
-        const cours = wrapper.querySelectorAll(".cours");
-        if(!cours.length) return;
-        let minTop=Infinity;
-        cours.forEach(c=>{minTop=Math.min(minTop,c.offsetTop);});
-        wrapper.scrollTop=Math.max(0,minTop-40);
-      },50);
-
-      loadingMsg.textContent = "✅ Planning chargé avec succès";
-      setTimeout(()=>loadingMsg.style.display="none",1500);
-
-    } catch(err){
-      loadingMsg.textContent="❌ Erreur lors du chargement : "+err;
-      console.error(err);
-      setTimeout(()=>loadingMsg.style.display="none",3000);
     }
-  };
 
-  selectJour.onchange = loadPlanning;
-  loadPlanning();
+    // Scroll auto vers premier cours
+    setTimeout(()=>{
+      const cours = wrapper.querySelectorAll(".cours");
+      if(!cours.length) return;
+      let minTop = Infinity;
+      cours.forEach(c => { minTop = Math.min(minTop, c.offsetTop); });
+      wrapper.scrollTop = Math.max(0, minTop - 40);
+    }, 50);
+
+    loadingMsg.textContent = "✅ Planning chargé avec succès";
+    setTimeout(()=>loadingMsg.style.display="none", 1500);
+
+  } catch(err){
+    loadingMsg.textContent = "❌ Erreur lors du chargement : " + err;
+    console.error(err);
+    setTimeout(()=>loadingMsg.style.display="none", 3000);
+  }
+};
+
+selectJour.onchange = loadPlanning;
+loadPlanning();
 
 
 
