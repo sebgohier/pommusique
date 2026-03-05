@@ -3481,10 +3481,11 @@ window.toggleSection = function(button, type) {
 // --- Frais de déplacement ---
 
 
+
+
 const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
 const immatInput = document.getElementById("immatFD");
-
 
 // ================================
 // TRAJETS RÉCURRENTS PAR PROF
@@ -3502,20 +3503,14 @@ const trajetsRecurrents = {
   "Vincent DESGRIPPES": { itineraire: "Janville → Moult →", km: 14, motif: "Cours" }
 };
 
-
-
-
-
-
-  // ===== Immatriculation automatique AA-123-BB =====
-  immatInput.addEventListener("input", () => {
-  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // majuscules et chiffres uniquement
+// ===== Immatriculation automatique AA-123-BB =====
+immatInput.addEventListener("input", () => {
+  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (val.length > 2) val = val.slice(0,2) + '-' + val.slice(2);
   if (val.length > 6) val = val.slice(0,6) + '-' + val.slice(6);
-  val = val.slice(0,9); // limite à 8 caractères : AA-123-BB
+  val = val.slice(0,9);
   immatInput.value = val;
 });
-
 
 // Fonction pour recalculer le total général
 function updateTotalKmFD() {
@@ -3531,99 +3526,99 @@ function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-  <td data-label="Dates">
-    <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
-  </td>
-
-  <td data-label="Itinéraire">
-    <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
-  </td>
-
-  <td data-label="Kilomètres">
-    <input type="number" class="kmFD" min="0" value="${data.km || ''}">
-  </td>
-
-  <td data-label="Péage (€)">
-    <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
-  </td>
-
-  <td data-label="Total km">
-    <span class="totalLigneKm">0</span>
-  </td>
-
-  <td data-label="Motif">
-    <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
-  </td>
-
-  <td data-label="Actions">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <button type="button" class="deleteFD"
-        style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
-        X
-      </button>
-      <span style="font-size:0.7em;">Supprimer</span>
-    </div>
-  </td>
-`;
-
+    <td data-label="Dates">
+      <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
+    </td>
+    <td data-label="Itinéraire">
+      <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
+    </td>
+    <td data-label="Kilomètres">
+      <input type="number" class="kmFD" min="0" value="${data.km || ''}">
+    </td>
+    <td data-label="Péage (€)">
+      <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
+    </td>
+    <td data-label="Total km">
+      <span class="totalLigneKm">0</span>
+    </td>
+    <td data-label="Motif">
+      <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
+    </td>
+    <td data-label="Actions">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <button type="button" class="deleteFD"
+          style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+          X
+        </button>
+        <span style="font-size:0.7em;">Supprimer</span>
+      </div>
+    </td>
+  `;
 
   fdTableBody.appendChild(tr);
 
-// Auto-suggestion trajet récurrent (menu déroulant)
+  // Auto-suggestion trajet récurrent (compatible PC + mobile)
 const itinInput = tr.querySelector(".itineraireFD");
 
-itinInput.addEventListener("focus", e => {
-  const prof = document.getElementById("selectProfGlobal").value;
+const showSuggestion = () => {
+ const prof = document.getElementById("selectProfGlobal").value;
   const trajet = trajetsRecurrents[prof];
 
-  // Supprimer ancien dropdown si existant
-  let oldMenu = tr.querySelector(".itinDropdown");
-  if(oldMenu) oldMenu.remove();
+  // Supprimer ancien dropdown
+  const oldMenu = tr.querySelector(".itinDropdown");
+  if (oldMenu) oldMenu.remove();
 
-  if(trajet){
-    // Créer le menu
-    const menu = document.createElement("div");
-    menu.className = "itinDropdown";
-    menu.style.position = "absolute";
-    menu.style.background = "#fff";
-    menu.style.border = "1px solid #ccc";
-    menu.style.padding = "6px";
-    menu.style.cursor = "pointer";
-    menu.style.zIndex = "1000";
-    menu.style.marginTop = "2px";
-    menu.style.width = itinInput.offsetWidth + "px";
-    menu.textContent = trajet.itineraire;
+  if (!trajet) return;
 
-    // Ajouter au DOM juste après l'input
-    itinInput.parentNode.appendChild(menu);
+  const menu = document.createElement("div");
+  menu.className = "itinDropdown";
+  menu.style.position = "absolute";
+  menu.style.background = "#fff";
+  menu.style.border = "1px solid #ccc";
+  menu.style.padding = "6px";
+  menu.style.cursor = "pointer";
+  menu.style.zIndex = "1000";
+  menu.style.marginTop = "2px";
+  menu.style.width = itinInput.offsetWidth + "px";
+  menu.textContent = trajet.itineraire;
 
-    // Clic sur suggestion
-    menu.addEventListener("click", () => {
-      itinInput.value = trajet.itineraire;
-      tr.querySelector(".kmFD").value = trajet.km;
-      tr.querySelector(".motifFD").value = trajet.motif;
+  itinInput.parentNode.appendChild(menu);
 
-      // Recalcul si dates déjà sélectionnées
-      const fp = tr.querySelector(".datesFD")._flatpickr;
-      const nbDates = fp ? fp.selectedDates.length : 0;
-      tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
-      updateTotalKmFD();
+  const selectTrajet = () => {
+    itinInput.value = trajet.itineraire;
+    tr.querySelector(".kmFD").value = trajet.km;
+    tr.querySelector(".motifFD").value = trajet.motif;
 
-      menu.remove(); // fermer menu après validation
-    });
+    const fp = tr.querySelector(".datesFD")?._flatpickr;
+    const nbDates = fp ? fp.selectedDates.length : 0;
 
-    // Supprimer le menu si l'utilisateur clique ailleurs
-    document.addEventListener("click", function handler(ev){
-      if(ev.target !== itinInput && ev.target !== menu){
-        menu.remove();
-        document.removeEventListener("click", handler);
-      }
-    });
-  }
+    tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
+    updateTotalKmFD();
+
+    menu.remove();
+  };
+
+  // Validation suggestion
+  menu.addEventListener("click", selectTrajet);
+  menu.addEventListener("touchstart", selectTrajet);
+
+  // Fermer menu si clic ailleurs
+  const outsideClick = (e) => {
+    if (!menu.contains(e.target) && e.target !== itinInput) {
+      menu.remove();
+      document.removeEventListener("click", outsideClick);
+      document.removeEventListener("touchstart", outsideClick);
+    }
+  };
+
+  document.addEventListener("click", outsideClick);
+  document.addEventListener("touchstart", outsideClick);
+};
+
+// Déclenchement PC + mobile
+["click","focus","touchstart"].forEach(evt => {
+  itinInput.addEventListener(evt, showSuggestion);
 });
-
-
-
 
 
 
@@ -3656,96 +3651,84 @@ itinInput.addEventListener("focus", e => {
     updateTotalKmFD();
   });
 
- 
-
   updateTotalKmFD();
 }
 
-// Ajouter ligne via bouton "Ajouter" PC
+// Ajouter ligne via bouton PC et Mobile
 document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
-
-
-// Ajouter ligne via bouton "Ajouter" Mobile
 document.getElementById("addRowFDMobile").addEventListener("click", () => createFDRow());
 createFDRow(); // première ligne
 
-
-
-
+// Overlay messages
 function showFDOverlay(message) {
   document.getElementById("fdOverlayBox").textContent = message;
   document.getElementById("fdOverlay").style.display = "flex";
 }
-
 function hideFDOverlay() {
   document.getElementById("fdOverlay").style.display = "none";
 }
 
-
-
-
-
-
 // ---------------- Envoi vers Web App ----------------
+document.getElementById("sendFD").addEventListener("click", () => {
+  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+  const nomProfFD = profMap[profAffiche];
+  if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
 
+  const immatFD = document.getElementById("immatFD").value.trim();
+  const puissanceFD = document.getElementById("puissanceFD").value.trim();
 
-  document.getElementById("sendFD").addEventListener("click", () => {
-    const profAffiche = document.getElementById("selectProfGlobal").value.trim();
-    const nomProfFD = profMap[profAffiche];
-    if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
+  const lignes = [];
 
-    const immatFD = document.getElementById("immatFD").value.trim();
-    const puissanceFD = document.getElementById("puissanceFD").value.trim();
+  fdTableBody.querySelectorAll("tr").forEach(tr => {
+    const dateInput = tr.querySelector(".datesFD");
+    const fp = dateInput && dateInput._flatpickr; // ✅ compatible iPhone
+    const dates = fp
+      ? fp.selectedDates.map(d => {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        })
+      : [];
 
-    const lignes = [];
-
-    fdTableBody.querySelectorAll("tr").forEach(tr => {
-      const fp = tr.querySelector(".datesFD")?._flatpickr;
-      const dates = fp
-        ? fp.selectedDates.map(d => {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${y}-${m}-${day}`;
-          })
-        : [];
-
-      lignes.push({
-        dates: dates,
-        itineraire: tr.querySelector(".itineraireFD")?.value || "",
-        motif: tr.querySelector(".motifFD")?.value || "",
-        km: tr.querySelector(".kmFD")?.value || "",
-        peage: tr.querySelector(".peageFD")?.value || ""
-      });
-    });
-
-    const totalKm = totalKmEl.textContent;
-    showFDOverlay("⏳ Envoi en cours…");
-    document.getElementById("fdConfirm").textContent = "";
-
-
-
-
-     // URL de ton script Google Apps Script (Frais de déplacement)
-
-    fetch("https://script.google.com/macros/s/AKfycbzZAMY0Jmuf_WI_4CvF4ha295shJC5fI9wjYRnQgLj2TUclhAlqrft8VMgHrnb-uJWjYg/exec", {  
-      method: "POST",
-      body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
-    })
-    .then(res => res.json())
-    .then(res => {
-      showFDOverlay("✅ " + (res.message || "Demande envoyée avec succès"));
-      setTimeout(() => hideFDOverlay(), 2000);
-      document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
-      fdTableBody.innerHTML = "";
-      createFDRow();
-    })
-    .catch(err => {
-      showFDOverlay("❌ Erreur lors de l’envoi");
-      setTimeout(() => hideFDOverlay(), 3000);
-      document.getElementById("fdConfirm").textContent = "Erreur : " + err;
+    lignes.push({
+      dates: dates,
+      itineraire: tr.querySelector(".itineraireFD")?.value || "",
+      motif: tr.querySelector(".motifFD")?.value || "",
+      km: tr.querySelector(".kmFD")?.value || "",
+      peage: tr.querySelector(".peageFD")?.value || ""
     });
   });
+
+  const totalKm = totalKmEl.textContent;
+  showFDOverlay("⏳ Envoi en cours…");
+  document.getElementById("fdConfirm").textContent = "";
+
+ 
+
+ // URL de ton script Google Apps Script (Frais de déplacement)
+
+
+
+  fetch("https://script.google.com/macros/s/AKfycbzZAMY0Jmuf_WI_4CvF4ha295shJC5fI9wjYRnQgLj2TUclhAlqrft8VMgHrnb-uJWjYg/exec", {
+    method: "POST",
+    body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
+  })
+  .then(res => res.json())
+  .then(res => {
+    showFDOverlay("✅ " + (res.message || "Demande envoyée avec succès"));
+    setTimeout(() => hideFDOverlay(), 2000);
+    document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
+    fdTableBody.innerHTML = "";
+    createFDRow();
+  })
+  .catch(err => {
+    showFDOverlay("❌ Erreur lors de l’envoi");
+    setTimeout(() => hideFDOverlay(), 3000);
+    document.getElementById("fdConfirm").textContent = "Erreur : " + err;
+  });
+});
+
 
 
 
