@@ -3561,14 +3561,12 @@ function createFDRow(data = {}) {
 const itinInput = tr.querySelector(".itineraireFD");
 
 const showSuggestion = () => {
- const prof = document.getElementById("selectProfGlobal").value;
+  const prof = document.getElementById("selectProfGlobal").value;
   const trajet = trajetsRecurrents[prof];
+  if(!trajet) return;
 
-  // Supprimer ancien dropdown
   const oldMenu = tr.querySelector(".itinDropdown");
-  if (oldMenu) oldMenu.remove();
-
-  if (!trajet) return;
+  if(oldMenu) oldMenu.remove();
 
   const menu = document.createElement("div");
   menu.className = "itinDropdown";
@@ -3578,33 +3576,28 @@ const showSuggestion = () => {
   menu.style.padding = "6px";
   menu.style.cursor = "pointer";
   menu.style.zIndex = "1000";
-  menu.style.marginTop = "2px";
-  menu.style.width = itinInput.offsetWidth + "px";
   menu.textContent = trajet.itineraire;
 
-  itinInput.parentNode.appendChild(menu);
+  // Position par rapport à l'écran
+  const rect = itinInput.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + window.scrollY}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.width = `${rect.width}px`;
+
+  document.body.appendChild(menu);
 
   const selectTrajet = () => {
     itinInput.value = trajet.itineraire;
     tr.querySelector(".kmFD").value = trajet.km;
     tr.querySelector(".motifFD").value = trajet.motif;
-
-    const fp = tr.querySelector(".datesFD")?._flatpickr;
-    const nbDates = fp ? fp.selectedDates.length : 0;
-
-    tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
-    updateTotalKmFD();
-
     menu.remove();
   };
 
-  // Validation suggestion
   menu.addEventListener("click", selectTrajet);
   menu.addEventListener("touchstart", selectTrajet);
 
-  // Fermer menu si clic ailleurs
   const outsideClick = (e) => {
-    if (!menu.contains(e.target) && e.target !== itinInput) {
+    if(!menu.contains(e.target) && e.target !== itinInput){
       menu.remove();
       document.removeEventListener("click", outsideClick);
       document.removeEventListener("touchstart", outsideClick);
@@ -3614,6 +3607,8 @@ const showSuggestion = () => {
   document.addEventListener("click", outsideClick);
   document.addEventListener("touchstart", outsideClick);
 };
+itinInput.addEventListener("focus", showSuggestion);
+
 
 // Déclenchement PC + mobile
 ["click","focus","touchstart"].forEach(evt => {
