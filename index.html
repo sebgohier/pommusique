@@ -3607,12 +3607,55 @@ const showSuggestion = () => {
   document.addEventListener("click", outsideClick);
   document.addEventListener("touchstart", outsideClick);
 };
-itinInput.addEventListener("focus", showSuggestion);
 
+itinInput.addEventListener("focus", () => {
+  setTimeout(() => {
+    const prof = document.getElementById("selectProfGlobal").value;
+    const trajet = trajetsRecurrents[prof];
+    if(!trajet) return;
 
-// Déclenchement PC + mobile
-["click","focus","touchstart"].forEach(evt => {
-  itinInput.addEventListener(evt, showSuggestion);
+    const oldMenu = tr.querySelector(".itinDropdown");
+    if(oldMenu) oldMenu.remove();
+
+    const menu = document.createElement("div");
+    menu.className = "itinDropdown";
+    menu.style.position = "absolute";
+    menu.style.background = "#fff";
+    menu.style.border = "1px solid #ccc";
+    menu.style.padding = "6px";
+    menu.style.cursor = "pointer";
+    menu.style.zIndex = "1000";
+    menu.textContent = trajet.itineraire;
+
+    // On calcule après que le viewport ait bougé
+    const rect = itinInput.getBoundingClientRect();
+    menu.style.top = `${rect.bottom + window.scrollY}px`;
+    menu.style.left = `${rect.left + window.scrollX}px`;
+    menu.style.width = `${rect.width}px`;
+
+    document.body.appendChild(menu);
+
+    const selectTrajet = () => {
+      itinInput.value = trajet.itineraire;
+      tr.querySelector(".kmFD").value = trajet.km;
+      tr.querySelector(".motifFD").value = trajet.motif;
+      menu.remove();
+    };
+
+    menu.addEventListener("click", selectTrajet);
+    menu.addEventListener("touchstart", selectTrajet);
+
+    const outsideClick = (e) => {
+      if(!menu.contains(e.target) && e.target !== itinInput){
+        menu.remove();
+        document.removeEventListener("click", outsideClick);
+        document.removeEventListener("touchstart", outsideClick);
+      }
+    };
+    document.addEventListener("click", outsideClick);
+    document.addEventListener("touchstart", outsideClick);
+
+  }, 150); // délai de 150ms pour que Safari termine le scroll
 });
 
 
