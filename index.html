@@ -3494,20 +3494,22 @@ const fdTableBody = document.querySelector("#fdTable tbody");
 const totalKmEl = document.getElementById("totalKmFD");
 const immatInput = document.getElementById("immatFD");
 
+
 // ================================
 // TRAJETS RÉCURRENTS PAR PROF
 // ================================
+
 const trajetsRecurrents = {
-  "Anthony BUNEL": { itineraire: "Chez Anthony → Moult →", km: 10, motif: "Cours" },
-  "Arnaud GRASSIN": { itineraire: "Chez Arnaud → Moult →", km: 12, motif: "Cours" },
-  "Christian SALMERO": { itineraire: "Chez Christian → Moult →", km: 8, motif: "Cours" },
-  "Christelle SABOUKOULOU-KIFOULA": { itineraire: "Mondeville → Moult → Mondeville", km: 30, motif: "Cours" },
+  "Anthony BUNEL": { itineraire: "Chez Anthony → Moult →", km: 0, motif: "Cours" },
+  "Arnaud GRASSIN": { itineraire: "Caen → Moult → Caen", km: 38, motif: "Cours" },
+  "Christian SALMERO": { itineraire: "Fleury sur Orne → Moult → Fleury sur Orne", km: 40, motif: "Cours" },
+  "Christelle SABOUKOULOU-KIFOULA": { itineraire: "Giberville → Moult → Giberville", km: 26, motif: "Cours" },
   "Laurence DINET": { itineraire: "Hérouville-Saint-Clair → Moult → Hérouville-Saint-Clair", km: 36, motif: "Cours" },
-  "Marion BRETTEVILLE": { itineraire: "Chez Marion → Moult →", km: 11, motif: "Cours" },
-  "Lorène RENAUD": { itineraire: "Epaney → Moult → Epaney", km: 22, motif: "Admin." },
+  "Marion BRETTEVILLE": { itineraire: "Bourguébus → Moult → Bourguébus", km: 22, motif: "Cours" },
+  "Lorène RENAUD": { itineraire: "Epaney → Moult → Epaney", km: 44, motif: "Admin." },
   "Sébastien GOHIER": { itineraire: "Chicheboville → Moult → Chicheboville", km: 13, motif: "Cours" },
-  "Valérie LOPEZ": { itineraire: "Chez Valérie → Moult →", km: 13, motif: "Cours" },
-  "Vincent DESGRIPPES": { itineraire: "Janville → Moult →", km: 14, motif: "Cours" }
+  "Valérie LOPEZ": { itineraire: "Graye sur mer → Moult → Graye sur mer", km: 74, motif: "Cours" },
+  "Vincent DESGRIPPES": { itineraire: "Janville → Moult → Janville", km: 14, motif: "Cours" }
 };
 
 // ===== Immatriculation automatique AA-123-BB =====
