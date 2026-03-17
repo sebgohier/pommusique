@@ -2196,8 +2196,8 @@ select {
   <!-- Contenu Audios -->
   <div class="morceauContent audios-content">
     <div class="fichier">
-      <span>Version instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/xigyzb7J#IflS1PnoWVFUCgXncQQzRh06s8Tdksdky1HtZpmf4T4','_blank')">Voir / Télécharger</button>
+      <span>Version complète</span>
+      <button onclick="window.open('https://mega.nz/file/1qgnUSpJ#0rsKWWNlMiSWGQJxkc72TsYnq4HCJDlpZksn8h_W2Po','_blank')">Voir / Télécharger</button>
     </div>
   </div>
 
@@ -2486,7 +2486,7 @@ select {
 
   <table id="fdTable">
     <thead>
-      <tr>
+      <tr> 
         <th data-label="Dates">
           Date<br>
           <span style="font-size:12px; color:#555;">(plusieurs jours possibles)</span>
@@ -3561,6 +3561,21 @@ function updateTotalKmFD() {
   totalKmEl.textContent = total;
 }
 
+function recalculerLigne(tr) {
+  const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+
+  const dateInput = tr.querySelector(".datesFD");
+  const fp = dateInput && dateInput._flatpickr;
+  const nbDates = fp ? fp.selectedDates.length : 0;
+
+  tr.querySelector(".totalLigneKm").textContent = km * nbDates;
+
+  updateTotalKmFD();
+}
+
+
+
+
 // Crée une ligne de tableau
 function createFDRow(data = {}) {
   const tr = document.createElement("tr");
@@ -3630,6 +3645,7 @@ const showSuggestion = () => {
     itinInput.value = trajet.itineraire;
     tr.querySelector(".kmFD").value = trajet.km;
     tr.querySelector(".motifFD").value = trajet.motif;
+    recalculerLigne(tr);
     menu.remove();
   };
 
@@ -3679,6 +3695,7 @@ itinInput.addEventListener("focus", () => {
       itinInput.value = trajet.itineraire;
       tr.querySelector(".kmFD").value = trajet.km;
       tr.querySelector(".motifFD").value = trajet.motif;
+      recalculerLigne(tr);
       menu.remove();
     };
 
@@ -3708,20 +3725,15 @@ itinInput.addEventListener("focus", () => {
     mode: "multiple",
     dateFormat: "d/m/Y",
     locale: "fr",
-    onChange: function(selectedDates) {
-      const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
-      tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
-      updateTotalKmFD();
-    }
+   onChange: function() {
+  recalculerLigne(tr);
+}
   });
 
   // recalcul si km change
-  tr.querySelector(".kmFD").addEventListener("input", () => {
-    const selectedDates = fpInstance.selectedDates || [];
-    const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
-    tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
-    updateTotalKmFD();
-  });
+tr.querySelector(".kmFD").addEventListener("input", () => {
+  recalculerLigne(tr);
+});
 
   // bouton supprimer
   tr.querySelector(".deleteFD").addEventListener("click", () => {
@@ -4098,4 +4110,3 @@ data.forEach(contact => {
 
 </body>
 </html>
-
