@@ -2169,7 +2169,7 @@ select {
     </div>
     <div class="fichier">
       <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/s3pUWD5L#FoHKmCSZSGdCD800frrarhtXkJTAGqTmlePla2wdzP0','_blank')">Voir / Télécharger</button>
+      <button onclick="window.open('https://mega.nz/file/Z2YyjYjI#t-N_lQ_doEtNROcZ3gf1MC5JEKKyer0TCLAL5hFc2SQ','_blank')">Voir / Télécharger</button>
     </div>
     <div class="fichier">
       <span>Soprano</span>
@@ -2197,15 +2197,7 @@ select {
   <div class="morceauContent audios-content">
     <div class="fichier">
       <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/xqhxGaxD#yTdzFWfh7sxGNyoVaTONarfAWK2aNsu47RVZoDsDCE8','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/QipRlLyZ#_VhO6QjyYXIi-ISyBjUXcwgdmNJ60RRONiY_1Arj6nM','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/xigyzb7J#IflS1PnoWVFUCgXncQQzRh06s8Tdksdky1HtZpmf4T4','_blank')">Voir / Télécharger</button>
+      <button onclick="window.open('https://mega.nz/file/1qgnUSpJ#0rsKWWNlMiSWGQJxkc72TsYnq4HCJDlpZksn8h_W2Po','_blank')">Voir / Télécharger</button>
     </div>
   </div>
 
@@ -2281,10 +2273,6 @@ select {
     <div class="fichier">
       <span>Version complète</span>
       <button onclick="window.open('https://mega.nz/file/t6g2GDBb#d0yGSt4ZZhcs7jxsPQqWT9Up3r8BHpq-ZXpTgQuk9TQ','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/xmxm0LpJ#3-B3LQLN-6EEb27oxCf-2Kj-9Zp4t4SK4dj7jsGNydQ','_blank')">Voir / Télécharger</button>
     </div>
   </div>
 
@@ -3731,16 +3719,24 @@ itinInput.addEventListener("focus", () => {
 
 
 
-
   // flatpickr pour sélection multiple
-  const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
-    mode: "multiple",
-    dateFormat: "d/m/Y",
-    locale: "fr",
-   onChange: function() {
-  recalculerLigne(tr);
-}
-  });
+const lastMonth = new Date();
+lastMonth.setDate(1);
+lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
+  mode: "multiple",
+  dateFormat: "d/m/Y",
+  locale: "fr",
+
+  onReady: function(selectedDates, dateStr, instance) {
+    instance.jumpToDate(lastMonth);
+  },
+
+  onChange: function() {
+    recalculerLigne(tr);
+  }
+});
 
   // recalcul si km change
 tr.querySelector(".kmFD").addEventListener("input", () => {
