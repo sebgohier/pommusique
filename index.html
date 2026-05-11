@@ -3728,6 +3728,7 @@ const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
   mode: "multiple",
   dateFormat: "d/m/Y",
   locale: "fr",
+  disableMobile: true,
 
   onReady: function(selectedDates, dateStr, instance) {
     instance.jumpToDate(lastMonth);
