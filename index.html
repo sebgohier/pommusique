@@ -658,6 +658,7 @@ select {
 .event-card.concert { border-left-color: #f59e0b; }    /* orange */
 .event-card.reunion { border-left-color: #3b82f6; }     /* bleu */
 .event-card.repetition { border-left-color: #10b981; }  /* vert */
+.event-card.filage { border-left-color: #8b5cf6; }  /* violet */
 
 /* Header de la carte */
 .event-header {
@@ -686,6 +687,9 @@ select {
 }
 .event-card.repetition .event-date {
   background-color: rgba(16, 185, 129, 0.15); /* vert clair transparent */
+}
+.event-card.filage .event-date {
+  background-color: rgba(139, 92, 246, 0.15); /* violet clair transparent */
 }
 
 
@@ -2613,6 +2617,7 @@ select {
       <option value="Concert" selected>Concert</option>
       <option value="Réunion">Réunion</option>
       <option value="Répétition">Répétition</option>
+      <option value="Filage">Filage</option>
     </select>
 
     <select id="prof-filter" style="width:150px; padding:5px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
@@ -3926,6 +3931,7 @@ function initEvents() {
         case "Concert": typeClass = "concert"; break;
         case "Réunion": typeClass = "reunion"; break;
         case "Répétition": typeClass = "repetition"; break;
+        case "Filage": typeClass = "filage"; break;
       }
       return `
         <div class="event-card ${typeClass} show">
@@ -3949,6 +3955,7 @@ function initEvents() {
         case "Concert": typeClass = "concert"; break;
         case "Réunion": typeClass = "reunion"; break;
         case "Répétition": typeClass = "repetition"; break;
+        case "Filage": typeClass = "filage"; break;
       }
       return `
         <div class="event-card past ${typeClass}" data-index="${i}">
