@@ -3362,7 +3362,7 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
   // URL de ton script Google Apps Script (heures supp)
 
 
-  fetch("https://script.google.com/macros/s/AKfycbzsOvtYIBZSLrjuIDsxUwhkCDhETu5kwMgpBKF2QZJSS2yfWFFLwgkrc2akDXMO1EFF/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwe3uwKCeSEDcUIJpJ3Cyk6hAcdPaBoLkjyXnzKfRryhvM_E34WXLLRLZCoD5jXTVhE/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
@@ -3474,7 +3474,7 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
 
      // URL de ton script Google Apps Script (demande d'autoristation d'absence)
 
-  fetch("https://script.google.com/macros/s/AKfycbwZ4pNzJ69o6sALtNHN2Dx_A4yPhmr839fhuRQ7u1TvR7Qn812VJPVe0s0ihpP-MB78/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbx07LDfU8A5yNk6-7KK2jZekWSe2r_AglEZFWn7ysTFOT9nU5svcydwTeM1wvMyGtQH/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfAbs,lignes})
   })
@@ -3822,7 +3822,7 @@ document.getElementById("sendFD").addEventListener("click", () => {
 
 
 
-  fetch("https://script.google.com/macros/s/AKfycbwQo1DEp-yxqedTX-b3DH4-21pLt9_hS739qqPZd6kReY_djlEWuyCWSRF1Pd7cDkT2EQ/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbw3yXSAb0WbeBpxu0t0GBNc32K2KafjHJ_I7snhf-LsnodD9APDmxxaGrB69n0sxxurnQ/exec", {
     method: "POST",
     body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
   })
