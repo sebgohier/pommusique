@@ -3362,26 +3362,50 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
   // URL de ton script Google Apps Script (heures supp)
 
 
-  fetch("https://script.google.com/macros/s/AKfycbwGZaxYM_EQlLK0EnTMWjYlpZKkYI7wFy3Q55lVaCCBlsrc-9T1XnRBdgeqavtpWRE/exec", {
-    method: "POST",
-    body: JSON.stringify({nomProf:nomProfHs,lignes,total})
+ fetch("https://script.google.com/macros/s/AKfycbwGZaxYM_EQlLK0EnTMWjYlpZKkYI7wFy3Q55lVaCCBlsrc-9T1XnRBdgeqavtpWRE/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    nomProf: nomProfHs,
+    lignes: lignes,
+    total: total
   })
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById("hsOverlay").style.display = "none";
+})
+.then(res => res.text())
+.then(text => {
+  console.log("Réponse brute Apps Script :", text);
+
+  let res;
+  try {
+    res = JSON.parse(text);
+  } catch (e) {
+    throw new Error("Réponse non JSON : " + text);
+  }
+
+  document.getElementById("hsOverlay").style.display = "none";
+
+  if (res.status === "success") {
     const pdfOverlay = document.getElementById("hsPdfOverlay");
     pdfOverlay.style.display = "flex";
-    setTimeout(()=>{ pdfOverlay.style.display = "none"; }, 2500);
-    document.getElementById("confirmHs").textContent = res.message || "Heures sup envoyées avec succès";
-    tbody.innerHTML = "";
-    addRowHs(); // remettre une ligne vide
-  })
-  .catch(err => {
-    document.getElementById("hsOverlay").style.display = "none";
-    document.getElementById("confirmHs").textContent = "Erreur : " + err;
-  });
-});
+    setTimeout(() => { pdfOverlay.style.display = "none"; }, 2500);
 
+    document.getElementById("confirmHs").textContent =
+      res.message || "Heures sup envoyées avec succès";
+
+    tbody.innerHTML = "";
+    addRowHs();
+  } else {
+    document.getElementById("confirmHs").textContent =
+      "Erreur Apps Script : " + res.message;
+  }
+})
+.catch(err => {
+  document.getElementById("hsOverlay").style.display = "none";
+  document.getElementById("confirmHs").textContent = "Erreur : " + err.message;
+  console.error(err);
+});
 
 
 
