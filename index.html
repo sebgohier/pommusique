@@ -16,8 +16,8 @@
 body { 
   margin:0; 
   font-family:Arial,sans-serif; 
-  display:flex;
-  min-height:100vh; 
+  display:flex; 
+  height:100vh; 
 }
 .sidebar { 
   width:220px; 
@@ -109,10 +109,14 @@ th { background-color: #f0f0f0; }
   }
 }
 
+
+
+
 .partitions-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
+  align-items: start;
 }
 
 .morceau {
@@ -240,6 +244,14 @@ th { background-color: #f0f0f0; }
 
 
 
+.partitions-content.open,
+.audios-content.open {
+  display: block;
+}
+
+
+
+
 
 
 
@@ -297,52 +309,25 @@ th { background-color: #f0f0f0; }
 
 
 @media (max-width: 768px) {
-  /* Topbar mobile */
   .mobile-topbar {
     display: flex;
     position: fixed;
     top: 0;
     width: 100%;
-    height: 50px;
-    align-items: center;
-    background: #000;
-    color: #ffb629;
-    padding: 10px;
     z-index: 1001;
   }
 
-  /* Sidebar mobile */
-  .sidebar {
+    .sidebar {
     position: fixed;
-    top: 70px;           /* juste sous la topbar */
-    bottom: 0;           /* prend toute la hauteur dispo */
+    top: 50px;
     left: -260px;
     width: 260px;
+    height: calc(100% - 50px);
     transition: left 0.3s;
-    z-index: 2000;
-    overflow-y: scroll;            /* scroll sur tout le contenu */
-    -webkit-overflow-scrolling: touch; /* scroll fluide iOS/Android */
+    z-index: 1000;
   }
-
-  /* Sidebar ouverte */
-  .sidebar.open {
-    left: 0;
-  }
-
-  /* Contenu principal */
-  .content, .main-content {
-    padding-top: 60px;  /* espace pour la topbar */
-    overflow: visible;
-  }
-
-  /* Empêcher le scroll du body quand menu ouvert */
-  body.menu-open {
-    overflow: hidden;
-  }
-}
-
- 
-
+  .sidebar.open { left: 0; }
+  .content, .main-content { padding-top: 60px; }
 
 
 
@@ -658,7 +643,6 @@ select {
 .event-card.concert { border-left-color: #f59e0b; }    /* orange */
 .event-card.reunion { border-left-color: #3b82f6; }     /* bleu */
 .event-card.repetition { border-left-color: #10b981; }  /* vert */
-.event-card.filage { border-left-color: #8b5cf6; }  /* violet */
 
 /* Header de la carte */
 .event-header {
@@ -687,9 +671,6 @@ select {
 }
 .event-card.repetition .event-date {
   background-color: rgba(16, 185, 129, 0.15); /* vert clair transparent */
-}
-.event-card.filage .event-date {
-  background-color: rgba(139, 92, 246, 0.15); /* violet clair transparent */
 }
 
 
@@ -1745,6 +1726,7 @@ select {
       <option>Arnaud GRASSIN</option>
       <option>Christian SALMERO</option>
       <option>Christelle SABOUKOULOU-KIFOULA</option>
+      <option>Jérémie NIES</option>
       <option>Laurence DINET</option>
       <option>Lorène RENAUD</option>
       <option>Marion BRETTEVILLE</option>
@@ -1975,491 +1957,24 @@ select {
 
 
 
-  <!-- Section Partitions -->
+ <!-- Section Partitions -->
 
+<section id="partitions" class="section" style="display:none;">
+  <h2>🎼 Partitions concert de fin d'année</h2>
 
-
-<div class="section" id="partitions">
-  <h2>🎼 Partitions concert de fin d'année 2025-2026</h2>
-
-  <div class="partitions-wrapper">
-
-       <div id="morceauxList" class="partitions-container">
-
-  <div class="morceau">
-
-    <div class="morceauTitre">
-     
-
-      <span class="groupe">Queen</span>
-      <span class="titre">🎧 The Show Must Go On</span>
-    </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
+  <!-- Filtre année -->
+  <div class="filters" style="margin:10px 0 20px 0; display:flex; gap:10px; flex-wrap:wrap;">
+    <select id="annee-filter" style="width:150px; padding:5px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
+      <option value="">Choisir une année</option>
+    </select>
   </div>
 
+  <!-- Les cartes des morceaux seront générées automatiquement -->
+  <div id="partitions-container" class="partitions-container"></div>
 
+</section>
 
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-           
-             <div class="fichier">
-              <span>Batterie</span>
-              <button onclick="window.open('https://mega.nz/file/xyBiDDAR#J3pY2Cqfjpt2jye4PcL3k_SkRzZlZPO432rt60a-6mM','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Chorale</span>
-              <button onclick="window.open('https://mega.nz/file/crQhBALC#J2YHA1Mw1r7n5wJ3DUa8fi01wlZJ1T72-pGuaQotBB0','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Piano</span>
-              <button onclick="window.open('https://mega.nz/file/tzpAwCRA#M6z2fMS6dPcOF2ne4iW_1Eh-UdRKrTYg7xabprV1cPg','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Violon 1</span>
-              <button onclick="window.open('https://mega.nz/file/43gXkLCJ#O3zrcq_FZ1bBLk0VYcE6OgB3I3Fm-LMylL5svpvyEig','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Violon 2</span>
-              <button onclick="window.open('https://mega.nz/file/xyhlhbCa#CJtfdWuwsVrlBySwdWtJ35XGrLpHpXQY25k3fAB8BX0','_blank')">Voir / Télécharger</button>
-            </div>
-          </div>
 
-          <!-- Contenu Audios -->
-          <div class="morceauContent audios-content">
-            <div class="fichier">
-              <span>Version complète</span>
-              <button onclick="window.open('https://mega.nz/file/AvwklLwC#7AF1-csfmhkZ3pNS18IcIUf4RU32jWglgzIoyZRpPKQ','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Drumless</span>
-              <button onclick="window.open('https://mega.nz/file/ci5FUAaQ#U88S3XuHlEEPyHen4k98S5I9koMRQiF8pDU-lsaQt-Y','_blank')">Voir / Télécharger</button>
-            </div>
-            <div class="fichier">
-              <span>Instrumentale</span>
-              <button onclick="window.open('https://mega.nz/file/Qn5kAaoL#g-DYa8NZLUf4d48etC7NtHPQsrXkdp3o_95vneL3fRM','_blank')">Voir / Télécharger</button>
-            </div>
-          </div>
-
-        </div>
-      
-
-      <!-- Ajouter d'autres morceaux ici -->
-
-        <div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">Shaka Ponk vs Scala & Kolacny Brothers</span>
-    <span class="titre">🎧 Smells Like Teens Spirit</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/8vIF2TxJ#xVN5yq4MiuC201C0wCAOnKRh5iQndrbNXUxKIyNhwE8','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/I2x0FKyC#kHl0xt9nmcF2ESra5nhz_4cOBgEgEWdqNO_laDq2P6U','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Violon 1</span>
-      <button onclick="window.open('https://mega.nz/file/ZzImVB5T#DkvZBCKC_2BiibrZSggACMHrMy9b4LgeNNUjGOuwc_0','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Violon 2</span>
-      <button onclick="window.open('https://mega.nz/file/53JFGYZD#FjdOOxeXY-D2nmkIxjeOwCqnwJsBRrkiEXH5dy8aaRM','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/t2ACWYZb#qeNMIGcyHuW-gpR2ckQhSlyseAZUtGoDW5b6hjBM4OY','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/M2g0jIhZ#5boq4Cl_fg1YWgq1l0Yo9G_9N0uXY10QETqa_7UVDBk','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/MzIXQTLQ#LW_sQtoBpnMyXq9mb4uUw6KH25xRCw8I0BJCY1UP9bQ','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-       <div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">U2</span>
-    <span class="titre">🎧 I Still Haven't Found What I'm Looking For</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/drAHXDyB#jZfmfqUPSqUSCFF0Cei_NXSZk8T7mTLqzttIu_xzsNs','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/xvQAxIiJ#K23AHWGBkPODIDakIa6N9F67DWWJI4OfVmP8wawjFlI','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/M7AUSTpL#8w05vsgOWvzGcZd3Y8TLIH9UfwlH6GJD5OUm_-AK4_Y','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/s2IlSY7Z#DmILMdz4Ug63BGY8Y-ybfOXZmXZhYw-F0tNAUAR5lfg','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/8vJCCTBL#2s_ufuaba0WuHjLeP4-HQCzO7ri8JBWE0O24_lQoPMY','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-
-        <div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">Hair</span>
-    <span class="titre">🎧 Let The Sunshine In</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Conducteur</span>
-      <button onclick="window.open('https://mega.nz/file/Yixy2CCY#eXoevIypQ5cGTtrjbo8LZLmWCXWRnSeFk8vbhKlFYkc','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/Z2YyjYjI#t-N_lQ_doEtNROcZ3gf1MC5JEKKyer0TCLAL5hFc2SQ','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Soprano</span>
-      <button onclick="window.open('https://mega.nz/file/dvBCyDKI#jF97ijq0Tuwu6maIbNA59IjLFOZT4yjznEndl18hPO8','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/EqRhURaI#Y8_fuMjjgNo8YuVhf8sdszWnm2P_g3ZHnRNmGhlGT08','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Flûte</span>
-      <button onclick="window.open('https://mega.nz/file/UiQXmDaK#GJ0S62ce3Ld3TfAO2PiNED3lDuC9wMxTNGZ48iAZdHA','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Saxophone Alto</span>
-      <button onclick="window.open('https://mega.nz/file/43w2BLbb#rmNSTafzmyJmq5pSqYXJW_yHNtM2oG1UoR2nIrU0Yzc','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Trompette</span>
-      <button onclick="window.open('https://mega.nz/file/4yxWnYyY#A9XBuegDWL-pWLUlyX4bBzc3mEKavDVHmXcmLOSyIc4','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/xqhxGaxD#yTdzFWfh7sxGNyoVaTONarfAWK2aNsu47RVZoDsDCE8','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/QipRlLyZ#_VhO6QjyYXIi-ISyBjUXcwgdmNJ60RRONiY_1Arj6nM','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/xigyzb7J#IflS1PnoWVFUCgXncQQzRh06s8Tdksdky1HtZpmf4T4','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-        <div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">Bourvil</span>
-    <span class="titre">🎧 La Tendresse</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Conducteur</span>
-      <button onclick="window.open('https://mega.nz/file/s24lwKBZ#FXvn1ugc7wEuW2t18RQXVFyO7m1aIEssPaUZeE_gV4s','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano+Choeur</span>
-      <button onclick="window.open('https://mega.nz/file/AuwljJiD#jcylKk6lobeFzV-1158hSRaa5wAq2k7qFpUHR50INNE','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/pmgi2CCL#dPCkZwIgJpJvniPoPbhSV63_gwmN7UVH1QxGrKHiz2Y','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Violon</span>
-      <button onclick="window.open('https://mega.nz/file/hiIw1awI#ysjVh2_cxWIiXkVHYzBghZPmzKfsMO_LmWEEezEHiRQ','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Flûte 1</span>
-      <button onclick="window.open('https://mega.nz/file/ImJXzRjA#AYNdgyOLZTiDib4LRREBeoOxg_smczbje0kQDXbZXYk','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Flûte 2</span>
-      <button onclick="window.open('https://mega.nz/file/hqRi2bBQ#BibZxgOznw1wOalxSmHtM7_54-2HwoXySxSsyopWp_A','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Clarinette 1</span>
-      <button onclick="window.open('https://mega.nz/file/RmZgia7C#jANcTtp8xQdra879T3F-0ecnaZaHW0EXufK9EAJgR_0','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Clarinette 2</span>
-      <button onclick="window.open('https://mega.nz/file/pzIHXBTA#gRG-fMS5a0NUAWl_n5rynjyl9BPPisOFE77y7UvglnM','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Alto</span>
-      <button onclick="window.open('https://mega.nz/file/V7IXhLoS#svo1gx-9KIQ-EuhYIKt5pyIr4KaRd6DTBr4RxgFHl8o','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Basse</span>
-      <button onclick="window.open('https://mega.nz/file/w7hTASYZ#Wtxfzm7msrwtWHddgjj1nD5hYnnFKbMOP9XHMgy0HYc','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Soprano</span>
-      <button onclick="window.open('https://mega.nz/file/U3IgyKoD#ZEdamxaLy22AKxLOBWVzrn7pSSgsa52_xJL8vU4OKto','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/t6g2GDBb#d0yGSt4ZZhcs7jxsPQqWT9Up3r8BHpq-ZXpTgQuk9TQ','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-<div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">Annie Lennox</span>
-    <span class="titre">🎧 I Put a Spell On You</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/1v4g1SKD#3a1xE8BGsWNxALxrYOPQt3m_rPc5WCxMAi1tPvFvO1s','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/F2hwQRKa#_YmIJ79WH8tZMXCps6HsufLshvm2pxwornyEPaR2sGM','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Flûte 1</span>
-      <button onclick="window.open('https://mega.nz/file/E2RymCbJ#EyKswUXygXTNYGlhqKtNJEOxWqrEYCBbGxWv3c6o4kA','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Flûte 2</span>
-      <button onclick="window.open('https://mega.nz/file/Zig1xQZb#tTGEaWdZF4HJiJyXp6gPMTjxv0jC5j3rFpgMh6Wq_5g','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Saxophone 1</span>
-      <button onclick="window.open('https://mega.nz/file/Bz43zA6b#AgizZ2iXTUPwQpDYmkzMYXdmrKy2UDOlJ_Gbyc1WMT0','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Saxophone 2</span>
-      <button onclick="window.open('https://mega.nz/file/EyhwhJ4T#Ub-2MSbPd-ZkEN6IhsPZbg_lbVqw1cvQyg6hHvqDP-Y','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Trompette</span>
-      <button onclick="window.open('https://mega.nz/file/835AiJBb#xojuCsRFxzXmA3tsz_xVQgE_1CsdLJT0J8QQ_-dpBxw','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/9mYwTYqT#kaYNNmCNoQH1jQ_fm41SfVLf7i_yqn44SHG2fJ0ZXCU','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/dj4y2bRL#iWrtnovwKA6UIKkLMPYk33xFpCLfLZPdzmdtOHCDFZM','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/AvATQS4b#BYB7O-20HPbsrKZ8jXGIZcRu3EI4YA-aaep5HywqiNw','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-
-
-        <div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">K Pop Deamons Hunters</span>
-    <span class="titre">🎧 Free</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <div class="fichier">
-      <span>Batterie</span>
-      <button onclick="window.open('https://mega.nz/file/9v4RVTBb#p6xwr7lOhjKaRS46IfbW-qJJpvYxIp8xjBp8BPMWQss','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Piano</span>
-      <button onclick="window.open('https://mega.nz/file/A3hRxagC#5jH8KLmiNVOxb0sQN6gWItfzIylJ9FFKg0_hGTQ7TEw','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Violon 1</span>
-      <button onclick="window.open('https://mega.nz/file/tzR0GJhb#d-B5WUDZjsHPGCm47CpZ0Gc_tPMGb3EO8Vi5TZm8S2o','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Violon 2</span>
-      <button onclick="window.open('https://mega.nz/file/piAnHJ4b#KQCnObNT1uIcCQhflx-GUIZYhM9DiqW8Z455pw5m0yA','_blank')">Voir / Télécharger</button>
-    </div>  
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-    <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/d7YgiSCT#DKDZMFs0WZy5oD2IclmNVGKFxW5SsQ4Z7hdfCvQeMOQ','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Drumless</span>
-      <button onclick="window.open('https://mega.nz/file/46o3SbLB#JBUK7bpNhUtU8QgoXJku4kXEIwEfyCiIi2wW-Fi04fE','_blank')">Voir / Télécharger</button>
-    </div>
-    <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/4iRAUAhC#HLla4gT9wTteBTNZ6_AB0MrrGvXjIpKHz8ZQakKYfY8','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-<div class="morceau">
-
-  <div class="morceauTitre">
-    <span class="groupe">Kids United</span>
-    <span class="titre">🎧 Le Lion Est Mort ce Soir</span>
-  </div>
-
-  <!-- Boutons visibles -->
-  <div class="morceau-buttons">
-    <button onclick="toggleSection(this, 'partitions')">Partitions</button>
-    <button onclick="toggleSection(this, 'audios')">Audios</button>
-  </div>
-
-  <!-- Contenu partitions -->
-  <div class="morceauContent partitions-content">
-    <!-- Vide pour l’instant -->
-  </div>
-
-  <!-- Contenu Audios -->
-  <div class="morceauContent audios-content">
-       <div class="fichier">
-      <span>Version complète</span>
-      <button onclick="window.open('https://mega.nz/file/tuJxiY5D#VGQLbqwlcbOiZV1si516sCYgfe0Gi79G_oKEXt4hL8I','_blank')">Voir / Télécharger</button>
-       </div>   
- <div class="fichier">
-      <span>Instrumentale</span>
-      <button onclick="window.open('https://mega.nz/file/5yxGXabR#i2VbR0Buox30lF9aUOuUH7Ai9JLNeR9-qcRG40hZhJI','_blank')">Voir / Télécharger</button>
-    </div>
-  </div>
-
-</div>
-
-
-          <!-- Ajouter d'autres morceaux ici -->
-
-
-
-
-
-
-    </div>
-  </div>
-</div>
 
 
 
@@ -2498,7 +2013,7 @@ select {
 
   <table id="fdTable">
     <thead>
-      <tr> 
+      <tr>
         <th data-label="Dates">
           Date<br>
           <span style="font-size:12px; color:#555;">(plusieurs jours possibles)</span>
@@ -2796,10 +2311,11 @@ const profs = {
   "Arnaud":    "#E6D3A3",
   "Laurence":  "#BDE0FE",
   "Marion":    "#FFADAD",
-  "Séb":       "#A8DADC"
+  "Séb":       "#A8DADC",
+  "Jérémie":   "#B8C0FF"
 };
 
-const salles = ["FM-piano","Batterie","Guitare","Piano 2","Artistes","Salle des Fêtes"];
+const salles = ["FM-piano","Batterie","Guitare","Piano 2","Artistes","Salle des Fêtes Moult"];
 const startHour = 8;
 const endHour = 22;
 const pxMin = 2.5;
@@ -2809,6 +2325,7 @@ const profMap = {
   "Arnaud GRASSIN": "Arnaud",
   "Christian SALMERO": "Christian",
   "Christelle SABOUKOULOU-KIFOULA": "Christelle",
+  "Jérémie NIES": "Jérémie",
   "Laurence DINET": "Laurence",
   "Lorène RENAUD" : "Lorène",
   "Marion BRETTEVILLE": "Marion",
@@ -2869,10 +2386,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadContacts();
 }
     document.getElementById('profSelectorWrapper').style.display = (section === 'accueil') ? 'block' : 'none';
-    if (window.innerWidth < 768) {
-    document.querySelector(".sidebar").classList.remove("open");
-    document.body.classList.remove("menu-open");
-}
+    if (window.innerWidth < 768) document.querySelector(".sidebar").classList.remove("open");
   };
 
   // Logo et titre mobile
@@ -2883,9 +2397,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Menu toggle mobile
   document.getElementById("menuToggle").addEventListener("click", ()=>{
-  document.querySelector(".sidebar").classList.toggle("open");
-  document.body.classList.toggle("menu-open");
-});
+    document.querySelector(".sidebar").classList.toggle("open");
+  });
 
   // Theme toggle
   document.getElementById("themeToggle").addEventListener("click", ()=>{
@@ -2926,12 +2439,12 @@ window.loadPlanning = async function() {
 
 
 
-     // URL de ton script Google Apps Script (Répertoire 2025/2026)
+     // URL de ton script Google Apps Script (Répertoire 2026/2027)
 
 
 
   try {
-    const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=planning";
+    const url = "https://script.google.com/macros/s/AKfycbyJEzOdF0-Z2Eu3dt7sra7icJ36TCB4SUjPxITARaQz79v3lBDZYtqKK8Rv5kZsJrty/exec?action=planning";
     const res = await fetch(url);
     const data = await res.json();
 
@@ -3067,15 +2580,144 @@ loadPlanning();
 
 
 
+ // =================================
+// EVENEMENTS
+// =================================
+
+window.initEvents = function() {
+
+
+   // URL de ton script Google Apps Script (évènements de l'année)
+
+  const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+  let allEvents = [];
+
+  const upcomingContainer = document.getElementById("upcoming-events");
+  const pastContainer = document.getElementById("past-events");
+
+  function formatDateFR(dateStr) {
+    const d = new Date(dateStr);
+    const mois = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    return `${d.getDate()} ${mois[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function populateProfFilter() {
+    const profSet = new Set();
+    allEvents.forEach(ev => ev.profs.forEach(p => profSet.add(p)));
+
+    const profFilter = document.getElementById("prof-filter");
+    if(!profFilter) return;
+    profFilter.innerHTML = `<option value="all">Tous les profs</option>`;
+
+    profSet.forEach(prof => {
+      const opt = document.createElement("option");
+      opt.value = prof;
+      opt.textContent = prof;
+      profFilter.appendChild(opt);
+    });
+
+    profFilter.addEventListener("change", applyFilters);
+    document.getElementById("type-filter").addEventListener("change", applyFilters);
+  }
+
+  function applyFilters() {
+    const typeValue = document.getElementById("type-filter").value;
+    const profValue = document.getElementById("prof-filter").value;
+
+    let filtered = allEvents;
+    if(typeValue) filtered = filtered.filter(ev => ev.type === typeValue);
+    if(profValue !== "all") filtered = filtered.filter(ev => ev.profs.includes(profValue));
+
+    renderEvents(filtered);
+  }
+
+  function renderEvents(events) {
+    if(!upcomingContainer || !pastContainer) return;
+
+    const now = new Date();
+    const upcoming = [];
+    const past = [];
+
+    events.forEach(ev => {
+      const eventDate = new Date(ev.date + "T" + (ev.heure || "00:00"));
+      if(eventDate >= now) upcoming.push(ev);
+      else past.push(ev);
+    });
+
+    // --- FUTURS ---
+    upcomingContainer.innerHTML = upcoming.map(ev => {
+      let headerColor = "#6366F1";
+      if(ev.type === "Réunion") headerColor = "#F59E0B";
+      if(ev.type === "Répétition") headerColor = "#10B981";
+      return `
+        <div class="event-card">
+          <div class="event-header" style="background:${headerColor}">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+            <div class="badge-next">Prochain</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
+
+    // --- PASSÉS ---
+    pastContainer.innerHTML = past.map((ev, i) => {
+      let headerColor = "#6366F1";
+      if(ev.type === "Réunion") headerColor = "#F59E0B";
+      if(ev.type === "Répétition") headerColor = "#10B981";
+      return `
+        <div class="event-card past" style="z-index:${past.length - i}">
+          <div class="event-header" style="background:${headerColor}">
+            <div class="event-date">${formatDateFR(ev.date)}</div>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${ev.nom}</div>
+            <div class="event-info"><span class="icon">📍</span>${ev.lieu || 'À déterminer'}, ${ev.ville || 'À déterminer'}</div>
+            <div class="event-info"><span class="icon">🕒</span>${ev.heure || 'À déterminer'}</div>
+            <div class="event-profs">🎼 ${ev.profs.join(", ")}</div>
+          </div>
+        </div>`;
+    }).join("");
+
+    // Animations
+    upcomingContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 100));
+    pastContainer.querySelectorAll(".event-card").forEach((card, i) => setTimeout(() => card.classList.add("show"), i * 50));
+  }
+
+  // --- FETCH ---
+  fetch(API_EVENTS_URL + "?action=events")
+    .then(r => r.json())
+    .then(data => {
+      allEvents = data.map(ev => ({
+        ...ev,
+        profs: typeof ev.profs === "string" ? ev.profs.split(",").map(p => p.trim()) : ev.profs
+      }));
+      populateProfFilter();
+      applyFilters();
+    })
+    .catch(err => {
+      if(upcomingContainer) upcomingContainer.innerHTML = `<p style="color:red">${err.message}</p>`;
+      console.error(err);
+    });
+};
+
+// 🔹 Initialisation
+initEvents();
+
+
+
+
+
 
 
 
 // =============================
 // SECTION RÉPERTOIRE
 // =============================
-
-
-
 
 const repertoireTableBody = document.querySelector("#repertoireTable tbody");
 const repertoireMsg = document.getElementById("repertoireMsg");
@@ -3120,10 +2762,10 @@ function loadRepertoire(profName) {
   repertoireMsg.textContent = "⏳ Chargement en cours…";
 
 
-// URL de ton script Google Apps Script (Répertoire 2025/2026)
+// URL de ton script Google Apps Script (Répertoire 2026/2027)
 
 
-  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?profName=" 
+  const url = "https://script.google.com/macros/s/AKfycbyJEzOdF0-Z2Eu3dt7sra7icJ36TCB4SUjPxITARaQz79v3lBDZYtqKK8Rv5kZsJrty/exec?profName=" 
               + encodeURIComponent(profName);
 
   fetch(url)
@@ -3225,9 +2867,6 @@ document.getElementById("selectProfGlobal").addEventListener("change", e=>{
 
 
 // --- Heures Sup ---
-
-
-
 
 const typesEvenement = ["Concert","Répétition","Autre"];
 
@@ -3359,10 +2998,10 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
 
    
 
-  // URL de ton script Google Apps Script (heures supp)
+  // URL de ton script Google Apps Script (heures supplémentaires)
 
 
-  fetch("https://script.google.com/macros/s/AKfycbxvt-wmgAH_wOWfYrTcuBOGzqRKQ0wqRjvJuNarpd0_14J3khe04wQ0bWOlGM9EMCWc/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzyObX5wqTISfdsgqY0YE4aspXCXSRrr9N7etjMw3WyfmNO_BswFp0u_K9jOLnnI_c9/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfHs,lignes,total})
   })
@@ -3391,9 +3030,6 @@ document.getElementById("sendHs").addEventListener("click", ()=>{
 
 
 // --- Absences ---
-
-
-
 
 const sallesAbs = ["FM/Piano","Guitare","Batterie","Piano 2","Artistes","Salle des fêtes Moult"];
 
@@ -3474,7 +3110,7 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
 
      // URL de ton script Google Apps Script (demande d'autoristation d'absence)
 
-  fetch("https://script.google.com/macros/s/AKfycbx07LDfU8A5yNk6-7KK2jZekWSe2r_AglEZFWn7ysTFOT9nU5svcydwTeM1wvMyGtQH/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbxXqsi8NJSRMsgsExWVQ116NWValGhfQdFNIWuR2k12CahWFXdpcxWVCdIYLXk_KEKL/exec", {
     method: "POST",
     body: JSON.stringify({nomProf:nomProfAbs,lignes})
   })
@@ -3498,28 +3134,173 @@ document.getElementById("sendAbs").addEventListener("click", ()=>{
 
 
 
+// ===============================
+// PARTITIONS
+// ===============================
 
 
+function toggleSection(button, type) {
 
+  const card = button.closest(".morceau");
+  const section = card.querySelector(`.${type}-content`);
 
-
-// --- Partitions / Onglets morceaux ---
-
-
-
-// Définition globale
-window.toggleSection = function(button, type) {
-  const card = button.closest('.morceau'); // la carte
-  const section = card.querySelector(`.${type}-content`); // partitions-content ou audios-content
   if (!section) return;
 
-  const isOpen = section.style.display === "block";
+  const isOpen = section.classList.contains("open");
 
-  if (isOpen) {
-    section.style.display = "none";
-    button.classList.remove("active");
-  } else {
-    section.style.display = "block";
+  // fermer tout
+  card.querySelectorAll(".morceauContent")
+    .forEach(s => s.classList.remove("open"));
+
+  // reset boutons
+  card.querySelectorAll(".morceau-buttons button")
+    .forEach(b => b.classList.remove("active"));
+
+  // toggle
+  if (!isOpen) {
+    section.classList.add("open");
+    button.classList.add("active");
+  }
+}
+
+
+
+
+
+
+console.log("🔥 SCRIPT PARTITIONS CHARGÉ");
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwaipv0ZrtbTAsEU6BXB809I7lmaVug_g_i4ypFfD2Fuagkv2oPApos72TKBSGLZCNUfg/exec";
+
+let allPartitions = [];
+
+function initPartitions() {
+
+  console.log("🔥 INIT PARTITIONS OK");
+
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+
+      allPartitions = data;
+
+      console.log("🔥 DATA OK :", data);
+
+      const select = document.getElementById("annee-filter");
+
+      const annees = [...new Set(data.map(d => d.ANNEE))];
+
+      select.innerHTML = `<option value="">Choisir une année</option>`;
+
+      annees.forEach(a => {
+        const opt = document.createElement("option");
+        opt.value = a;
+        opt.textContent = a;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener("change", renderPartitions);
+
+    })
+    .catch(err => console.error("❌ FETCH ERROR :", err));
+}
+
+function renderPartitions() {
+
+  const year = document.getElementById("annee-filter").value;
+  const container = document.getElementById("partitions-container");
+
+  container.innerHTML = "";
+
+  if (!year) return;
+
+  const filtered = allPartitions.filter(p => String(p.ANNEE) === String(year));
+
+  // 🔥 REGROUPEMENT PAR MORCEAU (GROUPE + TITRE)
+  const grouped = {};
+
+  filtered.forEach(p => {
+
+    const key = p.GROUPE + "||" + p.TITRE;
+
+    if (!grouped[key]) {
+      grouped[key] = {
+        groupe: p.GROUPE,
+        titre: p.TITRE,
+        partitions: [],
+        audios: []
+      };
+    }
+
+    if (p.TYPE === "Partition") {
+      grouped[key].partitions.push(p);
+    } else if (p.TYPE === "Audio") {
+      grouped[key].audios.push(p);
+    }
+  });
+
+  // 🔥 AFFICHAGE CARTES
+  Object.values(grouped).forEach(m => {
+
+    const card = document.createElement("div");
+    card.className = "morceau";
+
+    card.innerHTML = `
+      <div class="morceauTitre">
+        <span class="groupe">${m.groupe}</span>
+        <span class="titre">🎧 ${m.titre}</span>
+      </div>
+
+      <div class="morceau-buttons">
+      <button onclick="toggleSection(this, 'partitions')">Partitions</button>
+      <button onclick="toggleSection(this, 'audios')">Audios</button>
+      </div>
+
+      <div class="morceauContent partitions-content">
+        ${m.partitions.map(f => `
+          <div class="fichier">
+            <span>${f.INSTRUMENT}</span>
+            <button onclick="window.open('${f.LIEN}','_blank')">Voir / Télécharger</button>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="morceauContent audios-content">
+        ${m.audios.map(f => `
+          <div class="fichier">
+            <span>${f.INSTRUMENT}</span>
+            <button onclick="window.open('${f.LIEN}','_blank')">Voir / Télécharger</button>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+initPartitions();
+
+
+
+
+window.toggleSection = function(button, type) {
+
+  const card = button.closest(".morceau");
+  const section = card.querySelector(`.${type}-content`);
+
+  if (!section) return;
+
+  const isOpen = section.classList.contains("open");
+
+  card.querySelectorAll(".morceauContent")
+    .forEach(s => s.classList.remove("open"));
+
+  card.querySelectorAll(".morceau-buttons button")
+    .forEach(b => b.classList.remove("active"));
+
+  if (!isOpen) {
+    section.classList.add("open");
     button.classList.add("active");
   }
 };
@@ -3529,9 +3310,16 @@ window.toggleSection = function(button, type) {
 
 
 
+
+
+
+
+
+
+
+
+
 // --- Frais de déplacement ---
-
-
 
 
 const fdTableBody = document.querySelector("#fdTable tbody");
@@ -3542,12 +3330,12 @@ const immatInput = document.getElementById("immatFD");
 // ================================
 // TRAJETS RÉCURRENTS PAR PROF
 // ================================
-
 const trajetsRecurrents = {
   "Anthony BUNEL": { itineraire: "Chez Anthony → Moult →", km: 0, motif: "Cours" },
   "Arnaud GRASSIN": { itineraire: "Caen → Moult → Caen", km: 38, motif: "Cours" },
   "Christian SALMERO": { itineraire: "Fleury sur Orne → Moult → Fleury sur Orne", km: 44, motif: "Cours" },
   "Christelle SABOUKOULOU-KIFOULA": { itineraire: "Giberville → Moult → Giberville", km: 26, motif: "Cours" },
+  "Jérémie NIES": { itineraire: "Saint-André sur Orne → Moult → Saint-André sur Orne", km: 36, motif: "Cours" },
   "Laurence DINET": { itineraire: "Hérouville-Saint-Clair → Moult → Hérouville-Saint-Clair", km: 36, motif: "Cours" },
   "Marion BRETTEVILLE": { itineraire: "Bourguébus → Moult → Bourguébus", km: 22, motif: "Cours" },
   "Lorène RENAUD": { itineraire: "Epaney → Moult → Epaney", km: 44, motif: "Admin." },
@@ -3556,14 +3344,20 @@ const trajetsRecurrents = {
   "Vincent DESGRIPPES": { itineraire: "Janville → Moult → Janville", km: 14, motif: "Cours" }
 };
 
-// ===== Immatriculation automatique AA-123-BB =====
-immatInput.addEventListener("input", () => {
-  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+
+
+
+
+  // ===== Immatriculation automatique AA-123-BB =====
+  immatInput.addEventListener("input", () => {
+  let val = immatInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // majuscules et chiffres uniquement
   if (val.length > 2) val = val.slice(0,2) + '-' + val.slice(2);
   if (val.length > 6) val = val.slice(0,6) + '-' + val.slice(6);
-  val = val.slice(0,9);
+  val = val.slice(0,9); // limite à 8 caractères : AA-123-BB
   immatInput.value = val;
 });
+
 
 // Fonction pour recalculer le total général
 function updateTotalKmFD() {
@@ -3574,118 +3368,62 @@ function updateTotalKmFD() {
   totalKmEl.textContent = total;
 }
 
-function recalculerLigne(tr) {
-  const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
-
-  const dateInput = tr.querySelector(".datesFD");
-  const fp = dateInput && dateInput._flatpickr;
-  const nbDates = fp ? fp.selectedDates.length : 0;
-
-  tr.querySelector(".totalLigneKm").textContent = km * nbDates;
-
-  updateTotalKmFD();
-}
-
-
-
-
 // Crée une ligne de tableau
 function createFDRow(data = {}) {
   const tr = document.createElement("tr");
 
   tr.innerHTML = `
-    <td data-label="Dates">
-      <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
-    </td>
-    <td data-label="Itinéraire">
-      <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
-    </td>
-    <td data-label="Kilomètres">
-      <input type="number" class="kmFD" min="0" value="${data.km || ''}">
-    </td>
-    <td data-label="Péage (€)">
-      <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
-    </td>
-    <td data-label="Total km">
-      <span class="totalLigneKm">0</span>
-    </td>
-    <td data-label="Motif">
-      <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
-    </td>
-    <td data-label="Actions">
-      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-        <button type="button" class="deleteFD"
-          style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
-          X
-        </button>
-        <span style="font-size:0.7em;">Supprimer</span>
-      </div>
-    </td>
-  `;
+  <td data-label="Dates">
+    <input type="text" class="datesFD" placeholder="Sélectionnez les jours">
+  </td>
+
+  <td data-label="Itinéraire">
+    <input type="text" class="itineraireFD" placeholder="Ex: Moult → Caen" value="${data.itineraire || ''}">
+  </td>
+
+  <td data-label="Kilomètres">
+    <input type="number" class="kmFD" min="0" value="${data.km || ''}">
+  </td>
+
+  <td data-label="Péage (€)">
+    <input type="number" class="peageFD" min="0" step="0.01" value="${data.peage || ''}">
+  </td>
+
+  <td data-label="Total km">
+    <span class="totalLigneKm">0</span>
+  </td>
+
+  <td data-label="Motif">
+    <input type="text" class="motifFD" placeholder="Motif du déplacement" value="${data.motif || ''}">
+  </td>
+
+  <td data-label="Actions">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <button type="button" class="deleteFD"
+        style="background-color:#e74c3c; color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; transition: all 0.2s;">
+        X
+      </button>
+      <span style="font-size:0.7em;">Supprimer</span>
+    </div>
+  </td>
+`;
+
 
   fdTableBody.appendChild(tr);
 
-  // Auto-suggestion trajet récurrent (compatible PC + mobile)
+// Auto-suggestion trajet récurrent (menu déroulant)
 const itinInput = tr.querySelector(".itineraireFD");
 
-const showSuggestion = () => {
+itinInput.addEventListener("focus", e => {
   const prof = document.getElementById("selectProfGlobal").value;
   const trajet = trajetsRecurrents[prof];
-  if(!trajet) return;
 
-  const oldMenu = tr.querySelector(".itinDropdown");
+  // Supprimer ancien dropdown si existant
+  let oldMenu = tr.querySelector(".itinDropdown");
   if(oldMenu) oldMenu.remove();
 
-  const menu = document.createElement("div");
-  menu.className = "itinDropdown";
-  menu.style.position = "absolute";
-  menu.style.background = "#fff";
-  menu.style.border = "1px solid #ccc";
-  menu.style.padding = "6px";
-  menu.style.cursor = "pointer";
-  menu.style.zIndex = "1000";
-  menu.textContent = trajet.itineraire;
-
-  // Position par rapport à l'écran
-  const rect = itinInput.getBoundingClientRect();
-  menu.style.top = `${rect.bottom + window.scrollY}px`;
-  menu.style.left = `${rect.left + window.scrollX}px`;
-  menu.style.width = `${rect.width}px`;
-
-  document.body.appendChild(menu);
-
-  const selectTrajet = () => {
-    itinInput.value = trajet.itineraire;
-    tr.querySelector(".kmFD").value = trajet.km;
-    tr.querySelector(".motifFD").value = trajet.motif;
-    recalculerLigne(tr);
-    menu.remove();
-  };
-
-  menu.addEventListener("click", selectTrajet);
-  menu.addEventListener("touchstart", selectTrajet);
-
-  const outsideClick = (e) => {
-    if(!menu.contains(e.target) && e.target !== itinInput){
-      menu.remove();
-      document.removeEventListener("click", outsideClick);
-      document.removeEventListener("touchstart", outsideClick);
-    }
-  };
-
-  document.addEventListener("click", outsideClick);
-  document.addEventListener("touchstart", outsideClick);
-};
-
-itinInput.addEventListener("focus", () => {
-  setTimeout(() => {
-    const prof = document.getElementById("selectProfGlobal").value;
-    const trajet = trajetsRecurrents[prof];
-    if(!trajet) return;
-
-    const oldMenu = tr.querySelector(".itinDropdown");
-    if(oldMenu) oldMenu.remove();
-
+  if(trajet){
+    // Créer le menu
     const menu = document.createElement("div");
     menu.className = "itinDropdown";
     menu.style.position = "absolute";
@@ -3694,39 +3432,41 @@ itinInput.addEventListener("focus", () => {
     menu.style.padding = "6px";
     menu.style.cursor = "pointer";
     menu.style.zIndex = "1000";
+    menu.style.marginTop = "2px";
+    menu.style.width = itinInput.offsetWidth + "px";
     menu.textContent = trajet.itineraire;
 
-    // On calcule après que le viewport ait bougé
-    const rect = itinInput.getBoundingClientRect();
-    menu.style.top = `${rect.bottom + window.scrollY}px`;
-    menu.style.left = `${rect.left + window.scrollX}px`;
-    menu.style.width = `${rect.width}px`;
+    // Ajouter au DOM juste après l'input
+    itinInput.parentNode.appendChild(menu);
 
-    document.body.appendChild(menu);
-
-    const selectTrajet = () => {
+    // Clic sur suggestion
+    menu.addEventListener("click", () => {
       itinInput.value = trajet.itineraire;
       tr.querySelector(".kmFD").value = trajet.km;
       tr.querySelector(".motifFD").value = trajet.motif;
-      recalculerLigne(tr);
-      menu.remove();
-    };
 
-    menu.addEventListener("click", selectTrajet);
-    menu.addEventListener("touchstart", selectTrajet);
+      // Recalcul si dates déjà sélectionnées
+      const fp = tr.querySelector(".datesFD")._flatpickr;
+      const nbDates = fp ? fp.selectedDates.length : 0;
+      tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
+      updateTotalKmFD();
 
-    const outsideClick = (e) => {
-      if(!menu.contains(e.target) && e.target !== itinInput){
+      menu.remove(); // fermer menu après validation
+    });
+
+    // Supprimer le menu si l'utilisateur clique ailleurs
+    document.addEventListener("click", function handler(ev){
+      if(ev.target !== itinInput && ev.target !== menu){
         menu.remove();
-        document.removeEventListener("click", outsideClick);
-        document.removeEventListener("touchstart", outsideClick);
+        document.removeEventListener("click", handler);
       }
-    };
-    document.addEventListener("click", outsideClick);
-    document.addEventListener("touchstart", outsideClick);
-
-  }, 150); // délai de 150ms pour que Safari termine le scroll
+    });
+  }
 });
+
+
+
+
 
 
 
@@ -3752,10 +3492,14 @@ const fpInstance = flatpickr(tr.querySelector(".datesFD"), {
   }
 });
 
+
   // recalcul si km change
-tr.querySelector(".kmFD").addEventListener("input", () => {
-  recalculerLigne(tr);
-});
+  tr.querySelector(".kmFD").addEventListener("input", () => {
+    const selectedDates = fpInstance.selectedDates || [];
+    const km = parseFloat(tr.querySelector(".kmFD").value) || 0;
+    tr.querySelector(".totalLigneKm").textContent = km * selectedDates.length;
+    updateTotalKmFD();
+  });
 
   // bouton supprimer
   tr.querySelector(".deleteFD").addEventListener("click", () => {
@@ -3763,94 +3507,103 @@ tr.querySelector(".kmFD").addEventListener("input", () => {
     updateTotalKmFD();
   });
 
+ 
+
   updateTotalKmFD();
 }
 
-// Ajouter ligne via bouton PC et Mobile
+// Ajouter ligne via bouton "Ajouter" PC
 document.getElementById("addRowFD").addEventListener("click", () => createFDRow());
+
+
+// Ajouter ligne via bouton "Ajouter" Mobile
 document.getElementById("addRowFDMobile").addEventListener("click", () => createFDRow());
 createFDRow(); // première ligne
 
-// Overlay messages
+
+
+
 function showFDOverlay(message) {
   document.getElementById("fdOverlayBox").textContent = message;
   document.getElementById("fdOverlay").style.display = "flex";
 }
+
 function hideFDOverlay() {
   document.getElementById("fdOverlay").style.display = "none";
 }
 
+
+
+
+
+
 // ---------------- Envoi vers Web App ----------------
-document.getElementById("sendFD").addEventListener("click", () => {
-  const profAffiche = document.getElementById("selectProfGlobal").value.trim();
-  const nomProfFD = profMap[profAffiche];
-  if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
 
-  const immatFD = document.getElementById("immatFD").value.trim();
-  const puissanceFD = document.getElementById("puissanceFD").value.trim();
 
-  const lignes = [];
+  document.getElementById("sendFD").addEventListener("click", () => {
+    const profAffiche = document.getElementById("selectProfGlobal").value.trim();
+    const nomProfFD = profMap[profAffiche];
+    if (!nomProfFD) { alert("Indiquez le nom du professeur !"); return; }
 
-  fdTableBody.querySelectorAll("tr").forEach(tr => {
-    const dateInput = tr.querySelector(".datesFD");
-    const fp = dateInput && dateInput._flatpickr; // ✅ compatible iPhone
-    const dates = fp
-      ? fp.selectedDates.map(d => {
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, "0");
-          const day = String(d.getDate()).padStart(2, "0");
-          return `${y}-${m}-${day}`;
-        })
-      : [];
+    const immatFD = document.getElementById("immatFD").value.trim();
+    const puissanceFD = document.getElementById("puissanceFD").value.trim();
 
-    lignes.push({
-      dates: dates,
-      itineraire: tr.querySelector(".itineraireFD")?.value || "",
-      motif: tr.querySelector(".motifFD")?.value || "",
-      km: tr.querySelector(".kmFD")?.value || "",
-      peage: tr.querySelector(".peageFD")?.value || ""
+    const lignes = [];
+
+    fdTableBody.querySelectorAll("tr").forEach(tr => {
+      const fp = tr.querySelector(".datesFD")?._flatpickr;
+      const dates = fp
+        ? fp.selectedDates.map(d => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+          })
+        : [];
+
+      lignes.push({
+        dates: dates,
+        itineraire: tr.querySelector(".itineraireFD")?.value || "",
+        motif: tr.querySelector(".motifFD")?.value || "",
+        km: tr.querySelector(".kmFD")?.value || "",
+        peage: tr.querySelector(".peageFD")?.value || ""
+      });
+    });
+
+    const totalKm = totalKmEl.textContent;
+    showFDOverlay("⏳ Envoi en cours…");
+    document.getElementById("fdConfirm").textContent = "";
+
+
+
+
+     // URL de ton script Google Apps Script (Frais de déplacement)
+
+    fetch("https://script.google.com/macros/s/AKfycbwQo1DEp-yxqedTX-b3DH4-21pLt9_hS739qqPZd6kReY_djlEWuyCWSRF1Pd7cDkT2EQ/exec", {  
+      method: "POST",
+      body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
+    })
+    .then(res => res.json())
+    .then(res => {
+      showFDOverlay("✅ " + (res.message || "Demande envoyée avec succès"));
+      setTimeout(() => hideFDOverlay(), 2000);
+      document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
+      fdTableBody.innerHTML = "";
+      createFDRow();
+    })
+    .catch(err => {
+      showFDOverlay("❌ Erreur lors de l’envoi");
+      setTimeout(() => hideFDOverlay(), 3000);
+      document.getElementById("fdConfirm").textContent = "Erreur : " + err;
     });
   });
 
-  const totalKm = totalKmEl.textContent;
-  showFDOverlay("⏳ Envoi en cours…");
-  document.getElementById("fdConfirm").textContent = "";
-
- 
-
- // URL de ton script Google Apps Script (Frais de déplacement)
-
-
-
-  fetch("https://script.google.com/macros/s/AKfycbw3yXSAb0WbeBpxu0t0GBNc32K2KafjHJ_I7snhf-LsnodD9APDmxxaGrB69n0sxxurnQ/exec", {
-    method: "POST",
-    body: JSON.stringify({ nomProf: nomProfFD, immatFD, puissanceFD, lignes, totalKm })
-  })
-  .then(res => res.json())
-  .then(res => {
-    showFDOverlay("✅ " + (res.message || "Demande envoyée avec succès"));
-    setTimeout(() => hideFDOverlay(), 2000);
-    document.getElementById("fdConfirm").textContent = res.message || "Demande envoyée avec succès";
-    fdTableBody.innerHTML = "";
-    createFDRow();
-  })
-  .catch(err => {
-    showFDOverlay("❌ Erreur lors de l’envoi");
-    setTimeout(() => hideFDOverlay(), 3000);
-    document.getElementById("fdConfirm").textContent = "Erreur : " + err;
-  });
-});
 
 
 
 
 
-
-
-
-
-
- // =================================
+// =================================
 // SECTION ÉVÉNEMENTS
 // =================================
 
@@ -3861,7 +3614,7 @@ function initEvents() {
 
   // URL WebApp Google Apps Script (évènements de l'année)
  
- const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxS5dVEAykgdv3ZHvQGpJ0zsiTEUq-V62hprnWkg8e9qmG3h63IfgreFRLR6e5IG9WmkQ/exec";
+ const API_EVENTS_URL = "https://script.google.com/macros/s/AKfycbxqVO4LYrTQRSiNeR6m_rrFC7KJyr8lVyu8-4gbiunMixt8w20ismOoc2-V6ZZ-yeoUmQ/exec";
   let allEvents = [];
 
   const upcomingContainer = document.getElementById("upcoming-events");
@@ -4014,6 +3767,8 @@ initEvents();
 
 
 
+
+
  
 
 
@@ -4036,9 +3791,9 @@ function loadContacts() {
   loadingMsg.style.display = "block";
 
 
-// -- URL WEBAPP Répertoire 2025/2026
+// -- URL WEBAPP Répertoire 2026/2027
 
-  const url = "https://script.google.com/macros/s/AKfycbz6PlqatBPAhkBYCojOqvOJ4t6xBnc4FYvO_H5Rh4Ld0Yd_g3y3aVDfM-ircPkTkFaBgQ/exec?action=contacts";
+  const url = "https://script.google.com/macros/s/AKfycbyJEzOdF0-Z2Eu3dt7sra7icJ36TCB4SUjPxITARaQz79v3lBDZYtqKK8Rv5kZsJrty/exec?action=contacts";
 
  function formatPhone(phone) {
   if (!phone) return "";
