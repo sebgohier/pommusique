@@ -3411,57 +3411,100 @@ function createFDRow(data = {}) {
 
   fdTableBody.appendChild(tr);
 
+
 // Auto-suggestion trajet récurrent (menu déroulant)
 const itinInput = tr.querySelector(".itineraireFD");
 
-itinInput.addEventListener("focus", e => {
+itinInput.addEventListener("focus", () => {
   const prof = document.getElementById("selectProfGlobal").value;
   const trajet = trajetsRecurrents[prof];
 
   // Supprimer ancien dropdown si existant
-  let oldMenu = tr.querySelector(".itinDropdown");
-  if(oldMenu) oldMenu.remove();
+  const oldMenu = tr.querySelector(".itinDropdown");
+  if (oldMenu) oldMenu.remove();
 
-  if(trajet){
-    // Créer le menu
-    const menu = document.createElement("div");
-    menu.className = "itinDropdown";
-    menu.style.position = "absolute";
-    menu.style.background = "#fff";
-    menu.style.border = "1px solid #ccc";
-    menu.style.padding = "6px";
-    menu.style.cursor = "pointer";
-    menu.style.zIndex = "1000";
-    menu.style.marginTop = "2px";
-    menu.style.width = itinInput.offsetWidth + "px";
-    menu.textContent = trajet.itineraire;
+  if (!trajet) return;
 
-    // Ajouter au DOM juste après l'input
-    itinInput.parentNode.appendChild(menu);
+  // Le parent doit servir de référence pour le positionnement
+  itinInput.parentNode.style.position = "relative";
 
-    // Clic sur suggestion
-    menu.addEventListener("click", () => {
-      itinInput.value = trajet.itineraire;
-      tr.querySelector(".kmFD").value = trajet.km;
-      tr.querySelector(".motifFD").value = trajet.motif;
+  // Créer le menu
+  const menu = document.createElement("div");
+  menu.className = "itinDropdown";
 
-      // Recalcul si dates déjà sélectionnées
-      const fp = tr.querySelector(".datesFD")._flatpickr;
-      const nbDates = fp ? fp.selectedDates.length : 0;
-      tr.querySelector(".totalLigneKm").textContent = trajet.km * nbDates;
-      updateTotalKmFD();
+  menu.style.position = "absolute";
+  menu.style.left = "0";
+  menu.style.top = (itinInput.offsetTop + itinInput.offsetHeight + 2) + "px";
+  menu.style.width = itinInput.offsetWidth + "px";
+  menu.style.boxSizing = "border-box";
 
-      menu.remove(); // fermer menu après validation
-    });
+  menu.style.background = "#fff";
+  menu.style.border = "1px solid #ccc";
+  menu.style.borderRadius = "6px";
+  menu.style.padding = "8px";
+  menu.style.cursor = "pointer";
+  menu.style.zIndex = "99999";
+  menu.style.fontSize = "14px";
+  menu.style.lineHeight = "1.4";
 
-    // Supprimer le menu si l'utilisateur clique ailleurs
-    document.addEventListener("click", function handler(ev){
-      if(ev.target !== itinInput && ev.target !== menu){
-        menu.remove();
-        document.removeEventListener("click", handler);
-      }
-    });
+  menu.textContent = trajet.itineraire;
+
+  // Ajouter le menu dans le même parent que l'input
+  itinInput.parentNode.appendChild(menu);
+
+  // Fonction de sélection de la suggestion
+  let selectionEnCours = false;
+
+  function selectionnerTrajet(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (selectionEnCours) return;
+    selectionEnCours = true;
+
+    itinInput.value = trajet.itineraire;
+    tr.querySelector(".kmFD").value = trajet.km;
+    tr.querySelector(".motifFD").value = trajet.motif;
+
+    // Recalcul si des dates sont déjà sélectionnées
+    const datesInput = tr.querySelector(".datesFD");
+    const fp = datesInput ? datesInput._flatpickr : null;
+    const nbDates = fp ? fp.selectedDates.length : 0;
+
+    tr.querySelector(".totalLigneKm").textContent =
+      trajet.km * nbDates;
+
+    updateTotalKmFD();
+
+    menu.remove();
+
+    // Nettoyer l'écouteur global
+    document.removeEventListener("click", fermerMenu);
+    document.removeEventListener("touchstart", fermerMenu);
   }
+
+  // Clic classique
+  menu.addEventListener("click", selectionnerTrajet);
+
+  // Tactile : important pour les anciens smartphones/navigateurs
+  menu.addEventListener("touchstart", selectionnerTrajet, { passive: false });
+
+  // Fermer si l'utilisateur clique/touche ailleurs
+  function fermerMenu(ev) {
+    if (ev.target !== itinInput && ev.target !== menu && !menu.contains(ev.target)) {
+      menu.remove();
+
+      document.removeEventListener("click", fermerMenu);
+      document.removeEventListener("touchstart", fermerMenu);
+    }
+  }
+
+  // Petit délai pour éviter que l'événement ayant déclenché le focus
+  // ne soit immédiatement interprété comme un clic extérieur
+  setTimeout(() => {
+    document.addEventListener("click", fermerMenu);
+    document.addEventListener("touchstart", fermerMenu, { passive: true });
+  }, 50);
 });
 
 
